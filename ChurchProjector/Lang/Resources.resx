@@ -117,16 +117,16 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="BookLanguage_English" xml:space="preserve">
+  <data name="English" xml:space="preserve">
     <value>English</value>
   </data>
-  <data name="BookLanguage_German" xml:space="preserve">
+  <data name="German" xml:space="preserve">
     <value>German</value>
   </data>
-  <data name="BookLanguage_Russian" xml:space="preserve">
+  <data name="Russian" xml:space="preserve">
     <value>Russian</value>
   </data>
-  <data name="BookLanguage_SameAsBible" xml:space="preserve">
+  <data name="SameAsBible" xml:space="preserve">
     <value>Same as bible</value>
   </data>
   <data name="Theme_Dark" xml:space="preserve">
@@ -354,5 +354,14 @@
   </data>
   <data name="DownloadBibleTranslation" xml:space="preserve">
     <value>Free bible translation may be downloaded here:</value>
+  </data>
+  <data name="Windows" xml:space="preserve">
+    <value>Windows</value>
+  </data>
+  <data name="Lang_Colon" xml:space="preserve">
+    <value>Language:</value>
+  </data>
+  <data name="RestartRequired" xml:space="preserve">
+    <value>(Restart required)</value>
   </data>
 </root>

@@ -1,6 +1,7 @@
 ﻿using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
+using ChurchProjector.Classes;
 using ChurchProjector.Logging;
 using ChurchProjector.Views.Main;
 using ChurchProjector.Views.Settings;
@@ -18,9 +19,17 @@ public partial class App : Application
 
     public override void OnFrameworkInitializationCompleted()
     {
-        if (CultureInfo.CurrentCulture.Name == "de-DE")
+        switch (GlobalConfig.JsonFile.Settings.Language)
         {
-            Lang.Resources.Culture = new CultureInfo("de-DE");
+            case Enums.Language.Windows:
+                Lang.Resources.Culture = CultureInfo.CurrentCulture;
+                break;
+            case Enums.Language.German:
+                Lang.Resources.Culture = new CultureInfo("de-DE");
+                break;
+            case Enums.Language.English:
+                Lang.Resources.Culture = new CultureInfo("en-US");
+                break;
         }
 
         SettingsViewModel settings = new();

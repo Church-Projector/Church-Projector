@@ -169,42 +169,6 @@ namespace ChurchProjector.Lang {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to English.
-        /// </summary>
-        public static string BookLanguage_English {
-            get {
-                return ResourceManager.GetString("BookLanguage_English", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to German.
-        /// </summary>
-        public static string BookLanguage_German {
-            get {
-                return ResourceManager.GetString("BookLanguage_German", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Russian.
-        /// </summary>
-        public static string BookLanguage_Russian {
-            get {
-                return ResourceManager.GetString("BookLanguage_Russian", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Same as bible.
-        /// </summary>
-        public static string BookLanguage_SameAsBible {
-            get {
-                return ResourceManager.GetString("BookLanguage_SameAsBible", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Bottom.
         /// </summary>
         public static string Bottom {
@@ -286,6 +250,15 @@ namespace ChurchProjector.Lang {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to English.
+        /// </summary>
+        public static string English {
+            get {
+                return ResourceManager.GetString("English", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Some errors have occurred..
         /// </summary>
         public static string ErrorsOccurred {
@@ -336,6 +309,15 @@ namespace ChurchProjector.Lang {
         public static string Fps_Colon {
             get {
                 return ResourceManager.GetString("Fps_Colon", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to German.
+        /// </summary>
+        public static string German {
+            get {
+                return ResourceManager.GetString("German", resourceCulture);
             }
         }
         
@@ -399,6 +381,15 @@ namespace ChurchProjector.Lang {
         public static string InstantHide {
             get {
                 return ResourceManager.GetString("InstantHide", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Language:.
+        /// </summary>
+        public static string Lang_Colon {
+            get {
+                return ResourceManager.GetString("Lang_Colon", resourceCulture);
             }
         }
         
@@ -526,6 +517,33 @@ namespace ChurchProjector.Lang {
         public static string ProgramNotFound {
             get {
                 return ResourceManager.GetString("ProgramNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to (Restart required).
+        /// </summary>
+        public static string RestartRequired {
+            get {
+                return ResourceManager.GetString("RestartRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Russian.
+        /// </summary>
+        public static string Russian {
+            get {
+                return ResourceManager.GetString("Russian", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Same as bible.
+        /// </summary>
+        public static string SameAsBible {
+            get {
+                return ResourceManager.GetString("SameAsBible", resourceCulture);
             }
         }
         
@@ -760,6 +778,15 @@ namespace ChurchProjector.Lang {
         public static string Window {
             get {
                 return ResourceManager.GetString("Window", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Windows.
+        /// </summary>
+        public static string Windows {
+            get {
+                return ResourceManager.GetString("Windows", resourceCulture);
             }
         }
         

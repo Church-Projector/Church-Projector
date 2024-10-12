@@ -18,7 +18,8 @@ public class JsonFile : ObservableObject
 
 public class Settings : ObservableObject
 {
-    public Theme Theme { get; set; }
+    public Theme Theme { get; set; } = Theme.Light;
+    public Language Language { get; set; } = Language.Windows;
 
     public OutputDisplaySettings OutputDisplaySettings { get; set; } = new();
     public DisplayConfiguration DisplayConfiguration { get; set; } = new();

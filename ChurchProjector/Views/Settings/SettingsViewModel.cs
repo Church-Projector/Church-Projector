@@ -83,6 +83,20 @@ public partial class SettingsViewModel : ObservableObject
     }
     public string ThemeName => Theme == Theme.Light ? "Light" : "Dark";
 
+    public List<Language> Languages { get; } = Enum.GetValues<Language>().ToList();
+    public Language Language
+    {
+        get => GlobalConfig.JsonFile.Settings.Language;
+        set
+        {
+            if (GlobalConfig.JsonFile.Settings.Language != value)
+            {
+                GlobalConfig.JsonFile.Settings.Language = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
     #region display
     [ObservableProperty]
     private WindowState _windowState = WindowState.FullScreen;

@@ -1,0 +1,45 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:local="clr-namespace:ChurchProjector.Views.Bible"
+		xmlns:controls="clr-namespace:ChurchProjector.Views.Controls"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="ChurchProjector.Views.Bible.BibleSearchWindow"
+		x:DataType="local:BibleSearchViewModel"
+		WindowStartupLocation="CenterOwner"
+		Width="600" MinWidth="600"
+		Height="400" MinHeight="400"
+		Icon="/Assets/icon.ico"
+		Title="Bibelstelle suchen">
+	
+	<Grid RowDefinitions="auto,auto,*,auto" ColumnDefinitions="auto,*" Margin="10">
+		<TextBlock Grid.Row="0" Grid.Column="0" Text="Übersetzung:" VerticalAlignment="Center" />
+		<ComboBox Grid.Row="0" Grid.Column="1" ItemsSource="{Binding Bibles}" SelectedItem="{Binding SelectedBible}" Margin="10 0 0 0" HorizontalAlignment="Stretch">
+			<ComboBox.ItemTemplate>
+				<DataTemplate>
+					<TextBlock Text="{Binding Title}" />
+				</DataTemplate>
+			</ComboBox.ItemTemplate>
+		</ComboBox>
+		
+		<TextBlock Grid.Row="1" Grid.Column="0" Text="Suche:" VerticalAlignment="Center" />
+		<TextBox Name="TxtSearchBox" Grid.Row="1" Grid.Column="1" Text="{Binding SearchText}" Margin="10 10 0 10" />
+
+		<ListBox Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" ItemsSource="{Binding Verses}" SelectedItem="{Binding SelectedVerse}" Margin="0 0 0 10" DoubleTapped="ListBox_DoubleTapped">
+			<ListBox.ItemTemplate>
+				<DataTemplate>
+					<StackPanel>
+						<TextBlock Text="{Binding Position}" FontWeight="Bold" />
+						<controls:HighlightedTextBox Text="{Binding Content}" SearchText="{Binding ((local:BibleSearchViewModel)DataContext).SearchText, RelativeSource={RelativeSource AncestorType=Window}}" />
+					</StackPanel>
+				</DataTemplate>
+			</ListBox.ItemTemplate>
+		</ListBox>
+
+		<StackPanel Grid.Row="3" Grid.ColumnSpan="3" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10">
+			<Button IsCancel="True" Command="{Binding CloseDialogCommand}">Schließen</Button>
+			<Button IsDefault="True" Command="{Binding OpenVerseCommand}" IsEnabled="{Binding HasVerseSelected}">OK</Button>
+		</StackPanel>
+	</Grid>
+</Window>

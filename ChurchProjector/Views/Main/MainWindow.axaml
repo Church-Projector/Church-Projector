@@ -1,0 +1,120 @@
+﻿<Window x:Class="ChurchProjector.Views.Main.MainWindow"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:system="clr-namespace:System;assembly=mscorlib"
+    xmlns:local="using:ChurchProjector.Views.Main"
+    xmlns:schedule="clr-namespace:ChurchProjector.Views.Schedule"
+    xmlns:history="clr-namespace:ChurchProjector.Views.History"
+    xmlns:classes="clr-namespace:ChurchProjector.Classes"
+    xmlns:bibleview="clr-namespace:ChurchProjector.Views.Bible"
+    mc:Ignorable="d"
+    WindowStartupLocation="CenterScreen"
+    Title="Gottesdienst Projektor" Height="675" Width="1650"
+    Icon="/Assets/icon.ico"
+    x:DataType="local:MainViewModel">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="auto" />
+            <!--todo hacky hack-->
+            <RowDefinition Height="auto" MinHeight="231" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto" MinWidth="350" />
+            <ColumnDefinition Width="auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <TabControl Grid.Row="0" Grid.Column="0" Grid.RowSpan="6">
+            <TabItem Header="Verlauf" Margin="0 0 0 10">
+                <history:HistoryView DataContext="{Binding HistoryViewModel}" />
+            </TabItem>
+            <TabItem Header="Ablaufplan" Margin="0 0 0 10">
+                <schedule:ScheduleView DataContext="{Binding ScheduleViewModel}" />
+            </TabItem>
+        </TabControl>
+
+        <GridSplitter Grid.Row="0" Grid.Column="1" Grid.RowSpan="6" Background="Gray" ResizeDirection="Columns" />
+
+        <StackPanel Grid.Row="0" Grid.Column="2" Orientation="Horizontal" Margin="10">
+            <!--header-->
+            <Button Content="Liederschnellsuche" Command="{Binding OpenSongQuickSearchCommand}" HotKey="Ctrl+Q" ToolTip.Tip="Shortcut: STRG + Q" />
+            <Button Content="Lied Suche" Command="{Binding OpenSongSearchCommand}" HotKey="Ctrl+S" ToolTip.Tip="Shortcut: STRG + S" />
+            <Button Content="Bibel Suche" Command="{Binding OpenBibleSearchCommand}" HotKey="Ctrl+F" ToolTip.Tip="Shortcut: STRG + F" />
+            <Button Content="Neues Lied" Command="{Binding AddSongCommand}" HotKey="Ctrl+N" ToolTip.Tip="Shortcut: STRG + N" />
+            <Button Content="Bearbeiten" Command="{Binding EditCommand}" IsEnabled="{Binding MayEdit}" HotKey="Ctrl+E" ToolTip.Tip="Shortcut: STRG + E" />
+            <Button Content="Sofort ausblenden" Command="{Binding HideImageCommand}" IsEnabled="{Binding SlideSelected}" HotKey="B" ToolTip.Tip="Shortcut: B">
+                <Button.CommandParameter>
+                    <system:Boolean>false</system:Boolean>
+                </Button.CommandParameter>
+            </Button>
+            <Button Content="Langsam ausblenden" Command="{Binding HideImageCommand}" IsEnabled="{Binding ImageSelected}" HotKey="F" ToolTip.Tip="Shortcut: F">
+                <Button.CommandParameter>
+                    <system:Boolean>true</system:Boolean>
+                </Button.CommandParameter>
+            </Button>
+            <Button Content="Banner-Nachricht" Command="{Binding OpenShowNotificationCommand}" HotKey="Ctrl+N" ToolTip.Tip="Shortcut: STRG + N" />
+        </StackPanel>
+
+        <ListBox Name="LboImages" Grid.Row="1" Grid.Column="2" ItemsSource="{Binding Images.Images}" SelectedItem="{Binding SelectedImage}" Background="Transparent" Margin="10 20" KeyDown="ListBox_KeyUp">
+            <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel />
+                </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Border BorderBrush="Gray"
+                            BorderThickness="1"
+                            CornerRadius="4"
+                            Padding="4">
+                        <Grid RowDefinitions="auto,*" ColumnDefinitions="*,auto">
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="{Binding Title}"/>
+                            <Svg Grid.Row="0" Grid.Column="1" IsVisible="{Binding IsOverflowing}" Path="/Assets/error.svg" ToolTip.Tip="Der Text überschreitet die Höhe." />
+                            <Image Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" MaxWidth="250" MaxHeight="250" Source="{Binding Image}"/>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+        <GridSplitter Grid.Row="2" Grid.Column="2" Background="Gray" ResizeDirection="Rows" />
+        <bibleview:BibleView Name="BibleView" Grid.Row="3" Grid.Column="2" DataContext="{Binding BibleViewModel}" Margin="10" />
+
+        <Separator Grid.Row="4" Grid.Column="2" />
+        <Grid Grid.Row="5" Grid.Column="2" ColumnDefinitions="*,auto">
+            <Grid Grid.Column="0" RowDefinitions="auto,auto" ColumnDefinitions="auto,*">
+                <TextBlock Grid.Row="0" Grid.Column="1"
+                           IsVisible="{Binding MayUpdate}"
+                           Foreground="Orange"
+                           Margin="10"
+                           Padding="10,5,10,5"
+                           Text="{Binding UpdateText}" />
+
+                <Button Grid.Row="1" Grid.Column="0"
+                        IsVisible="{Binding HasError}"
+                        Margin="10"
+                        Padding="10,5,10,5"
+                        Content="Logs öffnen"
+                        Command="{Binding OpenLogsCommand}"/>
+                <TextBlock Grid.Row="1" Grid.Column="1"
+                           IsVisible="{Binding HasError}"
+                           Foreground="Red"
+                           Margin="10"
+                           Padding="10,5,10,5"
+                           Text="Es sind Fehler aufgetreten." />
+            </Grid>
+            <Button Grid.Column="1"
+                    Margin="10"
+                    Padding="10,5,10,5"
+                    Content="Einstellungen"
+                    Click="OnBtnSettingsClick" />
+        </Grid>
+    </Grid>
+</Window>

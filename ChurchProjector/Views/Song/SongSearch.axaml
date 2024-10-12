@@ -1,0 +1,57 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:local="using:ChurchProjector.Views.Song"
+        mc:Ignorable="d"
+		x:Class="ChurchProjector.Views.Song.SongSearch"
+		xmlns:controls="using:ChurchProjector.Views.Controls"
+		x:DataType="local:SongSearchViewModel"
+		WindowStartupLocation="CenterOwner"
+		Width="600" MinWidth="600"
+		Height="400" MinHeight="400"
+		Icon="/Assets/icon.ico"
+		Title="Liedsuche">
+
+	<Grid RowDefinitions="*,auto" Margin="10">
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="*" MinWidth="250" />
+			<ColumnDefinition Width="auto" />
+			<ColumnDefinition Width="*" MinWidth="250" />
+		</Grid.ColumnDefinitions>
+
+		<Grid Grid.Row="0" Grid.Column="0" RowDefinitions="auto, *" Margin="0 0 10 10">
+			<StackPanel Grid.Row="0" Grid.Column="0" Spacing="10" Margin="0 0 0 10">
+				<TextBlock>Suche:</TextBlock>
+				<TextBox Name="TxtSearchBox" Text="{Binding SearchText}" />
+			</StackPanel>
+
+			<ListBox Grid.Row="1" ItemsSource="{Binding Songs}" SelectedItem="{Binding SelectedSong}" DoubleTapped="ListBox_DoubleTapped">
+				<ListBox.ItemTemplate>
+					<DataTemplate>
+						<controls:HighlightedTextBox Text="{Binding Title}" SearchText="{Binding ((local:SongSearchViewModel)DataContext).SearchText, RelativeSource={RelativeSource AncestorType=Window}}" />
+					</DataTemplate>
+				</ListBox.ItemTemplate>
+			</ListBox>
+		</Grid>
+
+
+		<GridSplitter Grid.Row="0" Grid.Column="1" Background="Gray" ResizeDirection="Columns" Margin="0 0 0 10" />
+
+		<ListBox Grid.Row="0" Grid.Column="2" ItemsSource="{Binding SelectedSong.Verses}" Margin="10 0 0 10">
+			<ListBox.ItemTemplate>
+				<DataTemplate>
+					<StackPanel>
+						<TextBlock Text="{Binding Title}" FontWeight="Bold" />
+						<controls:HighlightedTextBox Text="{Binding .}" SearchText="{Binding ((local:SongSearchViewModel)DataContext).SearchText, RelativeSource={RelativeSource AncestorType=Window}}" HighlightForeground="Yellow" />
+					</StackPanel>
+				</DataTemplate>
+			</ListBox.ItemTemplate>
+		</ListBox>
+
+		<StackPanel Grid.Row="2" Grid.ColumnSpan="3" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10">
+			<Button IsCancel="True" Command="{Binding CloseDialogCommand}">Schließen</Button>
+			<Button IsDefault="True" Command="{Binding OpenSongCommand}" IsEnabled="{Binding HasSongSelected}">OK</Button>
+		</StackPanel>
+	</Grid>
+</Window>

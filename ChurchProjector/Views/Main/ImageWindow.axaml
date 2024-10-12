@@ -1,0 +1,34 @@
+﻿<Window x:Class="ChurchProjector.Views.Main.ImageWindow"
+        xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:converters="clr-namespace:ChurchProjector.Converters"
+		xmlns:local="using:ChurchProjector.Views.Main"
+        mc:Ignorable="d"
+        Background="Black"
+        Topmost="{Binding Settings.Settings.OutputDisplaySettings.TopMost}"
+        WindowStartupLocation="Manual"
+        x:Name="Root"
+        WindowState="{Binding Settings.WindowState}"
+        CanResize="False"
+		ExtendClientAreaToDecorationsHint="True"
+		SystemDecorations="None"
+		x:DataType="local:ImageViewModel"
+		ShowInTaskbar="False">
+	
+	<Grid RowDefinitions="*,Auto">
+		<Image
+            Name="ImageView"
+            Grid.Row="0"
+            IsVisible="{Binding ShowImage}"
+            Source="{Binding ImageSource}"
+			Opacity="{Binding Opacity}" />
+
+		<StackPanel
+			Name="SpBanner"
+            Grid.Row="1"
+			Orientation="Horizontal"
+			IsVisible="{Binding BannerVisible}" />
+	</Grid>
+</Window>

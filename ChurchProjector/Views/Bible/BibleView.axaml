@@ -1,0 +1,93 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:local="clr-namespace:ChurchProjector.Views.Bible"
+			 xmlns:converters="clr-namespace:ChurchProjector.Converters"
+             mc:Ignorable="d" d:DesignWidth="800"
+             x:Class="ChurchProjector.Views.Bible.BibleView"
+			 x:DataType="local:BibleViewModel">
+
+	<UserControl.Resources>
+		<converters:StringIsNotEmptyConverter x:Key="StringIsNotEmptyConverter" />
+	</UserControl.Resources>
+
+	<Grid>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="auto" MinWidth="250" />
+			<ColumnDefinition Width="auto" />
+			<ColumnDefinition Width="*" />
+		</Grid.ColumnDefinitions>
+
+		<ScrollViewer Grid.Column="0">
+			<StackPanel Spacing="10">
+				<Expander HorizontalAlignment="Stretch">
+					<Expander.Header>
+						Übersetzungen
+					</Expander.Header>
+					<StackPanel Spacing="10">
+						<TextBlock>1. Übersetzung:</TextBlock>
+						<ComboBox ItemsSource="{Binding Bibles}" SelectedItem="{Binding SelectedBible1}" MinWidth="250" HorizontalAlignment="Stretch">
+							<ComboBox.ItemTemplate>
+								<DataTemplate>
+									<TextBlock Text="{Binding Title}" />
+								</DataTemplate>
+							</ComboBox.ItemTemplate>
+						</ComboBox>
+
+						<TextBlock>2. Übersetzung:</TextBlock>
+						<ComboBox ItemsSource="{Binding Bibles}" SelectedItem="{Binding SelectedBible2}" MinWidth="250" HorizontalAlignment="Stretch">
+							<ComboBox.ItemTemplate>
+								<DataTemplate>
+									<TextBlock Text="{Binding Title}" />
+								</DataTemplate>
+							</ComboBox.ItemTemplate>
+						</ComboBox>
+
+						<TextBlock>3. Übersetzung:</TextBlock>
+						<ComboBox ItemsSource="{Binding Bibles}" SelectedItem="{Binding SelectedBible3}" MinWidth="250" HorizontalAlignment="Stretch">
+							<ComboBox.ItemTemplate>
+								<DataTemplate>
+									<TextBlock Text="{Binding Title}" />
+								</DataTemplate>
+							</ComboBox.ItemTemplate>
+						</ComboBox>
+					</StackPanel>
+				</Expander>
+
+				<TextBlock HorizontalAlignment="Stretch">Suche:</TextBlock>
+
+				<Grid ColumnDefinitions="*,auto">
+					<TextBox Grid.Column="0" Text="{Binding SearchText}" KeyDown="TextBox_KeyDown" />
+					<Button Grid.Column="1" Command="{Binding AcceptSearchTextCommand}" IsEnabled="{Binding MayAcceptSearchTextCommand}">OK</Button>
+				</Grid>
+
+				<TextBlock Text="{Binding BibleSearchHintPreview}" />
+				<TextBlock Text="{Binding Error}" Foreground="Red" TextTrimming="CharacterEllipsis" />
+
+				<StackPanel Orientation="Horizontal">
+					<Button Content="Zurück" IsEnabled="{Binding CanGoBack}" Command="{Binding BackVerseCommand}" />
+					<Button Content="Weiter" IsEnabled="{Binding CanGoNext}" Command="{Binding NextVerseCommand}" />
+				</StackPanel>
+			</StackPanel>
+		</ScrollViewer>
+
+		<GridSplitter Grid.Column="1" Background="Gray" ResizeDirection="Columns" Margin="10,0,10,0" />
+
+		<ListBox x:Name="ListBox" Grid.Column="2" ItemsSource="{Binding PreviewSelectedBiblePosition}" Height="{Binding $parent.Bounds.Height}" PointerReleased="ListBox_PointerReleased" SelectionMode="Multiple">
+			<ListBox.ItemTemplate>
+				<DataTemplate>
+					<Grid ColumnDefinitions="auto, *">
+						<TextBlock Grid.Column="0">
+							<TextBlock.Inlines>
+								<!--no line break between the runs, else we get a line break-->
+								<Run Text="{Binding Key}" /><Run Text=". " />
+							</TextBlock.Inlines>
+						</TextBlock>
+						<TextBlock Grid.Column="1" Text="{Binding Value}" TextWrapping="Wrap" />
+					</Grid>
+				</DataTemplate>
+			</ListBox.ItemTemplate>
+		</ListBox>
+	</Grid>
+</UserControl>

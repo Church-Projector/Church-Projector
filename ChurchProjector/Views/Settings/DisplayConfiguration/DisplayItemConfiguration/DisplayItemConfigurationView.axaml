@@ -1,0 +1,57 @@
+﻿<UserControl x:Class="ChurchProjector.Views.Settings.DisplayConfiguration.DisplayItemConfiguration.DisplayItemConfigurationView"
+        xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+        xmlns:sys="clr-namespace:System"
+        xmlns:converters="clr-namespace:ChurchProjector.Converters"
+		xmlns:images="clr-namespace:ChurchProjector.Classes.Configuration.Image"
+		mc:Ignorable="d"
+		x:DataType="images:ImageCreationItemConfiguration">
+
+	<UserControl.Resources>
+		<converters:EnumDescriptionConverter x:Key="EnumDescriptionConverter" />
+		<converters:StringToColorConverter x:Key="StringToColorConverter" />
+	</UserControl.Resources>
+
+	<Grid RowDefinitions="auto,auto,auto" ColumnDefinitions="auto,*">
+		<TextBlock Grid.Row="0" Grid.Column="0" Text="Ausrichtung:" VerticalAlignment="Center" />
+		<ComboBox Grid.Row="0"
+				  Grid.Column="1"
+				  x:Name="CboHorizontalAlignment"
+				  SelectedItem="{Binding HorizontalAlignment}"
+				  HorizontalAlignment="Stretch">
+			<ComboBox.ItemTemplate>
+				<DataTemplate>
+					<DataTemplate.DataType>
+						<x:Type TypeName="images:HorizontalAlignment" />
+					</DataTemplate.DataType>
+					<TextBlock Text="{Binding, Converter={StaticResource EnumDescriptionConverter}}" />
+				</DataTemplate>
+			</ComboBox.ItemTemplate>
+		</ComboBox>
+
+		<TextBlock Grid.Row="1" Grid.Column="0" Text="Textgröße Von-Bis:" VerticalAlignment="Center" />
+		<Grid Grid.Row="1" Grid.Column="1" ColumnDefinitions="*,*" Margin="0 5">
+			<NumericUpDown Grid.Column="0" Value="{Binding MinFontSize}" />
+			<NumericUpDown Grid.Column="1" Value="{Binding MaxFontSize}" Margin="5 0 0 0" />
+		</Grid>
+
+		<TextBlock Grid.Row="2" Grid.Column="0" Text="Farben für die Übersetzungen:" VerticalAlignment="Center" Margin="0 0 5 0" />
+		<ListBox Grid.Row="2"
+				  Grid.Column="1"
+				  ItemsSource="{Binding Colors}">
+			<ListBox.ItemsPanel>
+				<ItemsPanelTemplate>
+					<WrapPanel />
+				</ItemsPanelTemplate>
+			</ListBox.ItemsPanel>
+			<ListBox.ItemTemplate>
+				<DataTemplate>
+					<ColorPicker Color="{Binding Value, Converter={StaticResource StringToColorConverter}}" />
+				</DataTemplate>
+			</ListBox.ItemTemplate>
+		</ListBox>
+	</Grid>
+</UserControl>

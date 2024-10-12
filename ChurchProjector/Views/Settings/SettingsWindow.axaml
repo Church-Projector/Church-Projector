@@ -1,0 +1,328 @@
+﻿<Window x:Class="ChurchProjector.Views.Settings.SettingsWindow"
+        xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ChurchProjector.Views.Settings"
+        xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+        xmlns:converters="clr-namespace:ChurchProjector.Converters"
+		xmlns:dc="clr-namespace:ChurchProjector.Views.Settings.DisplayConfiguration.DisplayConfiguration"
+		xmlns:generic="clr-namespace:System.Collections.Generic;assembly=mscorlib"
+		xmlns:platform="clr-namespace:Avalonia.Platform;assembly=Avalonia.Controls"
+		mc:Ignorable="d"
+        WindowStartupLocation="CenterOwner"
+        SizeToContent="WidthAndHeight"
+        Title="Einstellungen"
+        CanResize="False"
+        Icon="/Assets/icon.ico"
+		x:DataType="local:SettingsViewModel">
+
+	<Window.Resources>
+		<converters:InverseBooleanConverter x:Key="InverseBool" />
+		<converters:EnumDescriptionConverter x:Key="EnumDescriptionConverter" />
+	</Window.Resources>
+
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="auto" />
+			<RowDefinition Height="auto" />
+		</Grid.RowDefinitions>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="*" />
+			<ColumnDefinition Width="auto" />
+		</Grid.ColumnDefinitions>
+		<TabControl
+			Grid.Row="0"
+			Grid.Column="0"
+			Grid.ColumnSpan="3">
+			<TabItem Header="Fenster">
+				<Grid RowDefinitions="auto,auto,auto">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="auto" />
+						<ColumnDefinition Width="*" MinWidth="150" />
+					</Grid.ColumnDefinitions>
+					<!-- Theme -->
+					<Label
+						Grid.Column="0"
+						Grid.Row="0"
+						VerticalAlignment="Center"
+						Content="Theme" />
+					<ComboBox
+						Grid.Column="1"
+						Grid.Row="0"
+						Margin="5"
+						ItemsSource="{Binding Themes}"
+						SelectedItem="{Binding Theme}"
+						HorizontalAlignment="Stretch">
+						<ComboBox.ItemTemplate>
+							<DataTemplate>
+								<TextBlock Text="{Binding, Converter={StaticResource EnumDescriptionConverter}}" />
+							</DataTemplate>
+						</ComboBox.ItemTemplate>
+					</ComboBox>
+
+					<!-- The monitor to display the image window -->
+					<Label
+						Grid.Column="0"
+						Grid.Row="1"
+						VerticalAlignment="Center"
+						Content="Bildschirm" />
+					<ComboBox
+						Grid.Column="1"
+						Grid.Row="1"
+						Margin="5"
+						ItemsSource="{Binding Monitors}"
+						SelectedItem="{Binding SelectedMonitore}"
+						HorizontalAlignment="Stretch">
+						<ComboBox.ItemTemplate>
+							<DataTemplate>
+								<DataTemplate.DataType>
+									<x:Type TypeName="generic:KeyValuePair" x:TypeArguments="x:String, platform:Screen"/>
+								</DataTemplate.DataType>
+								<TextBlock Text="{Binding Key}" />
+							</DataTemplate>
+						</ComboBox.ItemTemplate>
+					</ComboBox>
+					
+					<!-- TopMost -->
+					<Label
+						Grid.Column="0"
+						Grid.Row="2"
+						VerticalAlignment="Center"
+						Content="Immer im Vordergrund"/>
+					<CheckBox
+						Grid.Column="1"
+						Grid.Row="2"
+						Margin="5"
+						IsChecked="{Binding Settings.OutputDisplaySettings.TopMost}" />
+				</Grid>
+			</TabItem>
+
+			<TabItem Header="Pfade">
+				<Grid RowDefinitions="auto,auto,auto" ColumnDefinitions="auto,*">
+					<!-- Path to the bibles -->
+					<Label
+						Grid.Column="0"
+						Grid.Row="0"
+						VerticalAlignment="Center"
+						Content="Pfad zu den Bibeln" />
+					<Grid
+						Grid.Column="1"
+						Grid.Row="0">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="*" />
+							<ColumnDefinition Width="auto" />
+						</Grid.ColumnDefinitions>
+						<TextBox
+							Grid.Column="0"
+							Margin="5"
+							Text="{Binding BiblesPath}"/>
+						<Button
+							Grid.Column="1"
+							Margin="5"
+							Padding="10,0,10,0"
+							Content="..."
+							Click="OnBtnSelectBiblesPathClick" />
+					</Grid>
+
+					<StackPanel Grid.Row="1" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="0 0 0 0">
+						<TextBlock Margin="2 5 -5 5" Foreground="LightGray" FontWeight="Light">
+							Kostenlose Bibel Übersetzungen können
+						</TextBlock>
+
+						<HyperlinkButton Click="BtnOpenLink_Click" Tag="https://softprojector.org/download_mod_bible.html">
+							hier
+						</HyperlinkButton>
+
+						<TextBlock Margin="-5 5 -5 5" Foreground="LightGray" FontWeight="Light">
+							im SPB Format und
+						</TextBlock>
+
+						<HyperlinkButton Click="BtnOpenLink_Click" Tag="https://sourceforge.net/projects/zefania-sharp/files/Bibles/">
+							hier
+						</HyperlinkButton>
+
+						<TextBlock Margin="-5 5 5 5" Foreground="LightGray" FontWeight="Light">
+							im XML Format heruntergeladen werden.
+						</TextBlock>
+					</StackPanel>
+
+					<!-- Path to the songs -->
+					<Label
+						Grid.Column="0"
+						Grid.Row="2"
+						VerticalAlignment="Center"
+						Content="Pfad zu den Liedern" />
+					<Grid
+						Grid.Column="1"
+						Grid.Row="2">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="*" />
+							<ColumnDefinition Width="auto" />
+						</Grid.ColumnDefinitions>
+						<TextBox
+							Grid.Column="0"
+							Margin="5"
+							Text="{Binding SongsPath}"/>
+						<Button
+							Grid.Column="1"
+							Margin="5"
+							Padding="10,0,10,0"
+							Content="..."
+							Click="OnBtnSelectSongsPathClick" />
+					</Grid>
+				</Grid>
+			</TabItem>
+
+			<TabItem Header="Banner">
+				<Grid RowDefinitions="auto,auto,auto">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="auto" />
+						<ColumnDefinition Width="*" MinWidth="150" />
+					</Grid.ColumnDefinitions>
+
+					<!-- Font size of the banner -->
+					<Label
+						Grid.Column="0"
+						Grid.Row="0"
+						VerticalAlignment="Center"
+						Content="Banner-Schriftgröße" />
+					<Grid
+						Grid.Column="1"
+						Grid.Row="0">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="auto" />
+							<ColumnDefinition Width="*" />
+							<ColumnDefinition Width="auto" />
+							<ColumnDefinition Width="auto" />
+						</Grid.ColumnDefinitions>
+						<Button
+							Grid.Column="0"
+							VerticalAlignment="Center"
+							Padding="10,0,10,0"
+							Margin="5"
+							Content="-"
+							Command="{Binding DecreaseBannerSizeCommand}"/>
+						<Slider
+							Grid.Column="1"
+							Margin="5"
+							Minimum="10"
+							Value="{Binding BannerFontSize}"
+							Maximum="50"
+							MinWidth="100"/>
+						<Button
+							Grid.Column="2"
+							VerticalAlignment="Center"
+							Padding="10,0,10,0"
+							Margin="5"
+							Content="+"
+							Command="{Binding IncreaseBannerSizeCommand}" />
+						<Label
+							Grid.Column="3"
+							VerticalAlignment="Center"
+							Content="{Binding BannerFontSizeText}" />
+					</Grid>
+
+					<!-- Tempo of the banner -->
+					<Label
+						Grid.Column="0"
+						Grid.Row="1"
+						VerticalAlignment="Center"
+						Content="Banner-Geschwindigkeit" />
+					<Grid
+						Grid.Column="5"
+						Grid.Row="1">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="auto" />
+							<ColumnDefinition Width="*" />
+							<ColumnDefinition Width="auto" />
+						</Grid.ColumnDefinitions>
+						<Button
+							Grid.Column="0"
+							VerticalAlignment="Center"
+							Padding="10,0,10,0"
+							Margin="5"
+							Content="-"
+							Command="{Binding DecreaseBannerSpeedCommand}"/>
+						<Slider
+							Grid.Column="1"
+							Margin="5"
+							Minimum="1"
+							Maximum="100"
+							Value="{Binding BannerSpeed}"
+							MinWidth="100"/>
+						<Button
+							Grid.Column="2"
+							VerticalAlignment="Center"
+							Padding="10,0,10,0"
+							Margin="5"
+							Content="+"
+							Command="{Binding IncreaseBannerSpeedCommand}"/>
+					</Grid>
+
+					<Label
+						Grid.Column="0"
+						Grid.Row="2"
+						VerticalAlignment="Center"
+						Content="FPS (Bilder pro Sekunde)" />
+					<NumericUpDown
+						Grid.Column="1"
+						Grid.Row="2"
+						Margin="5"
+						Minimum="100"
+						Maximum="400"
+						Value="{Binding BannerFrames}" />
+				</Grid>
+			</TabItem>
+
+			<TabItem Header="Bibelanzeige">
+				<Grid RowDefinitions="auto,*" ColumnDefinitions="auto, *">
+					<StackPanel Grid.Column="0" Grid.Row="0" VerticalAlignment="Bottom">
+						<TextBlock Text="Sprache der Bücher:" />
+						<TextBlock Text="(Für die Suche)" FontSize="12" Foreground="Gray" />
+					</StackPanel>
+					<ComboBox
+						Grid.Column="1"
+						Grid.Row="0"
+						Margin="5 5 5 5"
+						ItemsSource="{Binding BookLanguages}"
+						SelectedItem="{Binding BookLanguage}"
+						HorizontalAlignment="Stretch">
+						<ComboBox.ItemTemplate>
+							<DataTemplate>
+								<TextBlock Text="{Binding, Converter={StaticResource EnumDescriptionConverter}}" />
+							</DataTemplate>
+						</ComboBox.ItemTemplate>
+					</ComboBox>
+
+					<dc:DisplayConfigurationView Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Margin="0 10 0 0" DataContext="{Binding Settings.DisplayConfiguration.BibleConfiguration}" />
+				</Grid>
+			</TabItem>
+
+			<TabItem Header="Liedanzeige">
+				<dc:DisplayConfigurationView DataContext="{Binding Settings.DisplayConfiguration.SongConfiguration}" />
+			</TabItem>
+
+			<TabItem Header="Info">
+				<Grid RowDefinitions="auto,auto,auto" ColumnDefinitions="auto,*">
+					<TextBlock Grid.Row="0" Grid.Column="0" Text="Seite des Programms:" VerticalAlignment="Center" />
+					<HyperlinkButton Grid.Row="0" Grid.Column="1" Click="BtnOpenLink_Click" Tag="https://church-projector.de">
+						https://church-projector.de
+					</HyperlinkButton>
+
+					<TextBlock Grid.Row="2" Grid.Column="0" Text="E-Mail Adresse:" VerticalAlignment="Center" />
+					<HyperlinkButton Grid.Row="2" Grid.Column="1" Click="BtnOpenLink_Click" Tag="mailto:support@church-projector.de">
+						support@church-projector.de
+					</HyperlinkButton>
+				</Grid>
+			</TabItem>
+		</TabControl>
+		<Button
+			Grid.Row="1"
+			Grid.Column="1"
+			Content="Schließen"
+			Margin="5"
+			IsCancel="True"
+			Click="OnBtnCloseClick" />
+	</Grid>
+</Window>

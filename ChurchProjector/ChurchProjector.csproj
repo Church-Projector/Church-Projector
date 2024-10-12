@@ -1,0 +1,79 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+    <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <PublishSingleFile>true</PublishSingleFile>
+    <SelfContained>true</SelfContained>
+    <ApplicationIcon>Assets\icon.ico</ApplicationIcon>
+    <!--powerpoint is not trimmable-->
+    <!--<PublishTrimmed>true</PublishTrimmed>-->
+    <!--will make the app start faster but be bigger (around 40 mb)-->
+    <!--<PublishReadyToRun>true</PublishReadyToRun>-->
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <DebugSymbols>False</DebugSymbols>
+    <DebugType>None</DebugType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <AvaloniaResource Include="Assets\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Assets\icon.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="11.2.0-beta1" />
+    <PackageReference Include="Avalonia.Controls.ColorPicker" Version="11.2.0-beta1" />
+    <PackageReference Include="Avalonia.Desktop" Version="11.2.0-beta1" />
+    <PackageReference Include="Avalonia.Svg.Skia" Version="11.1.0.1" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="11.2.0-beta1" />
+    <PackageReference Include="Avalonia.Fonts.Inter" Version="11.2.0-beta1" />
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.3.1" />
+    <PackageReference Include="Microsoft.Office.Interop.PowerPoint" Version="15.0.4420.1018" />
+    <PackageReference Include="MicrosoftOfficeCore" Version="15.0.0" />
+    <PackageReference Include="MuPDFCore" Version="1.10.2" />
+    <PackageReference Include="Serilog.Extensions.Logging" Version="8.0.1-dev-10391" />
+    <PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
+    <PackageReference Include="SkiaSharp" Version="3.0.0-preview.3.1" />
+    <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.2.0-beta1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AvaloniaXaml Update="Views\Song\SongSearch.axaml">
+      <SubType>Designer</SubType>
+    </AvaloniaXaml>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Views\Settings\DisplayConfiguration\DisplayConfiguration\DisplayConfigurationView.axaml.cs">
+      <DependentUpon>DisplayConfigurationView.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Settings\DisplayConfiguration\DisplayItemConfiguration\DisplayItemConfigurationView.axaml.cs">
+      <DependentUpon>DisplayItemConfigurationView.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\History\HistoryView.axaml.cs">
+      <DependentUpon>HistoryView.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Notification\NotificationWindow.axaml.cs">
+      <DependentUpon>NotificationWindow.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Schedule\ScheduleView.axaml.cs">
+      <DependentUpon>ScheduleView.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Song\SongEditWindow.axaml.cs">
+      <DependentUpon>SongEditWindow.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Song\SongSearch.axaml.cs">
+      <SubType>Code</SubType>
+      <DependentUpon>SongSearch.axaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+</Project>

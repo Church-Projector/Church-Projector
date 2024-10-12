@@ -1,0 +1,55 @@
+name: Release Workflow
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        platform: [linux-arm64, linux-x64, win-x64]
+
+    steps:
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8'
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build for ${{ matrix.platform }}
+        run: |
+          dotnet publish -c Release ./ChurchProjector/ChurchProjector.csproj --runtime ${{ matrix.platform }} --output ./publish/${{ matrix.platform }} /p:Version="${{ github.ref_name }}" /p:InformationalVersion="${{ github.ref_name }}" /p:FileVersion="${{ github.ref_name }}"
+          find . -type f -path '*/win-x86/*' -delete
+          find . -type f -path '*.pdb' -delete
+
+      - name: Zip ${{ matrix.platform }} artifact
+        run: |
+          cd ./publish/${{ matrix.platform }}
+          zip -r ../../${{ matrix.platform }}.zip .
+          
+      - name: 'Upload Artifact'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.platform }}.zip
+          path: ${{ matrix.platform }}.zip
+
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+        
+    needs: build
+
+    steps: 
+      - uses: actions/download-artifact@v4
+      - uses: ncipollo/release-action@v1
+        with:
+          artifacts: "*.zip/*.zip"

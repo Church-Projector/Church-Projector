@@ -1,0 +1,24 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:local="clr-namespace:ChurchProjector.Views.History"
+			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="ChurchProjector.Views.History.HistoryView"
+			 x:DataType="local:HistoryViewModel">
+
+	<Grid>
+		<ListBox ItemsSource="{Binding Histories}" Background="Transparent">
+			<ListBox.ItemTemplate>
+				<DataTemplate>
+					<Grid ColumnDefinitions="*,auto">
+						<Button Grid.Column="0" Command="{Binding ((local:HistoryViewModel)DataContext).OpenHistoryEntryCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding .}" HorizontalAlignment="Stretch">
+							<TextBlock Text="{Binding Title}" TextTrimming="CharacterEllipsis" />
+						</Button>
+						<Button Grid.Column="1" Command="{Binding ((local:HistoryViewModel)DataContext).RemoveHistoryEntryCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding .}" Content="X" />
+					</Grid>
+				</DataTemplate>
+			</ListBox.ItemTemplate>
+		</ListBox>
+	</Grid>
+</UserControl>

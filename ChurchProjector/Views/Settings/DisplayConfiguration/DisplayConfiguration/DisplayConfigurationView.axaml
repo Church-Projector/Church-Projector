@@ -1,0 +1,24 @@
+﻿<UserControl x:Class="ChurchProjector.Views.Settings.DisplayConfiguration.DisplayConfiguration.DisplayConfigurationView"
+        xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+        xmlns:dic="clr-namespace:ChurchProjector.Views.Settings.DisplayConfiguration.DisplayItemConfiguration"
+		xmlns:images="clr-namespace:ChurchProjector.Classes.Configuration.Image"
+		mc:Ignorable="d"
+		x:DataType="images:ImageCreationConfiguration">
+
+	<StackPanel>
+		<TextBlock Text="Überschrift" />
+		<dic:DisplayItemConfigurationView DataContext="{Binding Header}" Margin="10 5 0 5" />
+		<Separator />
+		
+		<TextBlock Text="Inhalt" />
+		<dic:DisplayItemConfigurationView DataContext="{Binding Content}" Margin="10 5 0 5" />
+		<Separator />
+
+		<TextBlock Text="Untertitel" />
+		<dic:DisplayItemConfigurationView DataContext="{Binding Bottom}" Margin="10 5 0 0" />
+	</StackPanel>
+</UserControl>

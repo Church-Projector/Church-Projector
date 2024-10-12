@@ -304,14 +304,24 @@
 			</TabItem>
 
 			<TabItem Header="Info">
-				<Grid RowDefinitions="auto,auto,auto" ColumnDefinitions="auto,*">
-					<TextBlock Grid.Row="0" Grid.Column="0" Text="Seite des Programms:" VerticalAlignment="Center" />
+				<Grid RowDefinitions="auto,auto,auto,auto" ColumnDefinitions="auto,*">
+					<TextBlock Grid.Row="0" Grid.Column="0" Text="Homepage:" VerticalAlignment="Center" />
 					<HyperlinkButton Grid.Row="0" Grid.Column="1" Click="BtnOpenLink_Click" Tag="https://church-projector.de">
 						https://church-projector.de
 					</HyperlinkButton>
+					
+					<TextBlock Grid.Row="1" Grid.Column="0" Text="GitHub:" VerticalAlignment="Center" />
+					<HyperlinkButton Grid.Row="1" Grid.Column="1" Click="BtnOpenLink_Click" Tag="https://github.com/Church-Projector/Church-Projector">
+						GitHub
+					</HyperlinkButton>
 
-					<TextBlock Grid.Row="2" Grid.Column="0" Text="E-Mail Adresse:" VerticalAlignment="Center" />
-					<HyperlinkButton Grid.Row="2" Grid.Column="1" Click="BtnOpenLink_Click" Tag="mailto:support@church-projector.de">
+					<TextBlock Grid.Row="2" Grid.Column="0" Text="Download der neusten Version:" VerticalAlignment="Center" />
+					<HyperlinkButton Grid.Row="2" Grid.Column="1" Click="BtnOpenLink_Click" Tag="https://github.com/Church-Projector/Church-Projector/releases">
+						Versionen
+					</HyperlinkButton>
+
+					<TextBlock Grid.Row="3" Grid.Column="0" Text="E-Mail Adresse:" VerticalAlignment="Center" />
+					<HyperlinkButton Grid.Row="3" Grid.Column="1" Click="BtnOpenLink_Click" Tag="mailto:support@church-projector.de">
 						support@church-projector.de
 					</HyperlinkButton>
 				</Grid>

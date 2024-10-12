@@ -38,6 +38,7 @@ public static class Version
         }
         return null;
     }
+
     private static string? GetNewestVersion(IEnumerable<string> versions)
     {
         if (!versions.Any())
@@ -57,6 +58,6 @@ public static class Version
     public class Versions
     {
         [JsonPropertyName("tag_name")]
-        public string TagName { get; set; }
+        public required string TagName { get; set; }
     }
 }

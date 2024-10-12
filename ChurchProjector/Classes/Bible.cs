@@ -79,7 +79,7 @@ public class Bible
     {
         switch (bookLanguage)
         {
-            case Enums.BookLanguage.SameAsBook:
+            case Enums.BookLanguage.SameAsBible:
                 return bookName;
             case Enums.BookLanguage.English:
                 using (Stream stream = AssetLoader.Open(new Uri("avares://ChurchProjector/Assets/books.en.txt")))

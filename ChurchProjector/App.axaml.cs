@@ -5,7 +5,7 @@ using ChurchProjector.Logging;
 using ChurchProjector.Views.Main;
 using ChurchProjector.Views.Settings;
 using Serilog;
-using System.IO;
+using System.Globalization;
 
 namespace ChurchProjector;
 
@@ -18,6 +18,11 @@ public partial class App : Application
 
     public override void OnFrameworkInitializationCompleted()
     {
+        if (CultureInfo.CurrentCulture.Name == "de-DE")
+        {
+            Lang.Resources.Culture = new CultureInfo("de-DE");
+        }
+
         SettingsViewModel settings = new();
         DataContext = settings;
 

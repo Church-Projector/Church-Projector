@@ -7,6 +7,7 @@
         xmlns:sys="clr-namespace:System"
         xmlns:converters="clr-namespace:ChurchProjector.Converters"
 		xmlns:images="clr-namespace:ChurchProjector.Classes.Configuration.Image"
+		xmlns:lang="clr-namespace:ChurchProjector.Lang"
 		mc:Ignorable="d"
 		x:DataType="images:ImageCreationItemConfiguration">
 
@@ -16,7 +17,7 @@
 	</UserControl.Resources>
 
 	<Grid RowDefinitions="auto,auto,auto" ColumnDefinitions="auto,*">
-		<TextBlock Grid.Row="0" Grid.Column="0" Text="Ausrichtung:" VerticalAlignment="Center" />
+		<TextBlock Grid.Row="0" Grid.Column="0" Text="{x:Static lang:Resources.Alignment_Colon}" VerticalAlignment="Center" />
 		<ComboBox Grid.Row="0"
 				  Grid.Column="1"
 				  x:Name="CboHorizontalAlignment"
@@ -32,13 +33,13 @@
 			</ComboBox.ItemTemplate>
 		</ComboBox>
 
-		<TextBlock Grid.Row="1" Grid.Column="0" Text="Textgröße Von-Bis:" VerticalAlignment="Center" />
+		<TextBlock Grid.Row="1" Grid.Column="0" Text="{x:Static lang:Resources.FontSize_FromTo_Colon}" VerticalAlignment="Center" />
 		<Grid Grid.Row="1" Grid.Column="1" ColumnDefinitions="*,*" Margin="0 5">
 			<NumericUpDown Grid.Column="0" Value="{Binding MinFontSize}" />
 			<NumericUpDown Grid.Column="1" Value="{Binding MaxFontSize}" Margin="5 0 0 0" />
 		</Grid>
 
-		<TextBlock Grid.Row="2" Grid.Column="0" Text="Farben für die Übersetzungen:" VerticalAlignment="Center" Margin="0 0 5 0" />
+		<TextBlock Grid.Row="2" Grid.Column="0" Text="{x:Static lang:Resources.TranslationColor_Colon}" VerticalAlignment="Center" Margin="0 0 5 0" />
 		<ListBox Grid.Row="2"
 				  Grid.Column="1"
 				  ItemsSource="{Binding Colors}">

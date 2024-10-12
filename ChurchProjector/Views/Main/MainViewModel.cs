@@ -210,7 +210,7 @@ public partial class MainViewModel : ObservableObject
         }
         catch
         {
-            Log.Error("Es können keine PowerPoint Präsentationen angezeigt werden, da PowerPoint nicht installiert ist.");
+            Log.Error(Lang.Resources.PowerPointIsMissing);
         }
 
         GlobalConfig.HasError.PropertyChanged += HasError_PropertyChanged;
@@ -463,7 +463,7 @@ public partial class MainViewModel : ObservableObject
             string? newestVersion = await newestVersionTask;
             if (newestVersion != version && !string.IsNullOrEmpty(newestVersion))
             {
-                UpdateText = $"Es ist ein Update auf Version {newestVersion} verfügbar.";
+                UpdateText = string.Format(Lang.Resources.UpdateAvailable, newestVersion);
             }
         });
 

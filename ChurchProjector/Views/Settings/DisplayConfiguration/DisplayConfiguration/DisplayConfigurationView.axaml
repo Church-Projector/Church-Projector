@@ -6,19 +6,20 @@
         xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
         xmlns:dic="clr-namespace:ChurchProjector.Views.Settings.DisplayConfiguration.DisplayItemConfiguration"
 		xmlns:images="clr-namespace:ChurchProjector.Classes.Configuration.Image"
+		xmlns:lang="clr-namespace:ChurchProjector.Lang"
 		mc:Ignorable="d"
 		x:DataType="images:ImageCreationConfiguration">
 
 	<StackPanel>
-		<TextBlock Text="Überschrift" />
+		<TextBlock Text="{x:Static lang:Resources.Header}" />
 		<dic:DisplayItemConfigurationView DataContext="{Binding Header}" Margin="10 5 0 5" />
 		<Separator />
 		
-		<TextBlock Text="Inhalt" />
+		<TextBlock Text="{x:Static lang:Resources.Content}" />
 		<dic:DisplayItemConfigurationView DataContext="{Binding Content}" Margin="10 5 0 5" />
 		<Separator />
 
-		<TextBlock Text="Untertitel" />
+		<TextBlock Text="{x:Static lang:Resources.Bottom}" />
 		<dic:DisplayItemConfigurationView DataContext="{Binding Bottom}" Margin="10 5 0 0" />
 	</StackPanel>
 </UserControl>

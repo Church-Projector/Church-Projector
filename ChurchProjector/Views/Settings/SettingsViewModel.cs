@@ -64,7 +64,7 @@ public partial class SettingsViewModel : ObservableObject
         get => SelectedMonitore.Value.Bounds.Position;
     }
 
-    public string BannerFontSizeText => $"Schriftgröße: {BannerFontSize}";
+    public string BannerFontSizeText => $"{Lang.Resources.FontSize_Colon}: {BannerFontSize}";
     #endregion
 
     public List<Theme> Themes { get; } = Enum.GetValues<Theme>().ToList();

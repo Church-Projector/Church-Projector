@@ -3,6 +3,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 		xmlns:local="using:ChurchProjector.Views.Song"
+		xmlns:lang="clr-namespace:ChurchProjector.Lang"
         mc:Ignorable="d"
         SizeToContent="WidthAndHeight"
 		x:Class="ChurchProjector.Views.Song.SongEditWindow"
@@ -11,23 +12,23 @@
 		Width="600" MinWidth="600"
 		Height="400" MinHeight="400"
 		Icon="/Assets/icon.ico"
-		Title="Lied Bearbeiten">
+		Title="{x:Static lang:Resources.SongEdit}">
 
 	<Grid RowDefinitions="auto,auto,*,auto" Margin="10">
 		<UniformGrid Grid.Row="0" Columns="2">
-			<TextBlock Text="Titel:" VerticalAlignment="Center" Margin="0 0 10 0" />
+			<TextBlock Text="{x:Static lang:Resources.Title_Colon}" VerticalAlignment="Center" Margin="0 0 10 0" />
 			<TextBox Text="{Binding Song.Title}" Margin="0 0 0 10" />
 
-			<TextBlock Text="Shortcut:" VerticalAlignment="Center" Margin="0 0 10 0" />
+			<TextBlock Text="{x:Static lang:Resources.Shortcut_Colon}" VerticalAlignment="Center" Margin="0 0 10 0" />
 			<TextBox Text="{Binding Song.QuickFind}" Margin="0 0 0 10" />
 
-			<TextBlock Text="Id:" VerticalAlignment="Center" Margin="0 0 10 0" />
+			<TextBlock Text="{x:Static lang:Resources.LangCount_Colon}" VerticalAlignment="Center" Margin="0 0 10 0" />
 			<TextBox Text="{Binding Song.ChurchSongID}" Margin="0 0 0 10" />
 
-			<TextBlock Text="Anzahl Sprachen:" VerticalAlignment="Center" Margin="0 0 10 0" />
+			<TextBlock Text="{x:Static lang:Resources.Id_Colon}" VerticalAlignment="Center" Margin="0 0 10 0" />
 			<NumericUpDown Value="{Binding Song.LangCount}" FormatString="#" Margin="0 0 0 10" />
 
-			<TextBlock Text="Vers Reihenfolge:" VerticalAlignment="Center" Margin="0 0 10 0" />
+			<TextBlock Text="{x:Static lang:Resources.VerseOrder}" VerticalAlignment="Center" Margin="0 0 10 0" />
 			<TextBox Text="{Binding Song.VerseOrderStr}" Margin="0 0 0 10" />
 			
 			<!--todo validation-->
@@ -38,7 +39,7 @@
 		</UniformGrid>
 
 		<Grid Grid.Row="1" ColumnDefinitions="*,auto" Margin="0 0 0 10">
-			<TextBlock Grid.Column="0" Text="Verse:" VerticalAlignment="Center" />
+			<TextBlock Grid.Column="0" Text="{x:Static lang:Resources.Verse_Colon}" VerticalAlignment="Center" />
 			
 			<Button Grid.Column="1" Command="{Binding ((local:SongEditViewModel)DataContext).AddVerseCommand, RelativeSource={RelativeSource AncestorType=Window}}">
 				<Svg Path="/Assets/add.svg" />
@@ -50,7 +51,7 @@
 				<DataTemplate>
 					<StackPanel>
 						<Grid ColumnDefinitions="auto,*,auto">
-							<TextBlock Grid.Column="0" Text="Titel:" VerticalAlignment="Center" />
+							<TextBlock Grid.Column="0" Text="{x:Static lang:Resources.Title_Colon}" VerticalAlignment="Center" />
 							<TextBox Grid.Column="1" Text="{Binding Title}" FontWeight="Bold" Margin="10 0 10 0" VerticalAlignment="Center" />
 							<Button Grid.Column="2" Margin="0 0 0 5" Command="{Binding ((local:SongEditViewModel)DataContext).RemoveVerseCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding .}">
 								<Svg Path="/Assets/delete.svg" />
@@ -65,8 +66,8 @@
 		</ListBox>
 
 		<StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10" Margin="0 10 0 0">
-			<Button IsCancel="True" Command="{Binding CloseDialogCommand}">Schließen</Button>
-			<Button IsDefault="True" Command="{Binding SaveDialogCommand}" IsEnabled="{Binding MaySave}">OK</Button>
+			<Button IsCancel="True" Command="{Binding CloseDialogCommand}" Content="{x:Static lang:Resources.Close}" />
+			<Button IsDefault="True" Command="{Binding SaveDialogCommand}" IsEnabled="{Binding MaySave}" Content="{x:Static lang:Resources.Ok}" />
 		</StackPanel>
 	</Grid>
 </Window>

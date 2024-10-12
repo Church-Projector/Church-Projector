@@ -3,6 +3,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 		xmlns:local="using:ChurchProjector.Views.Song"
+		xmlns:lang="clr-namespace:ChurchProjector.Lang"
         mc:Ignorable="d" 
         SizeToContent="Height"
 		x:Class="ChurchProjector.Views.Song.SongQuickSearch"
@@ -11,15 +12,15 @@
 		CanResize="False"
         Icon="/Assets/icon.ico"
 		Width="250"
-		Title="Liederschnellsuche">
+		Title="{x:Static lang:Resources.SongQuickSearch}">
 	
 	<StackPanel Margin="10" Spacing="10">
-		<TextBlock>Shortcut:</TextBlock>
+		<TextBlock Text="{x:Static lang:Resources.Shortcut_Colon}" />
 		<TextBox Name="TxtShortcut" Text="{Binding Shortcut}" />
 		<TextBlock Text="{Binding MatchedSong}" TextTrimming="CharacterEllipsis" IsVisible="{Binding HasShortcut}" />
 		<StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10">
-			<Button IsCancel="True" Command="{Binding CloseDialogCommand}">Schließen</Button>
-			<Button IsDefault="True" Command="{Binding OpenSongCommand}" IsEnabled="{Binding HasShortcut}">OK</Button>
+			<Button IsCancel="True" Command="{Binding CloseDialogCommand}" Content="{x:Static lang:Resources.Close}" />
+			<Button IsDefault="True" Command="{Binding OpenSongCommand}" IsEnabled="{Binding HasShortcut}" Content="{x:Static lang:Resources.Ok}" />
 		</StackPanel>
 	</StackPanel>
 </Window>

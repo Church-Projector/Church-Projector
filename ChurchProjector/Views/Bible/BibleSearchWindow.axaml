@@ -4,6 +4,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 		xmlns:local="clr-namespace:ChurchProjector.Views.Bible"
 		xmlns:controls="clr-namespace:ChurchProjector.Views.Controls"
+		xmlns:lang="clr-namespace:ChurchProjector.Lang"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="ChurchProjector.Views.Bible.BibleSearchWindow"
 		x:DataType="local:BibleSearchViewModel"
@@ -11,10 +12,10 @@
 		Width="600" MinWidth="600"
 		Height="400" MinHeight="400"
 		Icon="/Assets/icon.ico"
-		Title="Bibelstelle suchen">
+		Title="{x:Static lang:Resources.SearchBiblePosition}">
 	
 	<Grid RowDefinitions="auto,auto,*,auto" ColumnDefinitions="auto,*" Margin="10">
-		<TextBlock Grid.Row="0" Grid.Column="0" Text="Übersetzung:" VerticalAlignment="Center" />
+		<TextBlock Grid.Row="0" Grid.Column="0" Text="{x:Static lang:Resources.Translation_Colon}" VerticalAlignment="Center" />
 		<ComboBox Grid.Row="0" Grid.Column="1" ItemsSource="{Binding Bibles}" SelectedItem="{Binding SelectedBible}" Margin="10 0 0 0" HorizontalAlignment="Stretch">
 			<ComboBox.ItemTemplate>
 				<DataTemplate>
@@ -23,7 +24,7 @@
 			</ComboBox.ItemTemplate>
 		</ComboBox>
 		
-		<TextBlock Grid.Row="1" Grid.Column="0" Text="Suche:" VerticalAlignment="Center" />
+		<TextBlock Grid.Row="1" Grid.Column="0" Text="{x:Static lang:Resources.Search_Colon}" VerticalAlignment="Center" />
 		<TextBox Name="TxtSearchBox" Grid.Row="1" Grid.Column="1" Text="{Binding SearchText}" Margin="10 10 0 10" />
 
 		<ListBox Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" ItemsSource="{Binding Verses}" SelectedItem="{Binding SelectedVerse}" Margin="0 0 0 10" DoubleTapped="ListBox_DoubleTapped">
@@ -38,8 +39,8 @@
 		</ListBox>
 
 		<StackPanel Grid.Row="3" Grid.ColumnSpan="3" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10">
-			<Button IsCancel="True" Command="{Binding CloseDialogCommand}">Schließen</Button>
-			<Button IsDefault="True" Command="{Binding OpenVerseCommand}" IsEnabled="{Binding HasVerseSelected}">OK</Button>
+			<Button IsCancel="True" Command="{Binding CloseDialogCommand}" Content="{x:Static lang:Resources.Close}" />
+			<Button IsDefault="True" Command="{Binding OpenVerseCommand}" IsEnabled="{Binding HasVerseSelected}" Content="{x:Static lang:Resources.Ok}" />
 		</StackPanel>
 	</Grid>
 </Window>

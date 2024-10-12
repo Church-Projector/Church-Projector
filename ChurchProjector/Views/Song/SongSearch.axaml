@@ -6,12 +6,13 @@
         mc:Ignorable="d"
 		x:Class="ChurchProjector.Views.Song.SongSearch"
 		xmlns:controls="using:ChurchProjector.Views.Controls"
+		xmlns:lang="clr-namespace:ChurchProjector.Lang"
 		x:DataType="local:SongSearchViewModel"
 		WindowStartupLocation="CenterOwner"
 		Width="600" MinWidth="600"
 		Height="400" MinHeight="400"
 		Icon="/Assets/icon.ico"
-		Title="Liedsuche">
+		Title="{x:Static lang:Resources.SongSearch}">
 
 	<Grid RowDefinitions="*,auto" Margin="10">
 		<Grid.ColumnDefinitions>
@@ -22,7 +23,7 @@
 
 		<Grid Grid.Row="0" Grid.Column="0" RowDefinitions="auto, *" Margin="0 0 10 10">
 			<StackPanel Grid.Row="0" Grid.Column="0" Spacing="10" Margin="0 0 0 10">
-				<TextBlock>Suche:</TextBlock>
+				<TextBlock Text="{x:Static lang:Resources.Search_Colon}" />
 				<TextBox Name="TxtSearchBox" Text="{Binding SearchText}" />
 			</StackPanel>
 
@@ -50,8 +51,8 @@
 		</ListBox>
 
 		<StackPanel Grid.Row="2" Grid.ColumnSpan="3" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10">
-			<Button IsCancel="True" Command="{Binding CloseDialogCommand}">Schließen</Button>
-			<Button IsDefault="True" Command="{Binding OpenSongCommand}" IsEnabled="{Binding HasSongSelected}">OK</Button>
+			<Button IsCancel="True" Command="{Binding CloseDialogCommand}" Content="{x:Static lang:Resources.Close}" />
+			<Button IsDefault="True" Command="{Binding OpenSongCommand}" IsEnabled="{Binding HasSongSelected}" Content="{x:Static lang:Resources.Ok}" />
 		</StackPanel>
 	</Grid>
 </Window>

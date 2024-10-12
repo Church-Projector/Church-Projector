@@ -9,10 +9,11 @@
 		xmlns:dc="clr-namespace:ChurchProjector.Views.Settings.DisplayConfiguration.DisplayConfiguration"
 		xmlns:generic="clr-namespace:System.Collections.Generic;assembly=mscorlib"
 		xmlns:platform="clr-namespace:Avalonia.Platform;assembly=Avalonia.Controls"
+		xmlns:lang="clr-namespace:ChurchProjector.Lang"
 		mc:Ignorable="d"
         WindowStartupLocation="CenterOwner"
         SizeToContent="WidthAndHeight"
-        Title="Einstellungen"
+        Title="{x:Static lang:Resources.Settings}"
         CanResize="False"
         Icon="/Assets/icon.ico"
 		x:DataType="local:SettingsViewModel">
@@ -35,7 +36,7 @@
 			Grid.Row="0"
 			Grid.Column="0"
 			Grid.ColumnSpan="3">
-			<TabItem Header="Fenster">
+			<TabItem Header="{x:Static lang:Resources.Window}">
 				<Grid RowDefinitions="auto,auto,auto">
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="auto" />
@@ -46,7 +47,7 @@
 						Grid.Column="0"
 						Grid.Row="0"
 						VerticalAlignment="Center"
-						Content="Theme" />
+						Content="{x:Static lang:Resources.Theme_Colon}" />
 					<ComboBox
 						Grid.Column="1"
 						Grid.Row="0"
@@ -66,7 +67,7 @@
 						Grid.Column="0"
 						Grid.Row="1"
 						VerticalAlignment="Center"
-						Content="Bildschirm" />
+						Content="{x:Static lang:Resources.Monitor_Colon}" />
 					<ComboBox
 						Grid.Column="1"
 						Grid.Row="1"
@@ -89,7 +90,7 @@
 						Grid.Column="0"
 						Grid.Row="2"
 						VerticalAlignment="Center"
-						Content="Immer im Vordergrund"/>
+						Content="{x:Static lang:Resources.AlwaysOnTop_Colon}"/>
 					<CheckBox
 						Grid.Column="1"
 						Grid.Row="2"
@@ -98,14 +99,14 @@
 				</Grid>
 			</TabItem>
 
-			<TabItem Header="Pfade">
+			<TabItem Header="{x:Static lang:Resources.Paths}">
 				<Grid RowDefinitions="auto,auto,auto" ColumnDefinitions="auto,*">
 					<!-- Path to the bibles -->
 					<Label
 						Grid.Column="0"
 						Grid.Row="0"
 						VerticalAlignment="Center"
-						Content="Pfad zu den Bibeln" />
+						Content="{x:Static lang:Resources.PathToBibles_Colon}" />
 					<Grid
 						Grid.Column="1"
 						Grid.Row="0">
@@ -126,25 +127,9 @@
 					</Grid>
 
 					<StackPanel Grid.Row="1" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="0 0 0 0">
-						<TextBlock Margin="2 5 -5 5" Foreground="LightGray" FontWeight="Light">
-							Kostenlose Bibel Übersetzungen können
-						</TextBlock>
-
-						<HyperlinkButton Click="BtnOpenLink_Click" Tag="https://softprojector.org/download_mod_bible.html">
-							hier
-						</HyperlinkButton>
-
-						<TextBlock Margin="-5 5 -5 5" Foreground="LightGray" FontWeight="Light">
-							im SPB Format und
-						</TextBlock>
-
-						<HyperlinkButton Click="BtnOpenLink_Click" Tag="https://sourceforge.net/projects/zefania-sharp/files/Bibles/">
-							hier
-						</HyperlinkButton>
-
-						<TextBlock Margin="-5 5 5 5" Foreground="LightGray" FontWeight="Light">
-							im XML Format heruntergeladen werden.
-						</TextBlock>
+						<TextBlock Foreground="LightGray" FontWeight="Light" VerticalAlignment="Center" Text="{x:Static lang:Resources.DownloadBibleTranslation}" />
+						<HyperlinkButton Click="BtnOpenLink_Click" Tag="https://softprojector.org/download_mod_bible.html" Content="{x:Static lang:Resources.XmlFormat}" />
+						<HyperlinkButton Click="BtnOpenLink_Click" Tag="https://sourceforge.net/projects/zefania-sharp/files/Bibles/" Content="{x:Static lang:Resources.SpbFormat}" />
 					</StackPanel>
 
 					<!-- Path to the songs -->
@@ -152,7 +137,7 @@
 						Grid.Column="0"
 						Grid.Row="2"
 						VerticalAlignment="Center"
-						Content="Pfad zu den Liedern" />
+						Content="{x:Static lang:Resources.PathToSongs_Colon}" />
 					<Grid
 						Grid.Column="1"
 						Grid.Row="2">
@@ -174,7 +159,7 @@
 				</Grid>
 			</TabItem>
 
-			<TabItem Header="Banner">
+			<TabItem Header="{x:Static lang:Resources.Banner}">
 				<Grid RowDefinitions="auto,auto,auto">
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="auto" />
@@ -186,7 +171,7 @@
 						Grid.Column="0"
 						Grid.Row="0"
 						VerticalAlignment="Center"
-						Content="Banner-Schriftgröße" />
+						Content="{x:Static lang:Resources.BannerTextSize_Colon}" />
 					<Grid
 						Grid.Column="1"
 						Grid.Row="0">
@@ -228,7 +213,7 @@
 						Grid.Column="0"
 						Grid.Row="1"
 						VerticalAlignment="Center"
-						Content="Banner-Geschwindigkeit" />
+						Content="{x:Static lang:Resources.BannerSpeed_Colon}" />
 					<Grid
 						Grid.Column="5"
 						Grid.Row="1">
@@ -264,7 +249,7 @@
 						Grid.Column="0"
 						Grid.Row="2"
 						VerticalAlignment="Center"
-						Content="FPS (Bilder pro Sekunde)" />
+						Content="{x:Static lang:Resources.Fps_Colon}" />
 					<NumericUpDown
 						Grid.Column="1"
 						Grid.Row="2"
@@ -275,11 +260,11 @@
 				</Grid>
 			</TabItem>
 
-			<TabItem Header="Bibelanzeige">
+			<TabItem Header="{x:Static lang:Resources.BibleDisplay}">
 				<Grid RowDefinitions="auto,*" ColumnDefinitions="auto, *">
 					<StackPanel Grid.Column="0" Grid.Row="0" VerticalAlignment="Bottom">
-						<TextBlock Text="Sprache der Bücher:" />
-						<TextBlock Text="(Für die Suche)" FontSize="12" Foreground="Gray" />
+						<TextBlock Text="{x:Static lang:Resources.BookLang_Colon}" />
+						<TextBlock Text="{x:Static lang:Resources.ForTheSearch}" FontSize="12" Foreground="Gray" />
 					</StackPanel>
 					<ComboBox
 						Grid.Column="1"
@@ -299,28 +284,26 @@
 				</Grid>
 			</TabItem>
 
-			<TabItem Header="Liedanzeige">
+			<TabItem Header="{x:Static lang:Resources.SongDisplay}">
 				<dc:DisplayConfigurationView DataContext="{Binding Settings.DisplayConfiguration.SongConfiguration}" />
 			</TabItem>
 
-			<TabItem Header="Info">
+			<TabItem Header="{x:Static lang:Resources.Info}">
 				<Grid RowDefinitions="auto,auto,auto,auto" ColumnDefinitions="auto,*">
-					<TextBlock Grid.Row="0" Grid.Column="0" Text="Homepage:" VerticalAlignment="Center" />
+					<TextBlock Grid.Row="0" Grid.Column="0" Text="{x:Static lang:Resources.HomePage_Colon}" VerticalAlignment="Center" />
 					<HyperlinkButton Grid.Row="0" Grid.Column="1" Click="BtnOpenLink_Click" Tag="https://church-projector.de">
 						https://church-projector.de
 					</HyperlinkButton>
 					
-					<TextBlock Grid.Row="1" Grid.Column="0" Text="GitHub:" VerticalAlignment="Center" />
+					<TextBlock Grid.Row="1" Grid.Column="0" Text="{x:Static lang:Resources.GitHub_Colon}" VerticalAlignment="Center" />
 					<HyperlinkButton Grid.Row="1" Grid.Column="1" Click="BtnOpenLink_Click" Tag="https://github.com/Church-Projector/Church-Projector">
-						GitHub
+						https://github.com/Church-Projector/Church-Projector
 					</HyperlinkButton>
 
-					<TextBlock Grid.Row="2" Grid.Column="0" Text="Download der neusten Version:" VerticalAlignment="Center" />
-					<HyperlinkButton Grid.Row="2" Grid.Column="1" Click="BtnOpenLink_Click" Tag="https://github.com/Church-Projector/Church-Projector/releases">
-						Versionen
-					</HyperlinkButton>
+					<TextBlock Grid.Row="2" Grid.Column="0" Text="{x:Static lang:Resources.DownloadNewestVersion_Colon}" VerticalAlignment="Center" />
+					<HyperlinkButton Grid.Row="2" Grid.Column="1" Click="BtnOpenLink_Click" Tag="https://github.com/Church-Projector/Church-Projector/releases" Content="{x:Static lang:Resources.Versionen}" />
 
-					<TextBlock Grid.Row="3" Grid.Column="0" Text="E-Mail Adresse:" VerticalAlignment="Center" />
+					<TextBlock Grid.Row="3" Grid.Column="0" Text="{x:Static lang:Resources.Email_Colon}" VerticalAlignment="Center" />
 					<HyperlinkButton Grid.Row="3" Grid.Column="1" Click="BtnOpenLink_Click" Tag="mailto:support@church-projector.de">
 						support@church-projector.de
 					</HyperlinkButton>
@@ -330,7 +313,7 @@
 		<Button
 			Grid.Row="1"
 			Grid.Column="1"
-			Content="Schließen"
+			Content="{x:Static lang:Resources.Close}"
 			Margin="5"
 			IsCancel="True"
 			Click="OnBtnCloseClick" />

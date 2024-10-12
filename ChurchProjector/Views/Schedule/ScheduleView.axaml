@@ -5,6 +5,7 @@
              xmlns:local="clr-namespace:ChurchProjector.Views.Schedule"
              xmlns:converters="clr-namespace:ChurchProjector.Converters"
 			 xmlns:svg="clr-namespace:Avalonia.Svg.Skia"
+		     xmlns:lang="clr-namespace:ChurchProjector.Lang"
 			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="ChurchProjector.Views.Schedule.ScheduleView"
 			 x:DataType="local:ScheduleViewModel"
@@ -15,26 +16,26 @@
 	</UserControl.Resources>
 
 	<Grid RowDefinitions="auto,*">
-		<Button Grid.Row="0" Content="Datei Hinzufügen" Command="{Binding AddScheduleEntryCommand}" Margin="0 0 0 10" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" />
+		<Button Grid.Row="0" Content="{x:Static lang:Resources.AddFile}" Command="{Binding AddScheduleEntryCommand}" Margin="0 0 0 10" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" />
 
 		<ListBox Name="LboSchedules" Grid.Row="1" ItemsSource="{Binding Schedules}" Background="Transparent">
 			<ListBox.ItemTemplate>
 				<DataTemplate>
 					<Grid ColumnDefinitions="auto,auto,auto,*,auto,auto">
-						<Svg Grid.Column="0" IsVisible="{Binding FileExists, Converter={StaticResource InverseBool}}" Path="/Assets/error.svg" ToolTip.Tip="Die Datei existiert nicht." />
-						<Svg Grid.Column="1" IsVisible="{Binding ApplicationExists, Converter={StaticResource InverseBool}}" Path="/Assets/error.svg" ToolTip.Tip="Es ist kein Programm zum anzeigen der Datei vorhanden." />
+						<Svg Grid.Column="0" IsVisible="{Binding FileExists, Converter={StaticResource InverseBool}}" Path="/Assets/error.svg" ToolTip.Tip="{x:Static lang:Resources.FileNotFound}" />
+						<Svg Grid.Column="1" IsVisible="{Binding ApplicationExists, Converter={StaticResource InverseBool}}" Path="/Assets/error.svg" ToolTip.Tip="{x:Static lang:Resources.ProgramNotFound}" />
 						<Svg Grid.Column="2" IsVisible="{Binding HasIcon}" Path="{Binding Icon}" />
 						<Button Grid.Column="3" Command="{Binding ((local:ScheduleViewModel)DataContext).OpenScheduleEntryCommand, ElementName=Root}" CommandParameter="{Binding .}" HorizontalAlignment="Stretch">
 							<TextBlock Text="{Binding Title}" TextTrimming="CharacterEllipsis" />
 						</Button>
 						<Button Grid.Column="4" Command="{Binding ((local:ScheduleViewModel)DataContext).RemoveScheduleEntryCommand, ElementName=Root}" CommandParameter="{Binding .}" ToolTip.Tip="Entfernen" Content="X" />
-						<Svg Grid.Column="5" Path="/Assets/drag_indicator.svg" PointerPressed="Svg_PointerPressed" ToolTip.Tip="Verschieben" />
+						<Svg Grid.Column="5" Path="/Assets/drag_indicator.svg" PointerPressed="Svg_PointerPressed" ToolTip.Tip="{x:Static lang:Resources.Move}" />
 
 						<Grid.ContextMenu>
 							<ContextMenu>
-								<MenuItem Command="{Binding ((local:ScheduleViewModel)DataContext).CopyFilePathCommand, ElementName=Root}" CommandParameter="{Binding .}" Header="Dateipfad kopieren" />
-								<MenuItem Command="{Binding ((local:ScheduleViewModel)DataContext).OpenFilePathCommand, ElementName=Root}" CommandParameter="{Binding .}" Header="Dateipfad öffnen" />
-								<MenuItem Command="{Binding ((local:ScheduleViewModel)DataContext).DeleteFilePathCommand, ElementName=Root}" CommandParameter="{Binding .}" Header="Datei löschen" />
+								<MenuItem Command="{Binding ((local:ScheduleViewModel)DataContext).CopyFilePathCommand, ElementName=Root}" CommandParameter="{Binding .}" Header="{x:Static lang:Resources.CopyFilePath}" />
+								<MenuItem Command="{Binding ((local:ScheduleViewModel)DataContext).OpenFilePathCommand, ElementName=Root}" CommandParameter="{Binding .}" Header="{x:Static lang:Resources.OpenFilePath}" />
+								<MenuItem Command="{Binding ((local:ScheduleViewModel)DataContext).DeleteFilePathCommand, ElementName=Root}" CommandParameter="{Binding .}" Header="{x:Static lang:Resources.DeleteFile}" />
 							</ContextMenu>
 						</Grid.ContextMenu>
 					</Grid>

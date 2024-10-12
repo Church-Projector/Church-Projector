@@ -9,6 +9,7 @@
     xmlns:history="clr-namespace:ChurchProjector.Views.History"
     xmlns:classes="clr-namespace:ChurchProjector.Classes"
     xmlns:bibleview="clr-namespace:ChurchProjector.Views.Bible"
+	xmlns:lang="clr-namespace:ChurchProjector.Lang"
     mc:Ignorable="d"
     WindowStartupLocation="CenterScreen"
     Title="Gottesdienst Projektor" Height="675" Width="1650"
@@ -32,10 +33,10 @@
         </Grid.ColumnDefinitions>
 
         <TabControl Grid.Row="0" Grid.Column="0" Grid.RowSpan="6">
-            <TabItem Header="Verlauf" Margin="0 0 0 10">
+            <TabItem Header="{x:Static lang:Resources.History}" Margin="0 0 0 10">
                 <history:HistoryView DataContext="{Binding HistoryViewModel}" />
             </TabItem>
-            <TabItem Header="Ablaufplan" Margin="0 0 0 10">
+            <TabItem Header="{x:Static lang:Resources.Schedule}" Margin="0 0 0 10">
                 <schedule:ScheduleView DataContext="{Binding ScheduleViewModel}" />
             </TabItem>
         </TabControl>
@@ -44,22 +45,22 @@
 
         <StackPanel Grid.Row="0" Grid.Column="2" Orientation="Horizontal" Margin="10">
             <!--header-->
-            <Button Content="Liederschnellsuche" Command="{Binding OpenSongQuickSearchCommand}" HotKey="Ctrl+Q" ToolTip.Tip="Shortcut: STRG + Q" />
-            <Button Content="Lied Suche" Command="{Binding OpenSongSearchCommand}" HotKey="Ctrl+S" ToolTip.Tip="Shortcut: STRG + S" />
-            <Button Content="Bibel Suche" Command="{Binding OpenBibleSearchCommand}" HotKey="Ctrl+F" ToolTip.Tip="Shortcut: STRG + F" />
-            <Button Content="Neues Lied" Command="{Binding AddSongCommand}" HotKey="Ctrl+N" ToolTip.Tip="Shortcut: STRG + N" />
-            <Button Content="Bearbeiten" Command="{Binding EditCommand}" IsEnabled="{Binding MayEdit}" HotKey="Ctrl+E" ToolTip.Tip="Shortcut: STRG + E" />
-            <Button Content="Sofort ausblenden" Command="{Binding HideImageCommand}" IsEnabled="{Binding SlideSelected}" HotKey="B" ToolTip.Tip="Shortcut: B">
+            <Button Content="{x:Static lang:Resources.SongQuickSearch}" Command="{Binding OpenSongQuickSearchCommand}" HotKey="Ctrl+Q" ToolTip.Tip="Shortcut: STRG + Q" />
+            <Button Content="{x:Static lang:Resources.SongSearch}" Command="{Binding OpenSongSearchCommand}" HotKey="Ctrl+S" ToolTip.Tip="Shortcut: STRG + S" />
+            <Button Content="{x:Static lang:Resources.BibleSearch}" Command="{Binding OpenBibleSearchCommand}" HotKey="Ctrl+F" ToolTip.Tip="Shortcut: STRG + F" />
+            <Button Content="{x:Static lang:Resources.NewSong}" Command="{Binding AddSongCommand}" HotKey="Ctrl+N" ToolTip.Tip="Shortcut: STRG + N" />
+            <Button Content="{x:Static lang:Resources.Edit}" Command="{Binding EditCommand}" IsEnabled="{Binding MayEdit}" HotKey="Ctrl+E" ToolTip.Tip="Shortcut: STRG + E" />
+            <Button Content="{x:Static lang:Resources.InstantHide}" Command="{Binding HideImageCommand}" IsEnabled="{Binding SlideSelected}" HotKey="B" ToolTip.Tip="Shortcut: B">
                 <Button.CommandParameter>
                     <system:Boolean>false</system:Boolean>
                 </Button.CommandParameter>
             </Button>
-            <Button Content="Langsam ausblenden" Command="{Binding HideImageCommand}" IsEnabled="{Binding ImageSelected}" HotKey="F" ToolTip.Tip="Shortcut: F">
+            <Button Content="{x:Static lang:Resources.SlowHide}" Command="{Binding HideImageCommand}" IsEnabled="{Binding ImageSelected}" HotKey="F" ToolTip.Tip="Shortcut: F">
                 <Button.CommandParameter>
                     <system:Boolean>true</system:Boolean>
                 </Button.CommandParameter>
             </Button>
-            <Button Content="Banner-Nachricht" Command="{Binding OpenShowNotificationCommand}" HotKey="Ctrl+N" ToolTip.Tip="Shortcut: STRG + N" />
+            <Button Content="{x:Static lang:Resources.BannerMessage}" Command="{Binding OpenShowNotificationCommand}" HotKey="Ctrl+N" ToolTip.Tip="Shortcut: STRG + N" />
         </StackPanel>
 
         <ListBox Name="LboImages" Grid.Row="1" Grid.Column="2" ItemsSource="{Binding Images.Images}" SelectedItem="{Binding SelectedImage}" Background="Transparent" Margin="10 20" KeyDown="ListBox_KeyUp">
@@ -101,19 +102,19 @@
                         IsVisible="{Binding HasError}"
                         Margin="10"
                         Padding="10,5,10,5"
-                        Content="Logs öffnen"
+                        Content="{x:Static lang:Resources.OpenLogs}"
                         Command="{Binding OpenLogsCommand}"/>
                 <TextBlock Grid.Row="1" Grid.Column="1"
                            IsVisible="{Binding HasError}"
                            Foreground="Red"
                            Margin="10"
                            Padding="10,5,10,5"
-                           Text="Es sind Fehler aufgetreten." />
+                           Text="{x:Static lang:Resources.ErrorsOccurred}" />
             </Grid>
             <Button Grid.Column="1"
                     Margin="10"
                     Padding="10,5,10,5"
-                    Content="Einstellungen"
+                    Content="{x:Static lang:Resources.Settings}"
                     Click="OnBtnSettingsClick" />
         </Grid>
     </Grid>

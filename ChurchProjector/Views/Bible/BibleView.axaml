@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:local="clr-namespace:ChurchProjector.Views.Bible"
 			 xmlns:converters="clr-namespace:ChurchProjector.Converters"
+			 xmlns:lang="clr-namespace:ChurchProjector.Lang"
              mc:Ignorable="d" d:DesignWidth="800"
              x:Class="ChurchProjector.Views.Bible.BibleView"
 			 x:DataType="local:BibleViewModel">
@@ -23,10 +24,10 @@
 			<StackPanel Spacing="10">
 				<Expander HorizontalAlignment="Stretch">
 					<Expander.Header>
-						Übersetzungen
+						<TextBlock Text="{x:Static lang:Resources.Translation}" />
 					</Expander.Header>
 					<StackPanel Spacing="10">
-						<TextBlock>1. Übersetzung:</TextBlock>
+						<TextBlock Text="{x:Static lang:Resources.Translation_First}" />
 						<ComboBox ItemsSource="{Binding Bibles}" SelectedItem="{Binding SelectedBible1}" MinWidth="250" HorizontalAlignment="Stretch">
 							<ComboBox.ItemTemplate>
 								<DataTemplate>
@@ -35,7 +36,7 @@
 							</ComboBox.ItemTemplate>
 						</ComboBox>
 
-						<TextBlock>2. Übersetzung:</TextBlock>
+						<TextBlock Text="{x:Static lang:Resources.Translation_Second}" />
 						<ComboBox ItemsSource="{Binding Bibles}" SelectedItem="{Binding SelectedBible2}" MinWidth="250" HorizontalAlignment="Stretch">
 							<ComboBox.ItemTemplate>
 								<DataTemplate>
@@ -44,7 +45,7 @@
 							</ComboBox.ItemTemplate>
 						</ComboBox>
 
-						<TextBlock>3. Übersetzung:</TextBlock>
+						<TextBlock Text="{x:Static lang:Resources.Translation_Third}" />
 						<ComboBox ItemsSource="{Binding Bibles}" SelectedItem="{Binding SelectedBible3}" MinWidth="250" HorizontalAlignment="Stretch">
 							<ComboBox.ItemTemplate>
 								<DataTemplate>
@@ -55,19 +56,19 @@
 					</StackPanel>
 				</Expander>
 
-				<TextBlock HorizontalAlignment="Stretch">Suche:</TextBlock>
+				<TextBlock HorizontalAlignment="Stretch" Text="{x:Static lang:Resources.Search_Colon}" />
 
 				<Grid ColumnDefinitions="*,auto">
 					<TextBox Grid.Column="0" Text="{Binding SearchText}" KeyDown="TextBox_KeyDown" />
-					<Button Grid.Column="1" Command="{Binding AcceptSearchTextCommand}" IsEnabled="{Binding MayAcceptSearchTextCommand}">OK</Button>
+					<Button Grid.Column="1" Command="{Binding AcceptSearchTextCommand}" IsEnabled="{Binding MayAcceptSearchTextCommand}" Content="{x:Static lang:Resources.Ok}" />
 				</Grid>
 
 				<TextBlock Text="{Binding BibleSearchHintPreview}" />
 				<TextBlock Text="{Binding Error}" Foreground="Red" TextTrimming="CharacterEllipsis" />
 
 				<StackPanel Orientation="Horizontal">
-					<Button Content="Zurück" IsEnabled="{Binding CanGoBack}" Command="{Binding BackVerseCommand}" />
-					<Button Content="Weiter" IsEnabled="{Binding CanGoNext}" Command="{Binding NextVerseCommand}" />
+					<Button Content="{x:Static lang:Resources.Back}" IsEnabled="{Binding CanGoBack}" Command="{Binding BackVerseCommand}" />
+					<Button Content="{x:Static lang:Resources.Next}" IsEnabled="{Binding CanGoNext}" Command="{Binding NextVerseCommand}" />
 				</StackPanel>
 			</StackPanel>
 		</ScrollViewer>

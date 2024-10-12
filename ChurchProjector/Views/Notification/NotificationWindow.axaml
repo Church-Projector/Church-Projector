@@ -3,20 +3,21 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 		xmlns:local="clr-namespace:ChurchProjector.Views.Notification"
+		xmlns:lang="clr-namespace:ChurchProjector.Lang"
         mc:Ignorable="d" 
         SizeToContent="WidthAndHeight"
 		x:Class="ChurchProjector.Views.Notification.NotificationWindow"
 		x:DataType="local:NotificationViewModel"
 		WindowStartupLocation="CenterOwner"
-		Title="Benachrichtigung"
+		Title="{x:Static lang:Resources.Notification}"
 		Icon="/Assets/icon.ico">
 	
 	<StackPanel Margin="10" Spacing="10">
-		<TextBlock>Bannertext:</TextBlock>
+		<TextBlock Text="{x:Static lang:Resources.BannerText_Colon}" />
 		<TextBox Name="TxtNotification" Text="{Binding Notification}" MinWidth="500" />
 		<StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10">
-			<Button IsCancel="True" Command="{Binding CloseDialogCommand}">Schließen</Button>
-			<Button IsDefault="True" Command="{Binding ShowNotificationCommand}" IsEnabled="{Binding HasNotification}">OK</Button>
+			<Button IsCancel="True" Command="{Binding CloseDialogCommand}" Content="{x:Static lang:Resources.Close}" />
+			<Button IsDefault="True" Command="{Binding ShowNotificationCommand}" IsEnabled="{Binding HasNotification}" Content="{x:Static lang:Resources.Ok}" />
 		</StackPanel>
 	</StackPanel>
 </Window>

@@ -14,7 +14,15 @@ public static class Version
 {
     public static string? GetCurrentVersion()
     {
-        return FileVersionInfo.GetVersionInfo(Path.Combine(AppContext.BaseDirectory, "ChurchProjector.exe")).FileVersion;
+        if (File.Exists(Path.Combine(AppContext.BaseDirectory, "ChurchProjector.exe")))
+        {
+            return FileVersionInfo.GetVersionInfo(Path.Combine(AppContext.BaseDirectory, "ChurchProjector.exe")).FileVersion;
+        }
+        else if (File.Exists(Path.Combine(AppContext.BaseDirectory, "ChurchProjector")))
+        {
+            return FileVersionInfo.GetVersionInfo(Path.Combine(AppContext.BaseDirectory, "ChurchProjector")).FileVersion;
+        }
+        return null;
     }
 
     public static async Task<string?> GetNewestVersionStringAsync(CancellationToken cancellationToken = default)

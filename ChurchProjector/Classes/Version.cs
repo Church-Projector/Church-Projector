@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading;
@@ -18,11 +19,10 @@ public static class Version
         {
             return FileVersionInfo.GetVersionInfo(Path.Combine(AppContext.BaseDirectory, "ChurchProjector.exe")).FileVersion;
         }
-        else if (File.Exists(Path.Combine(AppContext.BaseDirectory, "ChurchProjector")))
+        else
         {
-            return FileVersionInfo.GetVersionInfo(Path.Combine(AppContext.BaseDirectory, "ChurchProjector")).FileVersion;
+            return Assembly.GetExecutingAssembly().GetCustomAttribute<AssemblyFileVersionAttribute>()?.Version;
         }
-        return null;
     }
 
     public static async Task<string?> GetNewestVersionStringAsync(CancellationToken cancellationToken = default)

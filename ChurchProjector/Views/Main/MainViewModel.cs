@@ -201,16 +201,18 @@ public partial class MainViewModel : ObservableObject
 
     public MainViewModel(Window window, SettingsViewModel settings, IStorageProvider storageProvider, IClipboard clipboard, string? version)
     {
-        try
-        {
-            PowerPoint = new();
-            PowerPoint.SlideShowEnd += PowerPoint_SlideShowEnd;
-            PowerPoint.SlideShowBegin += PowerPoint_SlideShowBegin;
-            PowerPoint.SlideShowNextSlide += PowerPoint_SlideShowNextSlide;
-        }
-        catch
-        {
-            Log.Error(Lang.Resources.PowerPointIsMissing);
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)){
+            try
+            {
+                PowerPoint = new();
+                PowerPoint.SlideShowEnd += PowerPoint_SlideShowEnd;
+                PowerPoint.SlideShowBegin += PowerPoint_SlideShowBegin;
+                PowerPoint.SlideShowNextSlide += PowerPoint_SlideShowNextSlide;
+            }
+            catch
+            {
+                Log.Error(Lang.Resources.PowerPointIsMissing);
+            }
         }
 
         GlobalConfig.HasError.PropertyChanged += HasError_PropertyChanged;
@@ -461,7 +463,7 @@ public partial class MainViewModel : ObservableObject
         Classes.Version.GetNewestVersionStringAsync(CancellationToken.None).ContinueWith(async (newestVersionTask) =>
         {
             string? newestVersion = await newestVersionTask;
-            if (newestVersion != version && !string.IsNullOrEmpty(newestVersion))
+            if (newestVersion != version && !string.IsNullOrWhiteSpace(version) && !string.IsNullOrEmpty(newestVersion))
             {
                 UpdateText = string.Format(Lang.Resources.UpdateAvailable, newestVersion);
             }

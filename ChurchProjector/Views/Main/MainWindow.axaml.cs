@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading;
 
 namespace ChurchProjector.Views.Main;
@@ -66,7 +67,11 @@ public partial class MainWindow : Window
                 _viewModel.ImageWindow.StopBanner();
             }
         });
-        _viewModel.OpenLogsCommand = new RelayCommand(() => Process.Start("explorer.exe", Path.Combine(AppContext.BaseDirectory, "logs")));
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)){
+            _viewModel.OpenLogsCommand = new RelayCommand(() => Process.Start("explorer.exe", Path.Combine(AppContext.BaseDirectory, "logs")));
+        } else {
+            // todo
+        }
         _viewModel.EditCommand = new RelayCommand(() => new SongEditWindow(_viewModel.Images!.Filename!).ShowDialog(this));
         _viewModel.AddSongCommand = new RelayCommand(() => new SongEditWindow().ShowDialog(this));
 

@@ -367,4 +367,11 @@
   <data name="HistoryClear" xml:space="preserve">
     <value>Clear History</value>
   </data>
+  <data name="InitWindowTitle" xml:space="preserve">
+    <value>Initialize</value>
+  </data>
+  <data name="InitHelperText" xml:space="preserve">
+    <value>Set the paths for the songs and Bibles.
+The paths can be edited later in the settings.</value>
+  </data>
 </root>

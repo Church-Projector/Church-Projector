@@ -3,6 +3,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using ChurchProjector.Classes;
 using ChurchProjector.Logging;
+using ChurchProjector.Views.Init;
 using ChurchProjector.Views.Main;
 using ChurchProjector.Views.Settings;
 using Serilog;
@@ -35,6 +36,26 @@ public partial class App : Application
         SettingsViewModel settings = new();
         DataContext = settings;
 
+        if (!string.IsNullOrWhiteSpace(GlobalConfig.JsonFile.Settings.PathSettings.SongPath)
+            && !string.IsNullOrWhiteSpace(GlobalConfig.JsonFile.Settings.PathSettings.BiblePath))
+        {
+            InitMainWindow();
+        }
+        else
+        {
+            InitWindow initWindow = new();
+            initWindow.Closed += InitWindow_Closed;
+            initWindow.Show();
+        }
+    }
+
+    private void InitWindow_Closed(object? sender, System.EventArgs e)
+    {
+        InitMainWindow();
+    }
+
+    private void InitMainWindow()
+    {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             Log.Logger = new LoggerConfiguration()
@@ -43,7 +64,9 @@ public partial class App : Application
                 .WriteTo.Sink(new ErrorListenerSink())
                 .CreateLogger();
 
-            desktop.MainWindow = new MainWindow(settings);
+            MainWindow mainWindow = new((DataContext as SettingsViewModel)!);
+            desktop.MainWindow = mainWindow;
+            mainWindow.Show();
         }
 
         base.OnFrameworkInitializationCompleted();

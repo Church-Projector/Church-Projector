@@ -385,6 +385,25 @@ namespace ChurchProjector.Lang {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Set the paths for the songs and Bibles.
+        ///The paths can be edited later in the settings..
+        /// </summary>
+        public static string InitHelperText {
+            get {
+                return ResourceManager.GetString("InitHelperText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Initialize.
+        /// </summary>
+        public static string InitWindowTitle {
+            get {
+                return ResourceManager.GetString("InitWindowTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Instant hide.
         /// </summary>
         public static string InstantHide {

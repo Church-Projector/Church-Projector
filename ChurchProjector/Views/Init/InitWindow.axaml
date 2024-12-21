@@ -1,0 +1,78 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+       	xmlns:lang="clr-namespace:ChurchProjector.Lang"
+       	xmlns:local="clr-namespace:ChurchProjector.Views.Init"
+		mc:Ignorable="d"
+        x:Class="ChurchProjector.Views.Init.InitWindow"
+        Title="{x:Static lang:Resources.InitWindowTitle}"
+		x:DataType="local:InitViewModel"
+		SizeToContent="WidthAndHeight"
+		CanResize="False"
+		WindowStartupLocation="CenterScreen">
+
+	<Grid RowDefinitions="auto,auto,auto,auto" ColumnDefinitions="auto,*" Margin="5">
+		<!-- Path to the bibles -->
+		<Label
+			Grid.Column="0"
+			Grid.Row="0"
+			VerticalAlignment="Center"
+			Content="{x:Static lang:Resources.PathToBibles_Colon}" />
+		<Grid
+			Grid.Column="1"
+			Grid.Row="0">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="*" />
+				<ColumnDefinition Width="auto" />
+			</Grid.ColumnDefinitions>
+			<TextBox
+				Grid.Column="0"
+				Margin="5"
+				Text="{Binding BiblesPath}"/>
+			<Button
+				Grid.Column="1"
+				Margin="5"
+				Padding="10,0,10,0"
+				Content="..."
+				Click="OnBtnSelectBiblesPathClick" />
+		</Grid>
+
+		<StackPanel Grid.Row="1" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="0 0 0 0">
+			<TextBlock Foreground="LightGray" FontWeight="Light" VerticalAlignment="Center" Text="{x:Static lang:Resources.DownloadBibleTranslation}" />
+			<HyperlinkButton Click="BtnOpenLink_Click" Tag="https://softprojector.org/download_mod_bible.html" Content="{x:Static lang:Resources.XmlFormat}" />
+			<HyperlinkButton Click="BtnOpenLink_Click" Tag="https://sourceforge.net/projects/zefania-sharp/files/Bibles/" Content="{x:Static lang:Resources.SpbFormat}" />
+		</StackPanel>
+
+		<!-- Path to the songs -->
+		<Label
+			Grid.Column="0"
+			Grid.Row="2"
+			VerticalAlignment="Center"
+			Content="{x:Static lang:Resources.PathToSongs_Colon}" />
+		<Grid
+			Grid.Column="1"
+			Grid.Row="2">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="*" />
+				<ColumnDefinition Width="auto" />
+			</Grid.ColumnDefinitions>
+			<TextBox
+				Grid.Column="0"
+				Margin="5"
+				Text="{Binding SongsPath}"/>
+			<Button
+				Grid.Column="1"
+				Margin="5"
+				Padding="10,0,10,0"
+				Content="..."
+				Click="OnBtnSelectSongsPathClick" />
+		</Grid>
+
+		<Grid Grid.Row="3" Grid.ColumnSpan="2" ColumnDefinitions="auto,*,auto">
+			<TextBlock Grid.Column="0" Text="{x:Static lang:Resources.InitHelperText}" Foreground="LightGray" FontWeight="Light" />
+
+			<Button Grid.Column="2" Content="{x:Static lang:Resources.Ok}" Click="Button_Click" IsDefault="True" />
+		</Grid>
+	</Grid>
+</Window>

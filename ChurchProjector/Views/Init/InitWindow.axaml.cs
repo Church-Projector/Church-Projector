@@ -1,35 +1,18 @@
-﻿using Avalonia.Controls;
+using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
 using ChurchProjector.Classes;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Runtime.InteropServices;
 
-namespace ChurchProjector.Views.Settings;
-/// <summary>
-/// Interaction logic for SettingsWindow.xaml
-/// </summary>
-public partial class SettingsWindow : Window
+namespace ChurchProjector.Views.Init;
+
+public partial class InitWindow : Window
 {
-
-    private readonly SettingsViewModel _viewModel;
-    public SettingsWindow()
-    {
-        _viewModel = null!;
-        InitializeComponent();
-    }
-
-    public SettingsWindow(SettingsViewModel viewModel)
+    private readonly InitViewModel _viewModel = new();
+    public InitWindow()
     {
         InitializeComponent();
-        _viewModel = viewModel;
         DataContext = _viewModel;
-    }
-
-    private void OnBtnCloseClick(object sender, RoutedEventArgs e)
-    {
-        Close();
     }
 
     private async void OnBtnSelectBiblesPathClick(object sender, RoutedEventArgs e)
@@ -54,5 +37,10 @@ public partial class SettingsWindow : Window
     {
         string? url = ((Button)sender).Tag?.ToString();
         Link.OpenLink(url);
+    }
+
+    private void Button_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    {
+        Close();
     }
 }

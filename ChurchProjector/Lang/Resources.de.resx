@@ -366,4 +366,11 @@
   <data name="HistoryClear" xml:space="preserve">
     <value>Verlauf leeren</value>
   </data>
+  <data name="InitWindowTitle" xml:space="preserve">
+    <value>Initialisieren</value>
+  </data>
+  <data name="InitHelperText" xml:space="preserve">
+    <value>Legen Sie die Pfade für die Lieder und Bibeln fest.
+Die Pfade können später in den Einstellungen bearbeitet werden.</value>
+  </data>
 </root>

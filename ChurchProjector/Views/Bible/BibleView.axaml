@@ -59,7 +59,7 @@
 				<TextBlock HorizontalAlignment="Stretch" Text="{x:Static lang:Resources.Search_Colon}" />
 
 				<Grid ColumnDefinitions="*,auto">
-					<TextBox Grid.Column="0" Text="{Binding SearchText}" KeyDown="TextBox_KeyDown" />
+					<TextBox Grid.Column="0" Text="{Binding SearchText}" KeyDown="TextBox_KeyDown" Classes="clearButton" />
 					<Button Grid.Column="1" Command="{Binding AcceptSearchTextCommand}" IsEnabled="{Binding MayAcceptSearchTextCommand}" Content="{x:Static lang:Resources.Ok}" />
 				</Grid>
 

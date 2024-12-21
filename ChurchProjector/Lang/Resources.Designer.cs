@@ -349,6 +349,15 @@ namespace ChurchProjector.Lang {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Clear History.
+        /// </summary>
+        public static string HistoryClear {
+            get {
+                return ResourceManager.GetString("HistoryClear", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Homepage:.
         /// </summary>
         public static string HomePage_Colon {

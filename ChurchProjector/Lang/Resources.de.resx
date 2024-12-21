@@ -363,4 +363,7 @@
   <data name="RestartRequired" xml:space="preserve">
     <value>(Neustart erforderlich)</value>
   </data>
+  <data name="HistoryClear" xml:space="preserve">
+    <value>Verlauf leeren</value>
+  </data>
 </root>

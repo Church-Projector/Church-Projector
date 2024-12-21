@@ -4,11 +4,13 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:local="clr-namespace:ChurchProjector.Views.History"
 			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 xmlns:lang="clr-namespace:ChurchProjector.Lang"
              x:Class="ChurchProjector.Views.History.HistoryView"
 			 x:DataType="local:HistoryViewModel">
 
-	<Grid>
-		<ListBox ItemsSource="{Binding Histories}" Background="Transparent">
+	<Grid RowDefinitions="auto,*">
+		<Button Grid.Row="0" Content="{x:Static lang:Resources.HistoryClear}" HorizontalAlignment="Stretch" Command="{Binding ClearHistoryCommand}" />
+		<ListBox Grid.Row="1" ItemsSource="{Binding Histories}" Background="Transparent">
 			<ListBox.ItemTemplate>
 				<DataTemplate>
 					<Grid ColumnDefinitions="*,auto">

@@ -172,6 +172,7 @@ public class Book
     public string SearchTitle => Bible.GetBookName(Title, Number, GlobalConfig.JsonFile.Settings.BibleSettings.BookLanguage) ?? string.Empty;
     public required int Number { get; set; }
     public required List<BibleVerse> Verses { get; set; }
+    public List<int> Chapters => Verses.Select(x => x.ChapterNumber).Distinct().ToList();
 }
 
 public class BibleVerse

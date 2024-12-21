@@ -374,4 +374,16 @@
     <value>Set the paths for the songs and Bibles.
 The paths can be edited later in the settings.</value>
   </data>
+  <data name="Search" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="Selection" xml:space="preserve">
+    <value>Select</value>
+  </data>
+  <data name="Book_Colon" xml:space="preserve">
+    <value>Book:</value>
+  </data>
+  <data name="Chapter_Colon" xml:space="preserve">
+    <value>Chapter:</value>
+  </data>
 </root>

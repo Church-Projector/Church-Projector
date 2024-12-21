@@ -21,8 +21,7 @@
             <RowDefinition Height="auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="auto" />
-            <!--todo hacky hack-->
-            <RowDefinition Height="auto" MinHeight="231" />
+            <RowDefinition Height="250" MinHeight="250" MaxHeight="500" />
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>

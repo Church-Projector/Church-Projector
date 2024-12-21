@@ -348,9 +348,9 @@ public partial class MainViewModel : ObservableObject
                     {
                         imageCreationContents.Add(new()
                         {
-                            Header = BibleViewModel.GetSelectedBiblePositionHeader(BibleViewModel.SelectedBible1, BibleViewModel.SelectedBookNumber, BibleViewModel.SelectedChapter, verses.Min(), verses.Max()),
+                            Header = BibleViewModel.GetSelectedBiblePositionHeader(BibleViewModel.SelectedBible1, BibleViewModel.SelectedBook.Number, BibleViewModel.SelectedChapter, verses.Min(), verses.Max()),
                             Content = [string.Join(" ", BibleViewModel.GetPreviewSelectedBiblePosition(BibleViewModel.SelectedBible1,
-                                                                                     BibleViewModel.SelectedBookNumber,
+                                                                                     BibleViewModel.SelectedBook.Number,
                                                                                      BibleViewModel.SelectedChapter.Value,
                                                                                      verses.Min(),
                                                                                      verses.Max()))
@@ -362,9 +362,9 @@ public partial class MainViewModel : ObservableObject
                     {
                         imageCreationContents.Add(new()
                         {
-                            Header = BibleViewModel.GetSelectedBiblePositionHeader(BibleViewModel.SelectedBible2, BibleViewModel.SelectedBookNumber, BibleViewModel.SelectedChapter, verses.Min(), verses.Max()),
+                            Header = BibleViewModel.GetSelectedBiblePositionHeader(BibleViewModel.SelectedBible2, BibleViewModel.SelectedBook.Number, BibleViewModel.SelectedChapter, verses.Min(), verses.Max()),
                             Content = [string.Join(" ", BibleViewModel.GetPreviewSelectedBiblePosition(BibleViewModel.SelectedBible2,
-                                                                                     BibleViewModel.SelectedBookNumber,
+                                                                                     BibleViewModel.SelectedBook.Number,
                                                                                      BibleViewModel.SelectedChapter.Value,
                                                                                      verses.Min(),
                                                                                      verses.Max()))
@@ -376,9 +376,9 @@ public partial class MainViewModel : ObservableObject
                     {
                         imageCreationContents.Add(new()
                         {
-                            Header = BibleViewModel.GetSelectedBiblePositionHeader(BibleViewModel.SelectedBible3, BibleViewModel.SelectedBookNumber, BibleViewModel.SelectedChapter, verses.Min(), verses.Max()),
+                            Header = BibleViewModel.GetSelectedBiblePositionHeader(BibleViewModel.SelectedBible3, BibleViewModel.SelectedBook.Number, BibleViewModel.SelectedChapter, verses.Min(), verses.Max()),
                             Content = [string.Join(" ", BibleViewModel.GetPreviewSelectedBiblePosition(BibleViewModel.SelectedBible3,
-                                                                                     BibleViewModel.SelectedBookNumber,
+                                                                                     BibleViewModel.SelectedBook.Number,
                                                                                      BibleViewModel.SelectedChapter.Value,
                                                                                      verses.Min(),
                                                                                      verses.Max()))
@@ -441,7 +441,7 @@ public partial class MainViewModel : ObservableObject
                     return;
                 }
                 int nextVerse = BibleViewModel.SelectedVerseEnd.Value + 1;
-                BibleViewModel.SetBiblePosition(BibleViewModel.SelectedBookName, BibleViewModel.SelectedChapter, nextVerse, nextVerse);
+                BibleViewModel.SetBiblePosition(BibleViewModel.SelectedBook.Title, BibleViewModel.SelectedChapter, nextVerse, nextVerse);
                 BibleViewModel.SearchText = BibleViewModel.SelectedBiblePosition;
                 BibleViewModel.AcceptSearchTextCommand.Execute(null);
                 SelectedImage = Images.Images.FirstOrDefault();
@@ -453,7 +453,7 @@ public partial class MainViewModel : ObservableObject
                     return;
                 }
                 int previous = BibleViewModel.SelectedVerseStart.Value - 1;
-                BibleViewModel.SetBiblePosition(BibleViewModel.SelectedBookName, BibleViewModel.SelectedChapter, previous, previous);
+                BibleViewModel.SetBiblePosition(BibleViewModel.SelectedBook.Title, BibleViewModel.SelectedChapter, previous, previous);
                 BibleViewModel.SearchText = BibleViewModel.SelectedBiblePosition;
                 BibleViewModel.AcceptSearchTextCommand.Execute(null);
                 SelectedImage = Images.Images.FirstOrDefault();

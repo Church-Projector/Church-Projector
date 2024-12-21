@@ -131,18 +131,18 @@ public partial class BibleViewModel : ObservableObject
             }
         }
     }
+    private string GetChars(string text) => string.Concat(text.Where(c => char.IsLetter(c) || char.IsDigit(c)));
 
     internal void SetBiblePosition(string? bookName, int? chapter, int? verseStart, int? verseEnd)
     {
         Error = null;
-        string GetChars(string text) => string.Concat(text.Where(c => char.IsLetter(c) || char.IsDigit(c)));
         // Removing .
         // Some translation have "1 Mose" and some "1. Mose"
         Book? book = string.IsNullOrEmpty(bookName)
             ? null
             : SelectedBible1?.Books.FirstOrDefault(x => GetChars(x.SearchTitle).StartsWith(GetChars(bookName), StringComparison.OrdinalIgnoreCase));
         SelectedBookPart = bookName;
-        SelectedBookName = book?.Title;
+        SelectedBook = book;
         SelectedChapter = book is not null ? chapter : null;
         SelectedVerseStart = SelectedChapter.HasValue ? verseStart : null;
         SelectedVerseEnd = SelectedVerseStart.HasValue ? verseEnd ?? verseStart : null;
@@ -155,7 +155,7 @@ public partial class BibleViewModel : ObservableObject
         {
             if (SelectedChapter.HasValue && chapter > book.Verses.Max(x => x.ChapterNumber))
             {
-                Error = $"Das Buch \"{SelectedBookName}\" besitzt keine {SelectedChapter} Kapitel.";
+                Error = $"Das Buch \"{book.Title}\" besitzt keine {SelectedChapter} Kapitel.";
             }
             else if (SelectedChapter.HasValue && SelectedChapter <= 0)
             {
@@ -167,7 +167,7 @@ public partial class BibleViewModel : ObservableObject
             }
             else if (SelectedChapter.HasValue && SelectedVerseStart.HasValue && SelectedVerseStart > book.Verses.Where(x => x.ChapterNumber == SelectedChapter.Value).Max(x => x.VerseNumber))
             {
-                Error = $"Das Kapitel {SelectedChapter} in \"{SelectedBookName}\" besitzt keine {SelectedVerseStart} Verse.";
+                Error = $"Das Kapitel {SelectedChapter} in \"{book.Title}\" besitzt keine {SelectedVerseStart} Verse.";
             }
             else if (SelectedChapter.HasValue && SelectedVerseEnd.HasValue && SelectedVerseEnd <= 0)
             {
@@ -175,7 +175,7 @@ public partial class BibleViewModel : ObservableObject
             }
             else if (SelectedChapter.HasValue && SelectedVerseEnd.HasValue && SelectedVerseEnd > book.Verses.Where(x => x.ChapterNumber == SelectedChapter.Value).Max(x => x.VerseNumber))
             {
-                Error = $"Das Kapitel {SelectedChapter} in \"{SelectedBookName}\" besitzt keine {SelectedVerseEnd} Verse.";
+                Error = $"Das Kapitel {SelectedChapter} in \"{book.Title}\" besitzt keine {SelectedVerseEnd} Verse.";
             }
             else if (SelectedVerseStart.HasValue && SelectedVerseEnd.HasValue && SelectedVerseStart.Value > SelectedVerseEnd.Value)
             {
@@ -228,13 +228,60 @@ public partial class BibleViewModel : ObservableObject
     [ObservableProperty]
     private string? _selectedBookPart;
 
-    [ObservableProperty]
-    private string? _selectedBookName;
+    private Book? _selectedBook;
+    public Book? SelectedBook
+    {
+        get => _selectedBook;
+        set
+        {
+            if (SelectedBible1 is null)
+            {
+                SetProperty(ref _selectedBook, null);
+                return;
+            }
 
-    public int SelectedBookNumber => SelectedBible1?.Books.First(b => b.Title == SelectedBookName).Number ?? throw new InvalidOperationException("No bible is selected.");
+            if (value is not null)
+            {
+                // If a book get's set which doesn't match the search string we update the search string.
 
-    [ObservableProperty]
+                Match match = BiblePositionRegex().Match(SearchText ?? "");
+                if (string.IsNullOrWhiteSpace(SearchText)
+                    || !GetChars(value.SearchTitle).StartsWith(GetChars($"{match.Groups[1]} {match.Groups[2]}".Trim()), StringComparison.OrdinalIgnoreCase))
+                {
+                    SearchText = value.SearchTitle;
+                }
+            }
+            SetProperty(ref _selectedBook, value);
+        }
+    }
+
     private int? _selectedChapter;
+    public int? SelectedChapter
+    {
+        get => _selectedChapter;
+        set
+        {
+            if (SelectedBook is null)
+            {
+                SetProperty(ref _selectedChapter, null);
+                return;
+            }
+
+            if (value is not null)
+            {
+                // If a chapter is selected update the search text.
+                // No need to check the book. That should already be correct.
+
+                Match match = BiblePositionRegex().Match(SearchText ?? "");
+                int? chapter = match.Groups[3].Success && int.TryParse(match.Groups[3].Value, out int tempChapter) ? tempChapter : null;
+                if (chapter != value)
+                {
+                    SearchText = $"{match.Groups[1]} {match.Groups[2]} {value}".Trim();
+                }
+            }
+            SetProperty(ref _selectedChapter, value);
+        }
+    }
 
     [ObservableProperty]
     private int? _selectedVerseStart;
@@ -243,23 +290,26 @@ public partial class BibleViewModel : ObservableObject
     private int? _selectedVerseEnd;
 
     public bool CanGoBack => SelectedBible1 is not null
-                && SelectedBookName is not null
-                && SelectedBible1.Books.Any(b => b.Title == SelectedBookName)
+                && SelectedBook is not null
+                // TODO Seems unused
+                && SelectedBible1.Books.Any(b => b == SelectedBook)
                 && SelectedChapter is not null
                 && SelectedChapter > 0
-                && SelectedChapter.Value <= SelectedBible1.Books.First(b => b.Title == SelectedBookName).Verses.Max(x => x.ChapterNumber)
+                && SelectedChapter.Value <= SelectedBook.Chapters.Max(x => x)
                 && SelectedVerseStart is not null
                 && SelectedVerseStart.Value > 1
                 && string.IsNullOrEmpty(Error);
 
     public bool CanGoNext => SelectedBible1 is not null
-                && SelectedBookName is not null
-                && SelectedBible1.Books.Any(b => b.Title == SelectedBookName)
+                && SelectedBook is not null
+                // TODO Seems unused
+                && SelectedBible1.Books.Any(b => b == SelectedBook)
                 && SelectedChapter is not null
                 && SelectedChapter > 0
-                && SelectedChapter.Value <= SelectedBible1.Books.First(b => b.Title == SelectedBookName).Verses.Max(x => x.ChapterNumber)
+                && SelectedChapter.Value <= SelectedBook.Chapters.Max(x => x)
                 && SelectedVerseEnd is not null
-                && SelectedVerseEnd.Value < SelectedBible1.Books.First(b => b.Title == SelectedBookName).Verses.Where(x => x.ChapterNumber == SelectedChapter.Value).Max(x => x.VerseNumber)
+                && SelectedChapter.Value <= SelectedBook.Chapters.Max(x => x)
+                && SelectedVerseEnd.Value < SelectedBook.Verses.Where(x => x.ChapterNumber == SelectedChapter.Value).Max(x => x.VerseNumber)
                 && string.IsNullOrEmpty(Error);
 
     public bool MayAcceptSearchTextCommand => (SelectedVerseStart.HasValue || !string.IsNullOrWhiteSpace(SearchHint)) && string.IsNullOrEmpty(Error);
@@ -277,19 +327,20 @@ public partial class BibleViewModel : ObservableObject
         get
         {
             if (SelectedBible1 is null
-                || SelectedBookName is null
-                || !SelectedBible1.Books.Any(b => b.Title == SelectedBookName)
+                || SelectedBook is null
+                // TODO Seems unused
+                || !SelectedBible1.Books.Any(b => b == SelectedBook)
                 || SelectedChapter is null
                 || SelectedChapter <= 0
-                || SelectedChapter.Value > SelectedBible1.Books.First(b => b.Title == SelectedBookName).Verses.Max(x => x.ChapterNumber)
+                || SelectedChapter.Value > SelectedBook.Chapters.Max()
                 || SelectedVerseStart <= 0
-                || SelectedVerseStart > SelectedBible1.Books.First(b => b.Title == SelectedBookName).Verses.Where(x => x.ChapterNumber == SelectedChapter).Max(x => x.VerseNumber)
+                || SelectedVerseStart > SelectedBook.Verses.Where(x => x.ChapterNumber == SelectedChapter).Max(x => x.VerseNumber)
                 || SelectedVerseEnd <= 0
-                || SelectedVerseEnd > SelectedBible1.Books.First(b => b.Title == SelectedBookName).Verses.Where(x => x.ChapterNumber == SelectedChapter).Max(x => x.VerseNumber))
+                || SelectedVerseEnd > SelectedBook.Verses.Where(x => x.ChapterNumber == SelectedChapter).Max(x => x.VerseNumber))
             {
                 return [];
             }
-            return GetPreviewSelectedBiblePositionInternal(SelectedBible1, SelectedBookNumber, SelectedChapter.Value, SelectedVerseStart, SelectedVerseEnd, withUpper: false, forceAllVerses: true);
+            return GetPreviewSelectedBiblePositionInternal(SelectedBible1, SelectedBook.Number, SelectedChapter.Value, SelectedVerseStart, SelectedVerseEnd, withUpper: false, forceAllVerses: true);
         }
     }
 

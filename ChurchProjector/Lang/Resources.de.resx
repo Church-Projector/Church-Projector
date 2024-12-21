@@ -373,4 +373,16 @@
     <value>Legen Sie die Pfade für die Lieder und Bibeln fest.
 Die Pfade können später in den Einstellungen bearbeitet werden.</value>
   </data>
+  <data name="Search" xml:space="preserve">
+    <value>Suche</value>
+  </data>
+  <data name="Selection" xml:space="preserve">
+    <value>Auswahl</value>
+  </data>
+  <data name="Book_Colon" xml:space="preserve">
+    <value>Buch:</value>
+  </data>
+  <data name="Chapter_Colon" xml:space="preserve">
+    <value>Kapitel:</value>
+  </data>
 </root>

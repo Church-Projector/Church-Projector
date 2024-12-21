@@ -5,7 +5,7 @@
 			 xmlns:local="clr-namespace:ChurchProjector.Views.Bible"
 			 xmlns:converters="clr-namespace:ChurchProjector.Converters"
 			 xmlns:lang="clr-namespace:ChurchProjector.Lang"
-             mc:Ignorable="d" d:DesignWidth="800"
+             mc:Ignorable="d" d:DesignWidth="800" MinHeight="250"
              x:Class="ChurchProjector.Views.Bible.BibleView"
 			 x:DataType="local:BibleViewModel">
 
@@ -15,64 +15,84 @@
 
 	<Grid>
 		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="auto" MinWidth="250" />
+			<ColumnDefinition Width="auto" MinWidth="300" />
 			<ColumnDefinition Width="auto" />
 			<ColumnDefinition Width="*" />
 		</Grid.ColumnDefinitions>
 
-		<ScrollViewer Grid.Column="0">
-			<StackPanel Spacing="10">
-				<Expander HorizontalAlignment="Stretch">
-					<Expander.Header>
-						<TextBlock Text="{x:Static lang:Resources.Translation}" />
-					</Expander.Header>
-					<StackPanel Spacing="10">
-						<TextBlock Text="{x:Static lang:Resources.Translation_First}" />
-						<ComboBox ItemsSource="{Binding Bibles}" SelectedItem="{Binding SelectedBible1}" MinWidth="250" HorizontalAlignment="Stretch">
-							<ComboBox.ItemTemplate>
-								<DataTemplate>
-									<TextBlock Text="{Binding Title}" />
-								</DataTemplate>
-							</ComboBox.ItemTemplate>
-						</ComboBox>
+		<TabControl>
+			<TabItem>
+				<TabItem.Header>
+					<TextBlock Text="{x:Static lang:Resources.Search}" FontSize="{Binding FontSize, RelativeSource={RelativeSource AncestorType=Window}}" />
+				</TabItem.Header>
+				<Grid ColumnDefinitions="*,auto" RowDefinitions="auto,auto,auto,*,auto">
+					<TextBox Grid.Row="0" Grid.Column="0" Text="{Binding SearchText}" KeyDown="TextBox_KeyDown" Classes="clearButton" />
+					<Button Grid.Row="0" Grid.Column="1" Command="{Binding AcceptSearchTextCommand}" IsEnabled="{Binding MayAcceptSearchTextCommand}" Content="{x:Static lang:Resources.Ok}" />
 
-						<TextBlock Text="{x:Static lang:Resources.Translation_Second}" />
-						<ComboBox ItemsSource="{Binding Bibles}" SelectedItem="{Binding SelectedBible2}" MinWidth="250" HorizontalAlignment="Stretch">
-							<ComboBox.ItemTemplate>
-								<DataTemplate>
-									<TextBlock Text="{Binding Title}" />
-								</DataTemplate>
-							</ComboBox.ItemTemplate>
-						</ComboBox>
+					<TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding BibleSearchHintPreview}" />
+					<TextBlock Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding Error}" Foreground="Red" TextTrimming="CharacterEllipsis" />
 
-						<TextBlock Text="{x:Static lang:Resources.Translation_Third}" />
-						<ComboBox ItemsSource="{Binding Bibles}" SelectedItem="{Binding SelectedBible3}" MinWidth="250" HorizontalAlignment="Stretch">
-							<ComboBox.ItemTemplate>
-								<DataTemplate>
-									<TextBlock Text="{Binding Title}" />
-								</DataTemplate>
-							</ComboBox.ItemTemplate>
-						</ComboBox>
+					<StackPanel Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2"  Orientation="Horizontal">
+						<Button Content="{x:Static lang:Resources.Back}" IsEnabled="{Binding CanGoBack}" Command="{Binding BackVerseCommand}" />
+						<Button Content="{x:Static lang:Resources.Next}" IsEnabled="{Binding CanGoNext}" Command="{Binding NextVerseCommand}" />
 					</StackPanel>
-				</Expander>
-
-				<TextBlock HorizontalAlignment="Stretch" Text="{x:Static lang:Resources.Search_Colon}" />
-
-				<Grid ColumnDefinitions="*,auto">
-					<TextBox Grid.Column="0" Text="{Binding SearchText}" KeyDown="TextBox_KeyDown" Classes="clearButton" />
-					<Button Grid.Column="1" Command="{Binding AcceptSearchTextCommand}" IsEnabled="{Binding MayAcceptSearchTextCommand}" Content="{x:Static lang:Resources.Ok}" />
 				</Grid>
+			</TabItem>
 
-				<TextBlock Text="{Binding BibleSearchHintPreview}" />
-				<TextBlock Text="{Binding Error}" Foreground="Red" TextTrimming="CharacterEllipsis" />
+			<TabItem>
+				<TabItem.Header>
+					<TextBlock Text="{x:Static lang:Resources.Selection}" FontSize="{Binding FontSize, RelativeSource={RelativeSource AncestorType=Window}}" />
+				</TabItem.Header>
 
-				<StackPanel Orientation="Horizontal">
-					<Button Content="{x:Static lang:Resources.Back}" IsEnabled="{Binding CanGoBack}" Command="{Binding BackVerseCommand}" />
-					<Button Content="{x:Static lang:Resources.Next}" IsEnabled="{Binding CanGoNext}" Command="{Binding NextVerseCommand}" />
+				<Grid ColumnDefinitions="*,auto" RowDefinitions="auto,*">
+					<TextBlock Grid.Column="0" Grid.Row="0" Text="{x:Static lang:Resources.Book_Colon}" Margin="0 0 0 5" />
+					<ListBox Grid.Column="0" Grid.Row="1" ItemsSource="{Binding SelectedBible1.Books}" SelectedItem="{Binding SelectedBook}">
+						<ListBox.ItemTemplate>
+							<DataTemplate>
+								<TextBlock Text="{Binding Title}" />
+							</DataTemplate>
+						</ListBox.ItemTemplate>
+					</ListBox>
+
+					<TextBlock Grid.Column="1" Grid.Row="0" Text="{x:Static lang:Resources.Chapter_Colon}" Margin="0 0 0 5" />
+					<ListBox Grid.Column="1" Grid.Row="1" Margin="10 0 0 0" MinWidth="100" ItemsSource="{Binding SelectedBook.Chapters}" SelectedItem="{Binding SelectedChapter}" />
+				</Grid>
+			</TabItem>
+
+			<TabItem>
+				<TabItem.Header>
+					<TextBlock Text="{x:Static lang:Resources.Translation}" FontSize="{Binding FontSize, RelativeSource={RelativeSource AncestorType=Window}}" />
+				</TabItem.Header>
+				<StackPanel Spacing="10">
+					<TextBlock Text="{x:Static lang:Resources.Translation_First}" />
+					<ComboBox ItemsSource="{Binding Bibles}" SelectedItem="{Binding SelectedBible1}" MinWidth="250" HorizontalAlignment="Stretch">
+						<ComboBox.ItemTemplate>
+							<DataTemplate>
+								<TextBlock Text="{Binding Title}" />
+							</DataTemplate>
+						</ComboBox.ItemTemplate>
+					</ComboBox>
+
+					<TextBlock Text="{x:Static lang:Resources.Translation_Second}" />
+					<ComboBox ItemsSource="{Binding Bibles}" SelectedItem="{Binding SelectedBible2}" MinWidth="250" HorizontalAlignment="Stretch">
+						<ComboBox.ItemTemplate>
+							<DataTemplate>
+								<TextBlock Text="{Binding Title}" />
+							</DataTemplate>
+						</ComboBox.ItemTemplate>
+					</ComboBox>
+
+					<TextBlock Text="{x:Static lang:Resources.Translation_Third}" />
+					<ComboBox ItemsSource="{Binding Bibles}" SelectedItem="{Binding SelectedBible3}" MinWidth="250" HorizontalAlignment="Stretch">
+						<ComboBox.ItemTemplate>
+							<DataTemplate>
+								<TextBlock Text="{Binding Title}" />
+							</DataTemplate>
+						</ComboBox.ItemTemplate>
+					</ComboBox>
 				</StackPanel>
-			</StackPanel>
-		</ScrollViewer>
-
+			</TabItem>
+		</TabControl>
 		<GridSplitter Grid.Column="1" Background="Gray" ResizeDirection="Columns" Margin="10,0,10,0" />
 
 		<ListBox x:Name="ListBox" Grid.Column="2" ItemsSource="{Binding PreviewSelectedBiblePosition}" Height="{Binding $parent.Bounds.Height}" PointerReleased="ListBox_PointerReleased" SelectionMode="Multiple">
@@ -82,7 +102,8 @@
 						<TextBlock Grid.Column="0">
 							<TextBlock.Inlines>
 								<!--no line break between the runs, else we get a line break-->
-								<Run Text="{Binding Key}" /><Run Text=". " />
+								<Run Text="{Binding Key}" />
+								<Run Text=". " />
 							</TextBlock.Inlines>
 						</TextBlock>
 						<TextBlock Grid.Column="1" Text="{Binding Value}" TextWrapping="Wrap" />

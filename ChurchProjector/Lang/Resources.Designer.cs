@@ -160,6 +160,15 @@ namespace ChurchProjector.Lang {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Book:.
+        /// </summary>
+        public static string Book_Colon {
+            get {
+                return ResourceManager.GetString("Book_Colon", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Language_Books:.
         /// </summary>
         public static string BookLang_Colon {
@@ -174,6 +183,15 @@ namespace ChurchProjector.Lang {
         public static string Bottom {
             get {
                 return ResourceManager.GetString("Bottom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Chapter:.
+        /// </summary>
+        public static string Chapter_Colon {
+            get {
+                return ResourceManager.GetString("Chapter_Colon", resourceCulture);
             }
         }
         
@@ -585,6 +603,15 @@ namespace ChurchProjector.Lang {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Search.
+        /// </summary>
+        public static string Search {
+            get {
+                return ResourceManager.GetString("Search", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Search:.
         /// </summary>
         public static string Search_Colon {
@@ -599,6 +626,15 @@ namespace ChurchProjector.Lang {
         public static string SearchBiblePosition {
             get {
                 return ResourceManager.GetString("SearchBiblePosition", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select.
+        /// </summary>
+        public static string Selection {
+            get {
+                return ResourceManager.GetString("Selection", resourceCulture);
             }
         }
         

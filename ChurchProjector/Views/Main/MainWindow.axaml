@@ -60,7 +60,7 @@
                     <system:Boolean>true</system:Boolean>
                 </Button.CommandParameter>
             </Button>
-            <Button Content="{x:Static lang:Resources.BannerMessage}" Command="{Binding OpenShowNotificationCommand}" HotKey="Ctrl+N" ToolTip.Tip="Shortcut: STRG + N" />
+            <Button Content="{x:Static lang:Resources.BannerMessage}" Command="{Binding OpenShowNotificationCommand}" HotKey="Ctrl+M" ToolTip.Tip="Shortcut: STRG + M" />
         </StackPanel>
 
         <ListBox Name="LboImages" Grid.Row="1" Grid.Column="2" ItemsSource="{Binding Images.Images}" SelectedItem="{Binding SelectedImage}" Background="Transparent" Margin="10 20" KeyDown="ListBox_KeyUp">

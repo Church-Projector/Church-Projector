@@ -46,7 +46,7 @@ public partial class SongEditWindow : Window
                     _viewModel.Song.FilePath = file.Path.AbsolutePath;
                 }
                 _viewModel.Song.SaveSong();
-                // TODO Update current images?
+                Song = _viewModel.Song;
                 Close();
             }),
         };
@@ -54,6 +54,8 @@ public partial class SongEditWindow : Window
 
         this.SizeChanged += SongEditWindow_SizeChanged;
     }
+
+    public Classes.Song? Song { get; private set; }
 
     private void SongEditWindow_SizeChanged(object? sender, SizeChangedEventArgs e)
     {

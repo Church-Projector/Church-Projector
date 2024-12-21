@@ -1,4 +1,5 @@
 ﻿using Avalonia.Controls;
+using Avalonia.Dialogs;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Platform;
@@ -67,12 +68,25 @@ public partial class MainWindow : Window
                 _viewModel.ImageWindow.StopBanner();
             }
         });
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)){
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        {
             _viewModel.OpenLogsCommand = new RelayCommand(() => Process.Start("explorer.exe", Path.Combine(AppContext.BaseDirectory, "logs")));
-        } else {
+        }
+        else
+        {
             // todo
         }
-        _viewModel.EditCommand = new RelayCommand(() => new SongEditWindow(_viewModel.Images!.Filename!).ShowDialog(this));
+        _viewModel.EditCommand = new RelayCommand(async () =>
+        {
+            SongEditWindow songEditWindow = new(_viewModel.Images!.Filename!);
+            await songEditWindow.ShowDialog(this);
+            if (songEditWindow.Song is not null)
+            {
+                // TODO Auto select slide?
+                // Remove old entry from history?
+                _viewModel.RenderImages(songEditWindow.Song.Title, songEditWindow.Song.GetImages().ConvertAll(x => new ImageWithName(x.title, x.bitmap, x.isOverflowing)), songEditWindow.Song.FilePath);
+            }
+        });
         _viewModel.AddSongCommand = new RelayCommand(() => new SongEditWindow().ShowDialog(this));
 
         Screens.Changed += Screens_Changed;

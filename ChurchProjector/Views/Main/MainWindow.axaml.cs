@@ -1,5 +1,4 @@
 ﻿using Avalonia.Controls;
-using Avalonia.Dialogs;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Platform;
@@ -33,6 +32,7 @@ public partial class MainWindow : Window
     {
         _viewModel = null!;
         InitializeComponent();
+        LboImages.AddHandler(KeyDownEvent, ListBox_KeyDown, RoutingStrategies.Tunnel);
     }
 
     public MainWindow(SettingsViewModel settings) : this()
@@ -134,7 +134,7 @@ public partial class MainWindow : Window
         settingsWindow.Show(this);
     }
 
-    private void ListBox_KeyUp(object? sender, KeyEventArgs e)
+    private void ListBox_KeyDown(object? sender, KeyEventArgs e)
     {
         try
         {
@@ -157,15 +157,18 @@ public partial class MainWindow : Window
             if (e.Key == Key.Down)
             {
                 selectedImage = Math.Min(_viewModel.Images.Images.Count - 1, selectedImage + columnsCount);
+                e.Handled = true;
             }
             else if (e.Key == Key.Up)
             {
                 selectedImage = Math.Max(0, selectedImage - columnsCount);
+                e.Handled = true;
             }
-            //else if (e.Key == Key.Enter)
-            //{
-            //    selectedImage = Math.Min(_viewModel.Images.Images.Count - 1, selectedImage + 1);
-            //}
+            else if (e.Key == Key.Enter)
+            {
+                selectedImage = Math.Min(_viewModel.Images.Images.Count - 1, selectedImage + 1);
+                e.Handled = true;
+            }
 
             _viewModel.SelectedImage = _viewModel.Images.Images[selectedImage];
             listBoxItems[selectedImage].Focus();

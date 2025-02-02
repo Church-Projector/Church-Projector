@@ -27,14 +27,14 @@ public partial class ImageWindow : Window
         {
             return;
         }
-        ViewModel.BannerVisible = true;
+        ViewModel.IsBannerVisible = true;
         SpBanner.Children.Clear();
         for (int i = 0; i < REPETITION_COUNT; i++)
         {
             TextBlock bannerText = new()
             {
                 Text = ViewModel.BannerText,
-                FontSize = GlobalConfig.JsonFile.Settings.BannerSettings.TextSize,
+                FontSize = ViewModel.TextSize,
                 Foreground = Brushes.White,
                 Margin = new Thickness(BannerPadding),
                 HorizontalAlignment = HorizontalAlignment.Right,
@@ -120,7 +120,7 @@ public partial class ImageWindow : Window
 
     internal void StopBanner()
     {
-        ViewModel.BannerVisible = false;
+        ViewModel.IsBannerVisible = false;
         SpBanner.Children.Clear();
     }
 }

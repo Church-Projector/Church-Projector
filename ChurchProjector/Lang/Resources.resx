@@ -386,4 +386,7 @@ The paths can be edited later in the settings.</value>
   <data name="Chapter_Colon" xml:space="preserve">
     <value>Chapter:</value>
   </data>
+  <data name="ShowClock_Colon" xml:space="preserve">
+    <value>Show clock:</value>
+  </data>
 </root>

@@ -20,6 +20,8 @@ public class Settings : ObservableObject
 {
     public Theme Theme { get; set; } = Theme.Light;
     public Language Language { get; set; } = Language.Windows;
+    private bool _showClock;
+    public bool ShowClock { get => _showClock; set => SetProperty(ref _showClock, value); }
 
     public OutputDisplaySettings OutputDisplaySettings { get; set; } = new();
     public DisplayConfiguration DisplayConfiguration { get; set; } = new();
@@ -87,7 +89,7 @@ public partial class OutputDisplaySettings : ObservableObject
 
 public class BannerSettings
 {
-    public int Speed { get; set; } = 20;
+    public int Speed { get; set; } = 8;
     public int TextSize { get; set; } = 20;
     public int Fps { get; set; } = 200;
 }

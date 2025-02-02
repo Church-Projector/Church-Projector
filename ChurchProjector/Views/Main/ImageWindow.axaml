@@ -16,7 +16,7 @@
 		SystemDecorations="None"
 		x:DataType="local:ImageViewModel"
 		ShowInTaskbar="False">
-	
+
 	<Grid RowDefinitions="*,Auto">
 		<Image
             Name="ImageView"
@@ -26,9 +26,18 @@
 			Opacity="{Binding Opacity}" />
 
 		<StackPanel
-			Name="SpBanner"
             Grid.Row="1"
 			Orientation="Horizontal"
-			IsVisible="{Binding BannerVisible}" />
+			IsVisible="{Binding ShowBottomBar}">
+			<TextBlock
+				Text="{Binding ClockText}"
+				IsVisible="{Binding IsClockVisible}"
+				FontSize="{Binding TextSize}"
+				Width="250" />
+			<StackPanel
+				Name="SpBanner"
+				Orientation="Horizontal"
+				IsVisible="{Binding IsBannerVisible}" />
+		</StackPanel>
 	</Grid>
 </Window>

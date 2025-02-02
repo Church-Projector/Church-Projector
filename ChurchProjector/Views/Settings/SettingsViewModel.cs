@@ -64,7 +64,7 @@ public partial class SettingsViewModel : ObservableObject
         get => SelectedMonitore.Value.Bounds.Position;
     }
 
-    public string BannerFontSizeText => $"{Lang.Resources.FontSize_Colon}: {BannerFontSize}";
+    public string BannerFontSizeText => $"{Lang.Resources.FontSize_Colon} {BannerFontSize}";
     #endregion
 
     public List<Theme> Themes { get; } = Enum.GetValues<Theme>().ToList();
@@ -101,6 +101,12 @@ public partial class SettingsViewModel : ObservableObject
     [ObservableProperty]
     private WindowState _windowState = WindowState.FullScreen;
     #endregion
+
+    public bool ShowClock
+    {
+        get => GlobalConfig.JsonFile.Settings.ShowClock;
+        set => GlobalConfig.JsonFile.Settings.ShowClock = value;
+    }
 
     #region paths
     public string? BiblesPath

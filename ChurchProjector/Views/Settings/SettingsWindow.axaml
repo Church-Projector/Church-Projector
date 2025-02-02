@@ -37,7 +37,7 @@
 			Grid.Column="0"
 			Grid.ColumnSpan="3">
 			<TabItem Header="{x:Static lang:Resources.Window}">
-				<Grid RowDefinitions="auto,auto,auto,auto,auto">
+				<Grid RowDefinitions="auto,auto,auto,auto,auto,auto">
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="auto" />
 						<ColumnDefinition Width="*" MinWidth="150" />
@@ -108,7 +108,7 @@
 							</DataTemplate>
 						</ComboBox.ItemTemplate>
 					</ComboBox>
-					
+
 					<!-- TopMost -->
 					<Label
 						Grid.Column="0"
@@ -120,6 +120,18 @@
 						Grid.Row="4"
 						Margin="5"
 						IsChecked="{Binding Settings.OutputDisplaySettings.TopMost}" />
+
+					<!-- ShowClock -->
+					<Label
+						Grid.Column="0"
+						Grid.Row="5"
+						VerticalAlignment="Center"
+						Content="{x:Static lang:Resources.ShowClock_Colon}"/>
+					<CheckBox
+						Grid.Column="1"
+						Grid.Row="5"
+						Margin="5"
+						IsChecked="{Binding Settings.ShowClock}" />
 				</Grid>
 			</TabItem>
 

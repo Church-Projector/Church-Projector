@@ -385,4 +385,7 @@ Die Pfade können später in den Einstellungen bearbeitet werden.</value>
   <data name="Chapter_Colon" xml:space="preserve">
     <value>Kapitel:</value>
   </data>
+  <data name="ShowClock_Colon" xml:space="preserve">
+    <value>Uhrzeit anzeigen:</value>
+  </data>
 </root>

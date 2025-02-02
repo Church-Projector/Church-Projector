@@ -657,6 +657,15 @@ namespace ChurchProjector.Lang {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Show clock:.
+        /// </summary>
+        public static string ShowClock_Colon {
+            get {
+                return ResourceManager.GetString("ShowClock_Colon", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Slow hide.
         /// </summary>
         public static string SlowHide {

@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        platform: [win-x64] # linux-arm64, linux-x64
+        platform: [linux-arm64, linux-x64, win-x64]
     steps:
       - name: Setup Node.js
         uses: actions/setup-node@v4

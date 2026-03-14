@@ -86,7 +86,7 @@ public class Bible
                 {
                     using StreamReader sr = new(stream);
                     List<string> lines = sr.ReadToEnd().Split(Environment.NewLine).ToList();
-                    if (lines.Count <= bookNumber)
+                    if (lines.Count < bookNumber)
                     {
                         return bookName;
                     }
@@ -97,7 +97,7 @@ public class Bible
                 {
                     using StreamReader sr = new(stream);
                     List<string> lines = sr.ReadToEnd().Split(Environment.NewLine).ToList();
-                    if (lines.Count <= bookNumber)
+                    if (lines.Count < bookNumber)
                     {
                         return bookName;
                     }
@@ -108,7 +108,7 @@ public class Bible
                 {
                     using StreamReader sr = new(stream);
                     List<string> lines = sr.ReadToEnd().Split(Environment.NewLine).ToList();
-                    if (lines.Count <= bookNumber)
+                    if (lines.Count < bookNumber)
                     {
                         return bookName;
                     }

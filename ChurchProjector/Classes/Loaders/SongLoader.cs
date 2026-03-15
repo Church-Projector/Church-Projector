@@ -23,7 +23,7 @@ public static class SongLoader
                     }
                     catch (Exception ex)
                     {
-                        Log.Error(ex, "Fehler bei dem Laden der Liedes \"{0}\". Meldung: \"{1}\"", Path.GetFileName(song), ex.Message);
+                        Log.Error(ex, "An error loading the song \"{0}\" happend. Exception: \"{1}\"", Path.GetFileName(song), ex.Message);
                     }
                 }
             }

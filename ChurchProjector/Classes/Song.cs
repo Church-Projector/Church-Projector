@@ -86,10 +86,12 @@ public class Song : ObservableObject
         // Some have an empty verse at the end
         verses = verses.Where(x => !x.Lines.All(string.IsNullOrWhiteSpace)).ToList();
 
+        var tagLines = lines.Where(X => X.StartsWith('#')).Distinct().ToList();
+        
         return new Song()
         {
             FilePath = filename,
-            Tags = lines.Where(X => X.StartsWith('#')).ToDictionary(x => x.Substring(1).Split('=', 2)[0], x => x.Split('=', 2).Skip(1).FirstOrDefault()),
+            Tags = tagLines.ToDictionary(x => x.Substring(1).Split('=', 2)[0], x => x.Split('=', 2).Skip(1).FirstOrDefault()),
             Verses = new ObservableCollection<Verse>(verses),
         };
     }

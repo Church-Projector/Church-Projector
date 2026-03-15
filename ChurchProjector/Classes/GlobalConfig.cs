@@ -7,27 +7,26 @@ using System.Text.Json;
 namespace ChurchProjector.Classes;
 public static class GlobalConfig
 {
-    private static JsonFile? _jsonFile;
     public static JsonFile JsonFile
     {
         get
         {
-            if (_jsonFile == null)
+            if (field == null)
             {
                 if (File.Exists(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Configuration.json")))
                 {
-                    _jsonFile = JsonSerializer.Deserialize(File.ReadAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Configuration.json")), typeof(JsonFile), JsonContext.Default) as JsonFile;
-                    if (_jsonFile == null)
+                    field = JsonSerializer.Deserialize(File.ReadAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Configuration.json")), typeof(JsonFile), JsonContext.Default) as JsonFile;
+                    if (field == null)
                     {
                         throw new InvalidOperationException($"The json file could not be read.");
                     }
                 }
                 else
                 {
-                    _jsonFile = new JsonFile();
+                    field = new JsonFile();
                 }
             }
-            return _jsonFile;
+            return field;
         }
     }
 
@@ -43,6 +42,9 @@ public static class GlobalConfig
 
 public class HasError : ObservableObject
 {
-    private bool _value;
-    public bool Value { get => _value; set => SetProperty(ref _value, value); }
+    public bool Value
+    {
+        get;
+        set => SetProperty(ref field, value);
+    }
 }

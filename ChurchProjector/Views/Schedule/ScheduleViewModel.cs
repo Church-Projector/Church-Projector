@@ -37,8 +37,12 @@ public partial class ScheduleViewModel : ObservableObject
     }
 
     public ObservableCollection<ScheduleEntry> Schedules { get; }
-    private ICommand? _openScheduleEntryCommand;
-    public ICommand? OpenScheduleEntryCommand { get => _openScheduleEntryCommand; set => SetProperty(ref _openScheduleEntryCommand, value); }
+
+    public ICommand? OpenScheduleEntryCommand
+    {
+        get;
+        set => SetProperty(ref field, value);
+    }
 
     [RelayCommand]
     private void RemoveScheduleEntry(ScheduleEntry scheduleEntry)

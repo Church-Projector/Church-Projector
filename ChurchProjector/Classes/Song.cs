@@ -207,21 +207,23 @@ public static class SongExtensions
 {
     public static List<(string title, Bitmap bitmap, bool isOverflowing)> GetImages(this Song song)
     {
-        List<KeyValuePair<string, (string Title, Bitmap bitmap, bool isOverflowing)>> dic = song.Verses.Select(verse =>
-    {
-        var renderResult = DrawingHelper.GetImage(new DrawingHelper.ImageCreation()
-        {
-            Configuration = GlobalConfig.JsonFile.Settings.DisplayConfiguration.SongConfiguration,
-            LangCount = song.LangCount,
-            ImageCreationContent =
-        [
-            new()
+        List<KeyValuePair<string, (string Title, Bitmap bitmap, bool isOverflowing)>> dic = song.Verses
+            .AsParallel()
+            .Select(verse =>
+            {
+                var renderResult = DrawingHelper.GetImage(new DrawingHelper.ImageCreation()
                 {
-                    Header = song.ChurchSongID,
-                    Content = verse.Lines,
-                }
-        ]
-        });
+                    Configuration = GlobalConfig.JsonFile.Settings.DisplayConfiguration.SongConfiguration,
+                    LangCount = song.LangCount,
+                    ImageCreationContent =
+                    [
+                        new()
+                        {
+                            Header = song.ChurchSongID,
+                            Content = verse.Lines,
+                        }
+                    ]
+                });
         return new KeyValuePair<string, (string Title, Bitmap bitmap, bool isOverflowing)>(verse.Title, (verse.Title, renderResult.bitmap, renderResult.isOverflowing));
     }).ToList();
 

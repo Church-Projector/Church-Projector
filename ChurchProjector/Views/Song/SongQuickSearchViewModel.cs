@@ -6,21 +6,21 @@ using System.Windows.Input;
 namespace ChurchProjector.Views.Song;
 public class SongQuickSearchViewModel : ObservableObject
 {
-    private string _shortcut = string.Empty;
     public string Shortcut
     {
-        get => _shortcut;
+        get;
         set
         {
-            if (_shortcut != value)
+            if (field != value)
             {
-                _shortcut = value;
+                field = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(HasShortcut));
                 OnPropertyChanged(nameof(MatchedSong));
             }
         }
-    }
+    } = string.Empty;
+
     public bool HasShortcut => !string.IsNullOrEmpty(MatchedSong);
     public string? MatchedSong
     {

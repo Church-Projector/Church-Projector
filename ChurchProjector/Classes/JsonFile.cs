@@ -20,8 +20,12 @@ public class Settings : ObservableObject
 {
     public Theme Theme { get; set; } = Theme.Light;
     public Language Language { get; set; } = Language.Windows;
-    private bool _showClock;
-    public bool ShowClock { get => _showClock; set => SetProperty(ref _showClock, value); }
+
+    public bool ShowClock
+    {
+        get;
+        set => SetProperty(ref field, value);
+    }
 
     public OutputDisplaySettings OutputDisplaySettings { get; set; } = new();
     public DisplayConfiguration DisplayConfiguration { get; set; } = new();
@@ -35,7 +39,11 @@ public class Settings : ObservableObject
 
 public class DisplayConfiguration : ObservableObject
 {
-    private ImageCreationConfiguration _songConfiguration = new()
+    public ImageCreationConfiguration SongConfiguration
+    {
+        get;
+        set => SetProperty(ref field, value);
+    } = new()
     {
         Header = new()
         {
@@ -56,9 +64,12 @@ public class DisplayConfiguration : ObservableObject
             MaxFontSize = 40,
         },
     };
-    public ImageCreationConfiguration SongConfiguration { get => _songConfiguration; set => SetProperty(ref _songConfiguration, value); }
 
-    private ImageCreationConfiguration _bibleConfiguration = new()
+    public ImageCreationConfiguration BibleConfiguration
+    {
+        get;
+        set => SetProperty(ref field, value);
+    } = new()
     {
         Header = new()
         {
@@ -79,7 +90,6 @@ public class DisplayConfiguration : ObservableObject
             HorizontalAlignment = HorizontalAlignment.Right,
         },
     };
-    public ImageCreationConfiguration BibleConfiguration { get => _bibleConfiguration; set => SetProperty(ref _bibleConfiguration, value); }
 }
 
 public partial class OutputDisplaySettings : ObservableObject
@@ -97,17 +107,18 @@ public class BannerSettings
 public class PathSettings : ObservableObject
 {
     private FileSystemWatcher? _biblesFileSystemWatcher = null;
-    private string? _biblePath;
+
     public string? BiblePath
     {
-        get => _biblePath;
+        get;
         set
         {
-            if (_biblePath != value)
+            if (field != value)
             {
-                _biblePath = value;
+                field = value;
                 OnPropertyChanged();
-                _biblesFileSystemWatcher = CreateFileSystemWatcher(_biblesFileSystemWatcher, _biblePath, ["*.xml", "*.spb"], _bibleFileSystemWatcher_Changed, _bibleFileSystemWatcher_Changed);
+                _biblesFileSystemWatcher = CreateFileSystemWatcher(_biblesFileSystemWatcher, field, ["*.xml", "*.spb"],
+                    _bibleFileSystemWatcher_Changed, _bibleFileSystemWatcher_Changed);
                 new Task(() => BibleLoader.LoadBibles(value, CancellationToken.None)).Start();
             }
         }
@@ -119,17 +130,18 @@ public class PathSettings : ObservableObject
     }
 
     private FileSystemWatcher? _songsFileSystemWatcher = null;
-    private string? _songPath;
+
     public string? SongPath
     {
-        get => _songPath;
+        get;
         set
         {
-            if (_songPath != value)
+            if (field != value)
             {
-                _songPath = value;
+                field = value;
                 OnPropertyChanged();
-                _songsFileSystemWatcher = CreateFileSystemWatcher(_songsFileSystemWatcher, _songPath, ["*.sng"], _songsFileSystemWatcher_Changed, _songsFileSystemWatcher_Changed);
+                _songsFileSystemWatcher = CreateFileSystemWatcher(_songsFileSystemWatcher, field, ["*.sng"],
+                    _songsFileSystemWatcher_Changed, _songsFileSystemWatcher_Changed);
                 new Task(() => SongLoader.LoadSongs(value, CancellationToken.None)).Start();
             }
         }

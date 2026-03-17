@@ -13,36 +13,35 @@ public class SongSearchViewModel : ObservableObject
         .ThenBy(x => !x.Title.StartsWith(SearchText, System.StringComparison.InvariantCultureIgnoreCase))
         .ThenBy(x => !_searchPartsLowerInvariant.All(y => x.Title.ToLowerInvariant().Contains(y)))];
 
-    private Classes.Song? _selectedSong;
     public Classes.Song? SelectedSong
     {
-        get => _selectedSong;
+        get;
         set
         {
-            if (_selectedSong != value)
+            if (field != value)
             {
-                _selectedSong = value;
+                field = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(HasSongSelected));
             }
         }
     }
 
-    private string _searchText = string.Empty;
     public string SearchText
     {
-        get => _searchText;
+        get;
         set
         {
-            if (_searchText != value)
+            if (field != value)
             {
-                _searchText = value;
+                field = value;
                 _searchPartsLowerInvariant = value.ToLowerInvariant().Split(" ");
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(Songs));
             }
         }
-    }
+    } = string.Empty;
+
     private string[] _searchPartsLowerInvariant = [];
 
     public bool HasSongSelected => SelectedSong is not null;

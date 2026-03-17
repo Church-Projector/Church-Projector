@@ -55,15 +55,15 @@ public partial class ImageViewModel : ObservableObject
     public Action? MediaEnded;
 
     private CancellationTokenSource? _cancellationTokenSource = null;
-    private IImage? _imageSource;
+
     public IImage? ImageSource
     {
-        get => _imageSource;
+        get;
         set
         {
             _cancellationTokenSource?.Cancel();
             Opacity = 1;
-            SetProperty(ref _imageSource, value);
+            SetProperty(ref field, value);
         }
     }
 
@@ -135,17 +135,16 @@ public partial class ImageViewModel : ObservableObject
     }
     public bool ShowBottomBar => _isBannerVisible || _isClockVisible;
 
-    private string? _bannerText = null;
     public string? BannerText
     {
-        get => string.IsNullOrWhiteSpace(_bannerText) ? null : string.Concat(Enumerable.Range(0, 20).Select(x => $"{_bannerText.Trim()} +++ ")).Trim();
-        set => SetProperty(ref _bannerText, value);
-    }
-    private string? _clockText;
+        get => string.IsNullOrWhiteSpace(field) ? null : string.Concat(Enumerable.Range(0, 20).Select(x => $"{field.Trim()} +++ ")).Trim();
+        set => SetProperty(ref field, value);
+    } = null;
+
     public string? ClockText
     {
-        get => _clockText;
-        set => SetProperty(ref _clockText, value);
+        get;
+        set => SetProperty(ref field, value);
     }
 
     public SettingsViewModel Settings { get; set; }

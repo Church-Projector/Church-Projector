@@ -5,8 +5,12 @@ using System.Collections.ObjectModel;
 namespace ChurchProjector.Classes.Configuration.Image;
 public class ImageCreationItemConfiguration : ObservableObject
 {
-    private HorizontalAlignment _horizontalAlignment;
-    public HorizontalAlignment HorizontalAlignment { get => _horizontalAlignment; set => SetProperty(ref _horizontalAlignment, value); }
+    public HorizontalAlignment HorizontalAlignment
+    {
+        get;
+        set => SetProperty(ref field, value);
+    }
+
     public ObservableCollection<Color> Colors { get; set; } =
     [
         // First translation should be white, then red and then random generated.
@@ -28,8 +32,16 @@ public class ImageCreationItemConfiguration : ObservableObject
         }
         return Colors[index].Value;
     }
-    private float _minFontSize;
-    public float MinFontSize { get => _minFontSize; set => SetProperty(ref _minFontSize, value); }
-    private float _maxFontSize;
-    public float MaxFontSize { get => _maxFontSize; set => SetProperty(ref _maxFontSize, value); }
+
+    public float MinFontSize
+    {
+        get;
+        set => SetProperty(ref field, value);
+    }
+
+    public float MaxFontSize
+    {
+        get;
+        set => SetProperty(ref field, value);
+    }
 }

@@ -9,31 +9,30 @@ using System.Windows.Input;
 namespace ChurchProjector.Views.Bible;
 public class BibleSearchViewModel : ObservableObject
 {
-    private string? _searchText;
     public string? SearchText
     {
-        get => _searchText;
+        get;
         set
         {
-            if (_searchText != value)
+            if (field != value)
             {
-                _searchText = value;
+                field = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(Verses));
             }
         }
     }
+
     public ObservableCollection<Classes.Bible?> Bibles => GlobalConfig.Bibles;
 
-    private Classes.Bible? _selectedBible;
     public Classes.Bible? SelectedBible
     {
-        get => _selectedBible;
+        get;
         set
         {
-            if (_selectedBible != value)
+            if (field != value)
             {
-                _selectedBible = value;
+                field = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(Verses));
             }
@@ -44,15 +43,14 @@ public class BibleSearchViewModel : ObservableObject
         .Where(x => x.Content.Contains(SearchText, StringComparison.OrdinalIgnoreCase))
         .OrderBy(x => !x.Content.StartsWith(SearchText.Trim(), StringComparison.OrdinalIgnoreCase)).ToList() ?? [];
 
-    private ExactVerse? _selectedVerse;
     public ExactVerse? SelectedVerse
     {
-        get => _selectedVerse;
+        get;
         set
         {
-            if (_selectedVerse != value)
+            if (field != value)
             {
-                _selectedVerse = value;
+                field = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(HasVerseSelected));
             }

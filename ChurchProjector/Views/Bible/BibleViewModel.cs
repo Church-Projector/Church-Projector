@@ -42,15 +42,15 @@ public partial class BibleViewModel : ObservableObject
     }
 
     public ObservableCollection<Classes.Bible?> Bibles => GlobalConfig.Bibles;
-    private Classes.Bible? _selectedBible1;
+
     public Classes.Bible? SelectedBible1
     {
-        get => _selectedBible1;
+        get;
         set
         {
-            if (_selectedBible1 != value)
+            if (field != value)
             {
-                _selectedBible1 = value;
+                field = value;
                 OnPropertyChanged();
                 SetBiblePosition(SelectedBookPart, SelectedChapter, SelectedVerseStart, SelectedVerseEnd);
                 if (value is null || value.Filename != GlobalConfig.JsonFile.SelectedBibles.FirstOrDefault())
@@ -61,15 +61,14 @@ public partial class BibleViewModel : ObservableObject
         }
     }
 
-    private Classes.Bible? _selectedBible2;
     public Classes.Bible? SelectedBible2
     {
-        get => _selectedBible2;
+        get;
         set
         {
-            if (_selectedBible2 != value)
+            if (field != value)
             {
-                _selectedBible2 = value;
+                field = value;
                 if (value is null || value.Filename != GlobalConfig.JsonFile.SelectedBibles.Skip(1).FirstOrDefault())
                 {
                     UpdateConfiguredBibles();
@@ -78,15 +77,14 @@ public partial class BibleViewModel : ObservableObject
         }
     }
 
-    private Classes.Bible? _selectedBible3;
     public Classes.Bible? SelectedBible3
     {
-        get => _selectedBible3;
+        get;
         set
         {
-            if (_selectedBible3 != value)
+            if (field != value)
             {
-                _selectedBible3 = value;
+                field = value;
                 if (value is null || value.Filename != GlobalConfig.JsonFile.SelectedBibles.Skip(2).FirstOrDefault())
                 {
                     UpdateConfiguredBibles();
@@ -107,15 +105,14 @@ public partial class BibleViewModel : ObservableObject
         .ToList();
     }
 
-    private string? _searchText;
     public string? SearchText
     {
-        get => _searchText;
+        get;
         set
         {
-            if (_searchText != value)
+            if (field != value)
             {
-                _searchText = value;
+                field = value;
                 OnPropertyChanged();
 
                 if (SelectedBible1 is null || string.IsNullOrWhiteSpace(SearchText))
@@ -123,14 +120,22 @@ public partial class BibleViewModel : ObservableObject
                     SetBiblePosition(bookName: null, chapter: null, verseStart: null, verseEnd: null);
                     return;
                 }
+
                 Match match = BiblePositionRegex().Match(SearchText);
                 SetBiblePosition(bookName: $"{match.Groups[1]} {match.Groups[2]}".Trim(),
-                                 chapter: match.Groups[3].Success && int.TryParse(match.Groups[3].Value, out int chapter) ? chapter : null,
-                                 verseStart: match.Groups[4].Success && int.TryParse(match.Groups[4].Value, out int verseStart) ? verseStart : null,
-                                 verseEnd: match.Groups[5].Success && int.TryParse(match.Groups[5].Value, out int verseEnd) ? verseEnd : null);
+                    chapter: match.Groups[3].Success && int.TryParse(match.Groups[3].Value, out int chapter)
+                        ? chapter
+                        : null,
+                    verseStart: match.Groups[4].Success && int.TryParse(match.Groups[4].Value, out int verseStart)
+                        ? verseStart
+                        : null,
+                    verseEnd: match.Groups[5].Success && int.TryParse(match.Groups[5].Value, out int verseEnd)
+                        ? verseEnd
+                        : null);
             }
         }
     }
+
     private string GetChars(string text) => string.Concat(text.Where(c => char.IsLetter(c) || char.IsDigit(c)));
 
     internal void SetBiblePosition(string? bookName, int? chapter, int? verseStart, int? verseEnd)
@@ -228,15 +233,14 @@ public partial class BibleViewModel : ObservableObject
     [ObservableProperty]
     private string? _selectedBookPart;
 
-    private Book? _selectedBook;
     public Book? SelectedBook
     {
-        get => _selectedBook;
+        get;
         set
         {
             if (SelectedBible1 is null)
             {
-                SetProperty(ref _selectedBook, null);
+                SetProperty(ref field, null);
                 return;
             }
 
@@ -246,24 +250,25 @@ public partial class BibleViewModel : ObservableObject
 
                 Match match = BiblePositionRegex().Match(SearchText ?? "");
                 if (string.IsNullOrWhiteSpace(SearchText)
-                    || !GetChars(value.SearchTitle).StartsWith(GetChars($"{match.Groups[1]} {match.Groups[2]}".Trim()), StringComparison.OrdinalIgnoreCase))
+                    || !GetChars(value.SearchTitle).StartsWith(GetChars($"{match.Groups[1]} {match.Groups[2]}".Trim()),
+                        StringComparison.OrdinalIgnoreCase))
                 {
                     SearchText = value.SearchTitle;
                 }
             }
-            SetProperty(ref _selectedBook, value);
+
+            SetProperty(ref field, value);
         }
     }
 
-    private int? _selectedChapter;
     public int? SelectedChapter
     {
-        get => _selectedChapter;
+        get;
         set
         {
             if (SelectedBook is null)
             {
-                SetProperty(ref _selectedChapter, null);
+                SetProperty(ref field, null);
                 return;
             }
 
@@ -273,13 +278,16 @@ public partial class BibleViewModel : ObservableObject
                 // No need to check the book. That should already be correct.
 
                 Match match = BiblePositionRegex().Match(SearchText ?? "");
-                int? chapter = match.Groups[3].Success && int.TryParse(match.Groups[3].Value, out int tempChapter) ? tempChapter : null;
+                int? chapter = match.Groups[3].Success && int.TryParse(match.Groups[3].Value, out int tempChapter)
+                    ? tempChapter
+                    : null;
                 if (chapter != value)
                 {
                     SearchText = $"{match.Groups[1]} {match.Groups[2]} {value}".Trim();
                 }
             }
-            SetProperty(ref _selectedChapter, value);
+
+            SetProperty(ref field, value);
         }
     }
 
@@ -389,21 +397,21 @@ public partial class BibleViewModel : ObservableObject
     }
 
 
-    private string? _error;
     public string? Error
     {
-        get => _error;
+        get;
         set
         {
-            if (_error != value)
+            if (field != value)
             {
-                _error = value;
+                field = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(HasError));
                 OnPropertyChanged(nameof(MayAcceptSearchTextCommand));
             }
         }
     }
+
     public bool HasError => !string.IsNullOrEmpty(Error);
 
     public required ICommand AcceptSearchTextCommand { get; set; }

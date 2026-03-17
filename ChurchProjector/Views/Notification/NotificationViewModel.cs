@@ -4,20 +4,20 @@ using System.Windows.Input;
 namespace ChurchProjector.Views.Notification;
 public class NotificationViewModel : ObservableObject
 {
-    private string _notification = string.Empty;
     public string Notification
     {
-        get => _notification;
+        get;
         set
         {
-            if (_notification != value)
+            if (field != value)
             {
-                _notification = value;
+                field = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(HasNotification));
             }
         }
-    }
+    } = string.Empty;
+
     public bool HasNotification => !string.IsNullOrWhiteSpace(Notification);
 
     public required ICommand ShowNotificationCommand { get; init; }

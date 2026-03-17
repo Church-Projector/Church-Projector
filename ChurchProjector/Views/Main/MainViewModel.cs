@@ -30,17 +30,17 @@ namespace ChurchProjector.Views.Main;
 public partial class MainViewModel : ObservableObject
 {
     public string TempDirectory { get; }
-    private PresentationFile? _images = null;
+
     public PresentationFile? Images
     {
-        get => _images;
+        get;
         set
         {
-            if (_images != value)
+            if (field != value)
             {
-                if (_images is not null)
+                if (field is not null)
                 {
-                    foreach (ImageWithName image in _images.Images)
+                    foreach (ImageWithName image in field.Images)
                     {
                         if (!HistoryViewModel.Histories.Any(hi => hi.Images.Contains(image)))
                         {
@@ -48,6 +48,7 @@ public partial class MainViewModel : ObservableObject
                         }
                     }
                 }
+
                 if (Presentation is not null)
                 {
                     Presentation.Close();
@@ -55,15 +56,17 @@ public partial class MainViewModel : ObservableObject
                     {
                         Marshal.FinalReleaseComObject(Presentation);
                     }
+
                     Presentation = null;
                 }
+
                 SelectedImage = null;
-                _images = value;
+                field = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(MayEdit));
             }
         }
-    }
+    } = null;
 
     public Application? PowerPoint { get; }
     public Presentation? Presentation { get; set; }
@@ -179,20 +182,20 @@ public partial class MainViewModel : ObservableObject
 
     public BibleViewModel BibleViewModel { get; set; }
 
-    private string? _updateText;
     public string? UpdateText
     {
-        get => _updateText;
+        get;
         set
         {
-            if (_updateText != value)
+            if (field != value)
             {
-                _updateText = value;
+                field = value;
                 OnPropertyChanged(nameof(UpdateText));
                 OnPropertyChanged(nameof(MayUpdate));
             }
         }
     }
+
     public bool MayUpdate => !string.IsNullOrEmpty(UpdateText);
 
     public ImageWindow ImageWindow { get; }

@@ -4,8 +4,10 @@ using Avalonia.Input;
 using Avalonia.VisualTree;
 using ChurchProjector.Classes.Schedule;
 using System.Linq;
+using Avalonia.Platform.Storage;
 
 namespace ChurchProjector.Views.Schedule;
+
 public partial class ScheduleView : UserControl
 {
     public ScheduleView()
@@ -24,14 +26,16 @@ public partial class ScheduleView : UserControl
         {
             return;
         }
-        if (e.Data.GetFiles() is { } fileNames)
+
+        var files = e.DataTransfer.TryGetFiles();
+        if (files is not null)
         {
-            foreach (Avalonia.Platform.Storage.IStorageItem file in fileNames)
+            foreach (IStorageItem file in files)
             {
                 viewModel.Schedules.Add(ScheduleEntry.FromFile(file.Path.LocalPath));
             }
         }
-        else if (e.Data.Get(nameof(ScheduleEntry)) is ScheduleEntry scheduleEntry)
+        else if (e.DataTransfer is ScheduleEntryDataTransfer { ScheduleEntry: { } scheduleEntry })
         {
             Point position = e.GetPosition(LboSchedules);
             ScheduleEntry? otherEntry = LboSchedules.GetVisualDescendants()
@@ -48,15 +52,14 @@ public partial class ScheduleView : UserControl
 
     private async void Svg_PointerPressed(object? sender, PointerPressedEventArgs e)
     {
-        if (DataContext is not ScheduleViewModel viewModel || sender is not Visual visual || visual.DataContext is not ScheduleEntry scheduleEntry)
+        if (DataContext is not ScheduleViewModel viewModel || sender is not Visual visual ||
+            visual.DataContext is not ScheduleEntry scheduleEntry)
         {
             return;
         }
 
-        Point mousePos = e.GetPosition(LboSchedules);
-        DataObject dragData = new();
-        dragData.Set(nameof(ScheduleEntry), scheduleEntry);
-        await DragDrop.DoDragDrop(e, dragData, DragDropEffects.Move);
+        await DragDrop.DoDragDropAsync(e, new ScheduleEntryDataTransfer() { ScheduleEntry = scheduleEntry },
+            DragDropEffects.Move);
     }
 
     private void DragOver(object? sender, DragEventArgs e)
@@ -65,7 +68,8 @@ public partial class ScheduleView : UserControl
         {
             return;
         }
-        if (e.Data.Get(nameof(ScheduleEntry)) is ScheduleEntry scheduleEntry)
+
+        if (e.DataTransfer is ScheduleEntryDataTransfer { ScheduleEntry: { } scheduleEntry })
         {
             Point position = e.GetPosition(LboSchedules);
             ScheduleEntry? otherEntry = LboSchedules.GetVisualDescendants()
@@ -78,6 +82,7 @@ public partial class ScheduleView : UserControl
             {
                 return;
             }
+
             int otherIndex = viewModel.Schedules.IndexOf(otherEntry);
             viewModel.Schedules.Remove(scheduleEntry);
             viewModel.Schedules.Insert(otherIndex, scheduleEntry);

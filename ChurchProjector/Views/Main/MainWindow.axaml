@@ -77,7 +77,7 @@
                         <Grid RowDefinitions="auto,*" ColumnDefinitions="*,auto">
                             <TextBlock Grid.Row="0" Grid.Column="0" Text="{Binding Title}"/>
                             <Svg Grid.Row="0" Grid.Column="1" IsVisible="{Binding IsOverflowing}" Path="/Assets/error.svg" ToolTip.Tip="Der Text überschreitet die Höhe." />
-                            <Image Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" MaxWidth="250" MaxHeight="250" Source="{Binding Image}"/>
+                            <Image Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" MaxWidth="250" MaxHeight="250" Source="{Binding Image}" RenderOptions.BitmapInterpolationMode="HighQuality"  />
                         </Grid>
                     </Border>
                 </DataTemplate>

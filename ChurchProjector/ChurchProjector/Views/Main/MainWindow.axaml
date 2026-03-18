@@ -88,33 +88,33 @@
         <bibleview:BibleView Name="BibleView" Grid.Row="3" Grid.Column="2" DataContext="{Binding BibleViewModel}" Margin="10" />
 
         <Separator Grid.Row="4" Grid.Column="2" />
-        <Grid Grid.Row="5" Grid.Column="2" ColumnDefinitions="*,auto">
-            <Grid Grid.Column="0" RowDefinitions="auto,auto" ColumnDefinitions="auto,*">
-                <TextBlock Grid.Row="0" Grid.Column="1"
-                           IsVisible="{Binding MayUpdate}"
+            <Grid Grid.Row="5" Grid.Column="2" ColumnDefinitions="*,auto">
+                <Grid Grid.Column="0" RowDefinitions="auto,auto" ColumnDefinitions="auto,*">
+                    <TextBlock Grid.Row="0" Grid.Column="1"
+                               IsVisible="{Binding MayUpdate}"
                            Foreground="Orange"
-                           Margin="10"
-                           Padding="10,5,10,5"
-                           Text="{Binding UpdateText}" />
+                               Margin="10"
+                               Padding="10,5,10,5"
+                               Text="{Binding UpdateText}" />
 
-                <Button Grid.Row="1" Grid.Column="0"
-                        IsVisible="{Binding HasError}"
+                    <Button Grid.Row="1" Grid.Column="0"
+                            IsVisible="{Binding HasError}"
+                            Margin="10"
+                            Padding="10,5,10,5"
+                            Content="{x:Static lang:Resources.OpenLogs}"
+                            Command="{Binding OpenLogsCommand}"/>
+                    <TextBlock Grid.Row="1" Grid.Column="1"
+                               IsVisible="{Binding HasError}"
+                               Foreground="Red"
+                               Margin="10"
+                               Padding="10,5,10,5"
+                               Text="{x:Static lang:Resources.ErrorsOccurred}" />
+                </Grid>
+                <Button Grid.Column="1"
                         Margin="10"
                         Padding="10,5,10,5"
-                        Content="{x:Static lang:Resources.OpenLogs}"
-                        Command="{Binding OpenLogsCommand}"/>
-                <TextBlock Grid.Row="1" Grid.Column="1"
-                           IsVisible="{Binding HasError}"
-                           Foreground="Red"
-                           Margin="10"
-                           Padding="10,5,10,5"
-                           Text="{x:Static lang:Resources.ErrorsOccurred}" />
+                        Content="{x:Static lang:Resources.Settings}"
+                        Click="OnBtnSettingsClick" />
             </Grid>
-            <Button Grid.Column="1"
-                    Margin="10"
-                    Padding="10,5,10,5"
-                    Content="{x:Static lang:Resources.Settings}"
-                    Click="OnBtnSettingsClick" />
-        </Grid>
     </Grid>
 </Window>

@@ -3,7 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.6.33815.320
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChurchProjector", "ChurchProjector.csproj", "{989B5A5F-DDB9-4927-8379-36DAA32BC598}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChurchProjector", "ChurchProjector\ChurchProjector.csproj", "{989B5A5F-DDB9-4927-8379-36DAA32BC598}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChurchProjector.PowerPoint", "ChurchProjector.PowerPoint\ChurchProjector.PowerPoint.csproj", "{962B487D-BFF4-4BC1-BDB8-F98813589F9D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChurchProjector.Shared", "ChurchProjector.Shared\ChurchProjector.Shared.csproj", "{05D01F34-C300-4AEF-960C-224AEFCAB094}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +19,14 @@ Global
 		{989B5A5F-DDB9-4927-8379-36DAA32BC598}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{989B5A5F-DDB9-4927-8379-36DAA32BC598}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{989B5A5F-DDB9-4927-8379-36DAA32BC598}.Release|Any CPU.Build.0 = Release|Any CPU
+		{962B487D-BFF4-4BC1-BDB8-F98813589F9D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{962B487D-BFF4-4BC1-BDB8-F98813589F9D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{962B487D-BFF4-4BC1-BDB8-F98813589F9D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{962B487D-BFF4-4BC1-BDB8-F98813589F9D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{05D01F34-C300-4AEF-960C-224AEFCAB094}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{05D01F34-C300-4AEF-960C-224AEFCAB094}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{05D01F34-C300-4AEF-960C-224AEFCAB094}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{05D01F34-C300-4AEF-960C-224AEFCAB094}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

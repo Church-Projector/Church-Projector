@@ -325,7 +325,7 @@
 			</TabItem>
 
 			<TabItem Header="{x:Static lang:Resources.Info}">
-				<Grid RowDefinitions="auto,auto,auto,auto" ColumnDefinitions="auto,*">
+				<Grid RowDefinitions="auto,auto,auto, auto" ColumnDefinitions="auto,*">
 					<TextBlock Grid.Row="0" Grid.Column="0" Text="{x:Static lang:Resources.HomePage_Colon}" VerticalAlignment="Center" />
 					<HyperlinkButton Grid.Row="0" Grid.Column="1" Click="BtnOpenLink_Click" Tag="https://church-projector.de">
 						https://church-projector.de

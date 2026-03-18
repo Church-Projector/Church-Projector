@@ -7,10 +7,17 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
     strategy:
       matrix:
-        platform: [linux-arm64, linux-x64, win-x64]
+        include:
+        - platform: linux-x64
+          os: ubuntu-latest
+        - platform: linux-arm64
+          os: ubuntu-24.04-arm
+        - platform: win-x64
+          os: windows-latest
+
+    runs-on: ${{ matrix.os }}
     steps:
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -25,7 +32,22 @@ jobs:
 
       - name: Build for ${{ matrix.platform }}
         run: |
-          dotnet publish -c Release ./ChurchProjector/ChurchProjector.csproj --runtime ${{ matrix.platform }} --output ./publish/${{ matrix.platform }} /p:Version="${{ github.ref_name }}" /p:InformationalVersion="${{ github.ref_name }}" /p:FileVersion="${{ github.ref_name }}"
+          dotnet publish -c Release ./ChurchProjector/ChurchProjector/ChurchProjector.csproj --runtime ${{ matrix.platform }} --output ./publish/${{ matrix.platform }} /p:Version="${{ github.ref_type == 'tag' && github.ref_name || '0.0.1' }}" /p:InformationalVersion="${{ github.ref_type == 'tag' && github.ref_name || '0.0.1' }}" /p:FileVersion="${{ github.ref_type == 'tag' && github.ref_name || '0.0.1' }}"
+
+      - name: Build PowerPoint worker (Windows only)
+        if: matrix.platform == 'win-x64'
+        run: |
+          dotnet publish -c Release ./ChurchProjector/ChurchProjector.PowerPoint/ChurchProjector.PowerPoint.csproj --runtime ${{ matrix.platform }} --output ./publish/${{ matrix.platform }}/worker /p:Version="${{ github.ref_type == 'tag' && github.ref_name || '0.0.1' }}" /p:InformationalVersion="${{ github.ref_type == 'tag' && github.ref_name || '0.0.1' }}" /p:FileVersion="${{ github.ref_type == 'tag' && github.ref_name || '0.0.1' }}"
+
+      - name: Copy worker into main output (Windows only)
+        if: matrix.platform == 'win-x64'
+        shell: bash
+        run: |
+          mv ./publish/${{ matrix.platform }}/worker/* ./publish/${{ matrix.platform }}/
+
+      - name: Cleanup
+        shell: bash
+        run: |
           find . -type f -path '*/win-x86/*' -delete
           find . -type f -path '*.pdb' -delete
 
@@ -33,15 +55,14 @@ jobs:
       - name: Create .deb package for Linux
         if: startsWith(matrix.platform, 'linux')
         env:
-          VERSION: ${{ github.ref_name }}
+          VERSION: ${{ github.ref_type == 'tag' && github.ref_name || '0.0.1' }}
           RUNTIME: ${{ matrix.platform }}
         run: ./build/scripts/package.linux.sh
 
       - name: Zip ${{ matrix.platform }} artifact
         if: matrix.platform == 'win-x64'
         run: |
-          cd ./publish/${{ matrix.platform }}
-          zip -r ../../${{ matrix.platform }}.zip .
+          Compress-Archive -Path "./publish/${{ matrix.platform }}/*" -DestinationPath "${{ matrix.platform }}.zip"
 
       # Upload the .deb package for Linux platforms
       - name: Upload .deb package artifact
@@ -60,6 +81,7 @@ jobs:
           path: ${{ matrix.platform }}.zip
 
   release:
+    if: startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
     permissions:
       contents: write

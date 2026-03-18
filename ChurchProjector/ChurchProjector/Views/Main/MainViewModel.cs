@@ -1,36 +1,32 @@
-﻿using Avalonia.Controls;
+﻿using System;
+using Avalonia.Controls;
 using Avalonia.Input.Platform;
-using Avalonia.Media.Imaging;
 using Avalonia.Platform.Storage;
-using Avalonia.Threading;
 using ChurchProjector.Classes;
-using ChurchProjector.Classes.Converter;
 using ChurchProjector.Classes.History;
-using ChurchProjector.Classes.Schedule;
 using ChurchProjector.Views.Bible;
 using ChurchProjector.Views.History;
 using ChurchProjector.Views.Schedule;
 using ChurchProjector.Views.Settings;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.Office.Interop.PowerPoint;
-using MuPDFCore;
 using Serilog;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Input;
+using Avalonia.Media.Imaging;
+using Avalonia.Threading;
+using ChurchProjector.Classes.Schedule;
+using MuPDFCore;
 using static ChurchProjector.Classes.DrawingHelper;
 
 namespace ChurchProjector.Views.Main;
 
 public partial class MainViewModel : ObservableObject
 {
-    public string TempDirectory { get; }
-
     public PresentationFile? Images
     {
         get;
@@ -49,16 +45,19 @@ public partial class MainViewModel : ObservableObject
                     }
                 }
 
-                if (Presentation is not null)
-                {
-                    Presentation.Close();
-                    if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                    {
-                        Marshal.FinalReleaseComObject(Presentation);
-                    }
-
-                    Presentation = null;
-                }
+                // TODO Before only the presentation was cleaned up.
+                // Test if it is fine to just clean up all.
+                _powerPointClient?.StopPowerPointViewerAsync();
+                // if (Presentation is not null)
+                // {
+                //     Presentation.Close();
+                //     if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                //     {
+                //         Marshal.FinalReleaseComObject(Presentation);
+                //     }
+                //
+                //     Presentation = null;
+                // }
 
                 SelectedImage = null;
                 field = value;
@@ -68,42 +67,23 @@ public partial class MainViewModel : ObservableObject
         }
     } = null;
 
-    public Application? PowerPoint { get; }
-    public Presentation? Presentation { get; set; }
-
-    private void PowerPoint_SlideShowNextSlide(SlideShowWindow Wn)
+    private void PowerPoint_SlideShowNextSlider(int slideIndex)
     {
-        if (Presentation is null)
-        {
-            return;
-        }
-        int slideIndex = Presentation.SlideShowWindow.View.Slide.SlideIndex - 1;
         if (slideIndex < 0 || slideIndex >= Images.Images.Count)
         {
             return;
         }
+
         SelectedImage = Images.Images[slideIndex];
     }
 
-    private void PowerPoint_SlideShowBegin(SlideShowWindow Wn)
+    private void PowerPoint_SlideShowEnd()
     {
-        //throw new NotImplementedException();
-    }
-
-    private void PowerPoint_SlideShowEnd(Presentation Pres)
-    {
-        Dispatcher.UIThread.Invoke(new Action(() =>
-        {
-            ImageWindow.Show();
-            // May not be done here
-            //ClosePowerPoint(PowerPoint);
-            //PowerPoint = null;
-            //SelectedImage = null;
-            //Images = [];
-        }));
+        Dispatcher.UIThread.Invoke(ImageWindow.Show);
     }
 
     private ImageWithName? _selectedImage;
+
     public ImageWithName? SelectedImage
     {
         get => _selectedImage;
@@ -113,7 +93,9 @@ public partial class MainViewModel : ObservableObject
             {
                 _selectedImage = value;
                 OnPropertyChanged();
-                if (Presentation is null)
+                // TODO
+                // if (Presentation is null)
+                if (_powerPointClient is not { IsRunning: true })
                 {
                     if (value != null)
                     {
@@ -126,34 +108,35 @@ public partial class MainViewModel : ObservableObject
                     int index = _selectedImage == null ? -1 : Images.Images.IndexOf(_selectedImage);
                     if (index >= 0)
                     {
-                        Presentation.SlideShowSettings.Run();
-
                         // This is in points
                         // https://learn.microsoft.com/en-us/office/vba/api/powerpoint.slideshowwindow.left
-                        Presentation.SlideShowWindow.Left = (float)(Settings.SelectedMonitore.Value.Bounds.X * 0.75);
-                        Presentation.SlideShowWindow.Width = (float)(Settings.SelectedMonitore.Value.Bounds.Width * 0.75);
+                        _powerPointClient.SetCurrentSlideAsync(index + 1,
+                            left: (float)(Settings.SelectedMonitore.Value.Bounds.X * 0.75),
+                            top: (float)(Settings.SelectedMonitore.Value.Bounds.Y * 0.75),
+                            width: (float)(Settings.SelectedMonitore.Value.Bounds.Width * 0.75),
+                            height: (float)(Settings.SelectedMonitore.Value.Bounds.Height * 0.75));
 
-                        Presentation.SlideShowWindow.Top = (float)(Settings.SelectedMonitore.Value.Bounds.Y * 0.75);
-                        Presentation.SlideShowWindow.Height = (float)(Settings.SelectedMonitore.Value.Bounds.Height * 0.75);
-
+                        // Hide the image window, so it is not in front of the power point file.
                         Dispatcher.UIThread.Invoke(ImageWindow.Hide);
-
-                        Presentation.SlideShowWindow.View.GotoSlide(index + 1);
                     }
                     else
                     {
-                        // TODO Powerpoint history?!
-                        Presentation.Close();
-                        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                        {
-                            Marshal.FinalReleaseComObject(Presentation);
-                        }
-                        Presentation = null;
-
-                        SelectedImage = null;
-                        Images = null;
+                        // TODO Before only the presentation was cleaned up.
+                        // Test if it is fine to just clean up all.
+                        _powerPointClient?.StopPowerPointViewerAsync();
+                        //         // TODO Powerpoint history?!
+                        //         Presentation.Close();
+                        //         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                        //         {
+                        //             Marshal.FinalReleaseComObject(Presentation);
+                        //         }
+                        //         Presentation = null;
+                        //
+                        //         SelectedImage = null;
+                        //         Images = null;
                     }
                 }
+
                 OnPropertyChanged(nameof(ImageSelected));
                 OnPropertyChanged(nameof(SlideSelected));
             }
@@ -161,7 +144,7 @@ public partial class MainViewModel : ObservableObject
     }
 
     public bool ImageSelected => ImageWindow.ViewModel.ImageSource is not null;
-    public bool SlideSelected => ImageWindow.ViewModel.ImageSource is not null || (Presentation is not null && Presentation.SlideShowWindow.View.State != PpSlideShowState.ppSlideShowBlackScreen);
+    public bool SlideSelected => ImageWindow.ViewModel.ImageSource is not null;
 
     public HistoryViewModel HistoryViewModel { get; }
     public ScheduleViewModel ScheduleViewModel { get; }
@@ -177,6 +160,7 @@ public partial class MainViewModel : ObservableObject
         {
             HistoryViewModel.Histories.Insert(0, new HistoryEntry(title, images, filename));
         }
+
         Images = new PresentationFile(images, filename);
     }
 
@@ -201,15 +185,33 @@ public partial class MainViewModel : ObservableObject
     public ImageWindow ImageWindow { get; }
     public SettingsViewModel Settings { get; set; }
 
-    public MainViewModel(Window window, SettingsViewModel settings, IStorageProvider storageProvider, IClipboard clipboard, string? version)
+    private readonly PowerPointClient? _powerPointClient;
+    private readonly string _tempDirectory = Directory.CreateTempSubdirectory().FullName;
+
+    public MainViewModel(Window window, SettingsViewModel settings, IStorageProvider storageProvider,
+        IClipboard clipboard, string? version)
     {
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)){
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        {
             try
             {
-                PowerPoint = new();
-                PowerPoint.SlideShowEnd += PowerPoint_SlideShowEnd;
-                PowerPoint.SlideShowBegin += PowerPoint_SlideShowBegin;
-                PowerPoint.SlideShowNextSlide += PowerPoint_SlideShowNextSlide;
+                _powerPointClient = new PowerPointClient();
+                // TODO Await
+                // TODO Catch error
+                _powerPointClient.ConnectAsync();
+                _powerPointClient.SlideShowNextSlide += PowerPoint_SlideShowNextSlider;
+                _powerPointClient.SlideShowEnd += PowerPoint_SlideShowEnd;
+                _powerPointClient.ImagesGenerated += result =>
+                {
+                    PresentationFile presentationFile = new([], "file" /*TODO Filename*/);
+                    foreach (var image in result)
+                    {
+                        presentationFile.Images.Add(new ImageWithName(Path.GetFileNameWithoutExtension(image),
+                            new Bitmap(image), false));
+                    }
+
+                    Images = presentationFile;
+                };
             }
             catch
             {
@@ -218,8 +220,6 @@ public partial class MainViewModel : ObservableObject
         }
 
         GlobalConfig.HasError.PropertyChanged += HasError_PropertyChanged;
-
-        TempDirectory = Directory.CreateTempSubdirectory().FullName;
         HistoryViewModel = new()
         {
             OpenHistoryEntryCommand = new RelayCommand<HistoryEntry>((HistoryEntry? historyEntry) =>
@@ -228,6 +228,7 @@ public partial class MainViewModel : ObservableObject
                 {
                     return;
                 }
+
                 HistoryViewModel.Histories.Remove(historyEntry);
                 RenderImages(historyEntry.Title, historyEntry.Images, historyEntry.Filename);
             }),
@@ -237,6 +238,7 @@ public partial class MainViewModel : ObservableObject
                 {
                     return;
                 }
+
                 if (HistoryViewModel.Histories.Contains(historyEntry))
                 {
                     HistoryViewModel.Histories.Remove(historyEntry);
@@ -246,17 +248,18 @@ public partial class MainViewModel : ObservableObject
                         {
                             SelectedImage = null;
                         }
+
                         if (!Images.Images.Contains(image))
                         {
                             image.Dispose();
                         }
                     }
-
                 }
             }),
         };
 
-        ScheduleViewModel = new(storageProvider, clipboard, powerPointAvailable: PowerPoint is not null, libVlcAvailable: false)
+        ScheduleViewModel = new ScheduleViewModel(storageProvider, clipboard,
+            powerPointAvailable: _powerPointClient is not null, libVlcAvailable: false)
         {
             OpenScheduleEntryCommand = new RelayCommand<ScheduleEntry>((ScheduleEntry? scheduleEntry) =>
             {
@@ -264,6 +267,7 @@ public partial class MainViewModel : ObservableObject
                 {
                     return;
                 }
+
                 if (FileExtensions.GetFileType(scheduleEntry.FileType) == FileType.Image)
                 {
                     Images = new(
@@ -278,10 +282,11 @@ public partial class MainViewModel : ObservableObject
                     List<string> files = [];
                     for (int pageNumber = 0; pageNumber < muPDFDocument.Pages.Count; pageNumber++)
                     {
-                        string tempFile = $"{Path.Combine(TempDirectory, Guid.NewGuid().ToString())}.png";
+                        string tempFile = $"{Path.Combine(_tempDirectory, Guid.NewGuid().ToString())}.png";
                         muPDFDocument.SaveImage(pageNumber, 1, PixelFormats.RGBA, tempFile, RasterOutputFileTypes.PNG);
                         files.Add(tempFile);
                     }
+
                     Images = new(files.AsParallel()
                         .Select((f, i) =>
                         {
@@ -297,27 +302,19 @@ public partial class MainViewModel : ObservableObject
                 }
                 else if (FileExtensions.GetFileType(scheduleEntry.FileType) == FileType.Powerpoint)
                 {
-                    if (PowerPoint is null)
+                    if (_powerPointClient is null)
                     {
                         return;
                     }
-                    string tempDir = Path.Combine(TempDirectory, Guid.NewGuid().ToString());
-                    Directory.CreateDirectory(tempDir);
-                    PresentationFile presentationFile = new(new List<ImageWithName>(), scheduleEntry.FilePath);
-                    (List<string> files, Presentation presentation) result = PowerPointToImages.ConvertToImages(scheduleEntry.FilePath, tempDir, PowerPoint);
-                    foreach (string image in result.files)
-                    {
-                        presentationFile.Images.Add(new ImageWithName(Path.GetFileNameWithoutExtension(image), new Bitmap(image), false));
-                    }
-                    Images = presentationFile;
-                    Presentation = result.presentation;
-                    Presentation.SlideShowSettings.ShowPresenterView = Microsoft.Office.Core.MsoTriState.msoFalse;
-                    new Thread(() => Presentation.SlideShowSettings.Run()).Start();
+
+                    _powerPointClient.StartPowerPointViewerAsync(scheduleEntry.FilePath);
                 }
                 else if (FileExtensions.GetFileType(scheduleEntry.FileType) == FileType.Song)
                 {
                     Classes.Song song = Classes.Song.LoadFromFile(scheduleEntry.FilePath);
-                    RenderImages(song.Title, song.GetImages().ConvertAll(x => new ImageWithName(x.title, x.bitmap, x.isOverflowing)), false, scheduleEntry.FilePath);
+                    RenderImages(song.Title,
+                        song.GetImages().ConvertAll(x => new ImageWithName(x.title, x.bitmap, x.isOverflowing)), false,
+                        scheduleEntry.FilePath);
                 }
             }),
         };
@@ -329,20 +326,26 @@ public partial class MainViewModel : ObservableObject
                 {
                     return;
                 }
+
                 if (!string.IsNullOrWhiteSpace(BibleViewModel.SearchHint))
                 {
                     if (BibleViewModel.SelectedBible1 is null)
                     {
                         return;
                     }
-                    BibleSearchWindow bibleSearchWindow = new(BibleViewModel.SelectedBible1, BibleViewModel.SearchText!.Trim())
-                    {
-                        OpenVerse = OpenVerse
-                    };
+
+                    BibleSearchWindow bibleSearchWindow =
+                        new(BibleViewModel.SelectedBible1, BibleViewModel.SearchText!.Trim())
+                        {
+                            OpenVerse = OpenVerse
+                        };
                     await bibleSearchWindow.ShowDialog(window);
                     return;
                 }
-                List<int> verseRange = Enumerable.Range(BibleViewModel.SelectedVerseStart!.Value, BibleViewModel.SelectedVerseEnd!.Value - BibleViewModel.SelectedVerseStart!.Value + 1).ToList();
+
+                List<int> verseRange = Enumerable.Range(BibleViewModel.SelectedVerseStart!.Value,
+                    BibleViewModel.SelectedVerseEnd!.Value - BibleViewModel.SelectedVerseStart!.Value + 1).ToList();
+
                 List<ImageCreationContent> GetImageCreationContent(List<int> verses)
                 {
                     List<ImageCreationContent> imageCreationContents = [];
@@ -350,46 +353,65 @@ public partial class MainViewModel : ObservableObject
                     {
                         imageCreationContents.Add(new()
                         {
-                            Header = BibleViewModel.GetSelectedBiblePositionHeader(BibleViewModel.SelectedBible1, BibleViewModel.SelectedBook.Number, BibleViewModel.SelectedChapter, verses.Min(), verses.Max()),
-                            Content = [string.Join(" ", BibleViewModel.GetPreviewSelectedBiblePosition(BibleViewModel.SelectedBible1,
-                                                                                     BibleViewModel.SelectedBook.Number,
-                                                                                     BibleViewModel.SelectedChapter.Value,
-                                                                                     verses.Min(),
-                                                                                     verses.Max()))
+                            Header = BibleViewModel.GetSelectedBiblePositionHeader(BibleViewModel.SelectedBible1,
+                                BibleViewModel.SelectedBook.Number, BibleViewModel.SelectedChapter, verses.Min(),
+                                verses.Max()),
+                            Content =
+                            [
+                                string.Join(" ", BibleViewModel.GetPreviewSelectedBiblePosition(
+                                    BibleViewModel.SelectedBible1,
+                                    BibleViewModel.SelectedBook.Number,
+                                    BibleViewModel.SelectedChapter.Value,
+                                    verses.Min(),
+                                    verses.Max()))
                             ],
                             Bottom = BibleViewModel.SelectedBible1.Title,
                         });
                     }
+
                     if (BibleViewModel.SelectedBible2 is not null)
                     {
                         imageCreationContents.Add(new()
                         {
-                            Header = BibleViewModel.GetSelectedBiblePositionHeader(BibleViewModel.SelectedBible2, BibleViewModel.SelectedBook.Number, BibleViewModel.SelectedChapter, verses.Min(), verses.Max()),
-                            Content = [string.Join(" ", BibleViewModel.GetPreviewSelectedBiblePosition(BibleViewModel.SelectedBible2,
-                                                                                     BibleViewModel.SelectedBook.Number,
-                                                                                     BibleViewModel.SelectedChapter.Value,
-                                                                                     verses.Min(),
-                                                                                     verses.Max()))
+                            Header = BibleViewModel.GetSelectedBiblePositionHeader(BibleViewModel.SelectedBible2,
+                                BibleViewModel.SelectedBook.Number, BibleViewModel.SelectedChapter, verses.Min(),
+                                verses.Max()),
+                            Content =
+                            [
+                                string.Join(" ", BibleViewModel.GetPreviewSelectedBiblePosition(
+                                    BibleViewModel.SelectedBible2,
+                                    BibleViewModel.SelectedBook.Number,
+                                    BibleViewModel.SelectedChapter.Value,
+                                    verses.Min(),
+                                    verses.Max()))
                             ],
                             Bottom = BibleViewModel.SelectedBible2.Title,
                         });
                     }
+
                     if (BibleViewModel.SelectedBible3 is not null)
                     {
                         imageCreationContents.Add(new()
                         {
-                            Header = BibleViewModel.GetSelectedBiblePositionHeader(BibleViewModel.SelectedBible3, BibleViewModel.SelectedBook.Number, BibleViewModel.SelectedChapter, verses.Min(), verses.Max()),
-                            Content = [string.Join(" ", BibleViewModel.GetPreviewSelectedBiblePosition(BibleViewModel.SelectedBible3,
-                                                                                     BibleViewModel.SelectedBook.Number,
-                                                                                     BibleViewModel.SelectedChapter.Value,
-                                                                                     verses.Min(),
-                                                                                     verses.Max()))
+                            Header = BibleViewModel.GetSelectedBiblePositionHeader(BibleViewModel.SelectedBible3,
+                                BibleViewModel.SelectedBook.Number, BibleViewModel.SelectedChapter, verses.Min(),
+                                verses.Max()),
+                            Content =
+                            [
+                                string.Join(" ", BibleViewModel.GetPreviewSelectedBiblePosition(
+                                    BibleViewModel.SelectedBible3,
+                                    BibleViewModel.SelectedBook.Number,
+                                    BibleViewModel.SelectedChapter.Value,
+                                    verses.Min(),
+                                    verses.Max()))
                             ],
                             Bottom = BibleViewModel.SelectedBible3.Title,
                         });
                     }
+
                     return imageCreationContents;
                 }
+
                 List<List<int>> ranges = [];
                 while (verseRange.Count != 0)
                 {
@@ -398,11 +420,13 @@ public partial class MainViewModel : ObservableObject
                     while (true)
                     {
                         while (versesToTake <= verseRange.Count && DrawingHelper.MayRenderImage(new ImageCreation()
-                        {
-                            Configuration = GlobalConfig.JsonFile.Settings.DisplayConfiguration.BibleConfiguration,
-                            ImageCreationContent = GetImageCreationContent(verseRange.Take(versesToTake).ToList()),
-                            LangCount = 1,
-                        }))
+                               {
+                                   Configuration = GlobalConfig.JsonFile.Settings.DisplayConfiguration
+                                       .BibleConfiguration,
+                                   ImageCreationContent =
+                                       GetImageCreationContent(verseRange.Take(versesToTake).ToList()),
+                                   LangCount = 1,
+                               }))
                         {
                             versesToTake++;
                         }
@@ -415,25 +439,27 @@ public partial class MainViewModel : ObservableObject
                             break;
                         }
                     }
-                };
+                }
+
+                ;
 
                 List<ImageWithName> images = ranges.AsParallel()
-                        .Select((range, i) =>
+                    .Select((range, i) =>
+                    {
+                        var (isOverflowing, bitmap) = DrawingHelper.GetImage(new ImageCreation()
                         {
-                            var (isOverflowing, bitmap) = DrawingHelper.GetImage(new ImageCreation()
-                            {
-                                Configuration = GlobalConfig.JsonFile.Settings.DisplayConfiguration.BibleConfiguration,
-                                ImageCreationContent = GetImageCreationContent(range),
-                                LangCount = 1,
-                            });
-                            return new
-                            {
-                                Index = i,
-                                Image = new ImageWithName(BibleViewModel.SelectedBiblePosition, bitmap, isOverflowing),
-                            };
-                        }).OrderBy(x => x.Index)
-                        .Select(x => x.Image)
-                        .ToList();
+                            Configuration = GlobalConfig.JsonFile.Settings.DisplayConfiguration.BibleConfiguration,
+                            ImageCreationContent = GetImageCreationContent(range),
+                            LangCount = 1,
+                        });
+                        return new
+                        {
+                            Index = i,
+                            Image = new ImageWithName(BibleViewModel.SelectedBiblePosition, bitmap, isOverflowing),
+                        };
+                    }).OrderBy(x => x.Index)
+                    .Select(x => x.Image)
+                    .ToList();
                 RenderImages(BibleViewModel.SelectedBiblePosition, images);
             }),
             NextVerseCommand = new RelayCommand(() =>
@@ -442,8 +468,10 @@ public partial class MainViewModel : ObservableObject
                 {
                     return;
                 }
+
                 int nextVerse = BibleViewModel.SelectedVerseEnd.Value + 1;
-                BibleViewModel.SetBiblePosition(BibleViewModel.SelectedBook.Title, BibleViewModel.SelectedChapter, nextVerse, nextVerse);
+                BibleViewModel.SetBiblePosition(BibleViewModel.SelectedBook.Title, BibleViewModel.SelectedChapter,
+                    nextVerse, nextVerse);
                 BibleViewModel.SearchText = BibleViewModel.SelectedBiblePosition;
                 BibleViewModel.AcceptSearchTextCommand.Execute(null);
                 SelectedImage = Images.Images.FirstOrDefault();
@@ -454,8 +482,10 @@ public partial class MainViewModel : ObservableObject
                 {
                     return;
                 }
+
                 int previous = BibleViewModel.SelectedVerseStart.Value - 1;
-                BibleViewModel.SetBiblePosition(BibleViewModel.SelectedBook.Title, BibleViewModel.SelectedChapter, previous, previous);
+                BibleViewModel.SetBiblePosition(BibleViewModel.SelectedBook.Title, BibleViewModel.SelectedChapter,
+                    previous, previous);
                 BibleViewModel.SearchText = BibleViewModel.SelectedBiblePosition;
                 BibleViewModel.AcceptSearchTextCommand.Execute(null);
                 SelectedImage = Images.Images.FirstOrDefault();
@@ -495,11 +525,13 @@ public partial class MainViewModel : ObservableObject
 
     internal void OpenVerse(ExactVerse verse)
     {
-        if (BibleViewModel.SelectedBible1 is null || !BibleViewModel.SelectedBible1.Books.Any(b => b.Number == verse.BookNumber))
+        if (BibleViewModel.SelectedBible1 is null ||
+            !BibleViewModel.SelectedBible1.Books.Any(b => b.Number == verse.BookNumber))
         {
             // TODO Select correct book
             return;
         }
+
         Book book = BibleViewModel.SelectedBible1.Books.First(b => b.Number == verse.BookNumber);
         BibleViewModel.SearchText = $"{book.Title} {verse.ChapterNumber}, {verse.VerseNumber}";
         BibleViewModel.AcceptSearchTextCommand.Execute(null);
@@ -507,90 +539,38 @@ public partial class MainViewModel : ObservableObject
 
     public bool HasError => GlobalConfig.HasError.Value;
 
-    [ObservableProperty]
-    private ICommand openSongQuickSearchCommand;
+    [ObservableProperty] private ICommand openSongQuickSearchCommand;
 
-    [ObservableProperty]
-    private ICommand openSongSearchCommand;
+    [ObservableProperty] private ICommand openSongSearchCommand;
 
-    [ObservableProperty]
-    private ICommand openBibleSearchCommand;
+    [ObservableProperty] private ICommand openBibleSearchCommand;
 
-    [ObservableProperty]
-    private ICommand hideImageCommand;
+    [ObservableProperty] private ICommand hideImageCommand;
 
-    [ObservableProperty]
-    private ICommand openShowNotificationCommand;
+    [ObservableProperty] private ICommand openShowNotificationCommand;
 
-    [ObservableProperty]
-    private ICommand openLogsCommand;
+    [ObservableProperty] private ICommand openLogsCommand;
 
-    [ObservableProperty]
-    private ICommand editCommand;
+    [ObservableProperty] private ICommand editCommand;
 
-    [ObservableProperty]
-    private ICommand addSongCommand;
+    [ObservableProperty] private ICommand addSongCommand;
 
-    public bool MayEdit => Images is not null && !string.IsNullOrWhiteSpace(Images.Filename) && Path.GetExtension(Images.Filename).ToLowerInvariant() is ".sng";
+    public bool MayEdit => Images is not null && !string.IsNullOrWhiteSpace(Images.Filename) &&
+                           Path.GetExtension(Images.Filename).ToLowerInvariant() is ".sng";
 
     public void StopAll()
     {
         ImageWindow.StopBanner();
         ImageWindow.Hide();
         ImageWindow.ViewModel.ImageSource = null;
-        if (PowerPoint is not null)
-        {
-            if (Presentation is not null)
-            {
-                Presentation.Close();
-                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                {
-                    Marshal.FinalReleaseComObject(Presentation);
-                }
-                Presentation = null;
-            }
-            PowerPoint.SlideShowEnd -= PowerPoint_SlideShowEnd;
-            PowerPoint.SlideShowBegin -= PowerPoint_SlideShowBegin;
-            PowerPoint.SlideShowNextSlide -= PowerPoint_SlideShowNextSlide;
-            try
-            {
-                PowerPoint.Quit();
-                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                {
-                    Marshal.FinalReleaseComObject(PowerPoint);
-                }
-            }
-            catch
-            {
-                // Mission failed.
-            }
-        }
-
-        try
-        {
-            Directory.Delete(TempDirectory, recursive: true);
-        }
-        catch
-        {
-
-        }
+        _powerPointClient?.StopPowerPointViewerAsync();
     }
 
     public void HideImage(bool fadeOut)
     {
-        if (this.Presentation is not null)
-        {
-            // Hide presentation
-            this.Presentation.SlideShowWindow.View.State = PpSlideShowState.ppSlideShowBlackScreen;
-            _selectedImage = null;
-            this.OnPropertyChanged(nameof(SelectedImage));
-            this.OnPropertyChanged(nameof(SlideSelected));
-        }
-        else
-        {
-            SelectedImage = null;
-            ImageWindow.ViewModel.HideImage(fadeOut);
-        }
+        _powerPointClient?.HidePresentationAsync();
+        SelectedImage = null;
+        ImageWindow.ViewModel.HideImage(fadeOut);
     }
 
     public void SetHasSecondScreen(bool hasSecondScreen)

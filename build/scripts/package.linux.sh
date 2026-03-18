@@ -43,7 +43,7 @@ echo "Categories=Utility;Presentation;" >> BuildFolder/usr/share/applications/ch
 
 # Copy the icons
 mkdir -p BuildFolder/usr/share/icons/hicolor/64x64/apps
-cp ./ChurchProjector/Assets/icon.png BuildFolder/usr/share/icons/hicolor/64x64/apps/churchprojector.png
+cp ./ChurchProjector/ChurchProjector/Assets/icon.png BuildFolder/usr/share/icons/hicolor/64x64/apps/churchprojector.png
 
 # Build the application
 dpkg-deb --build BuildFolder $RUNTIME.deb

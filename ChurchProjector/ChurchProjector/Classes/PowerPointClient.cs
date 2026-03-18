@@ -108,7 +108,7 @@ public class PowerPointClient
         if (_workerProcess is { HasExited: false })
             return;
 
-        var exePath = Path.Combine(AppContext.BaseDirectory, "PowerPointWorker.exe");
+        var exePath = Path.Combine(AppContext.BaseDirectory, "ChurchProjector.PowerPoint.exe");
 
         if (!File.Exists(exePath))
         {
@@ -169,11 +169,11 @@ public class PowerPointClient
             throw new InvalidOperationException("Pipe not connected");
         }
 
-        var reader = new StreamReader(_evt, Encoding.UTF8, leaveOpen: true);
         if (Interlocked.Exchange(ref _isListening, 1) == 1)
         {
             return;
         }
+        using var reader = new StreamReader(_evt);
 
         try
         {

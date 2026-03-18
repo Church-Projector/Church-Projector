@@ -198,7 +198,6 @@ public partial class MainViewModel : ObservableObject
                 _powerPointClient = new PowerPointClient();
                 // TODO Await
                 // TODO Catch error
-                _powerPointClient.ConnectAsync();
                 _powerPointClient.SlideShowNextSlide += PowerPoint_SlideShowNextSlider;
                 _powerPointClient.SlideShowEnd += PowerPoint_SlideShowEnd;
                 _powerPointClient.ImagesGenerated += result =>

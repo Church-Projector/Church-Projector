@@ -7,6 +7,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using Avalonia.Threading;
 using ChurchProjector.Shared;
 using Serilog;
 
@@ -23,24 +24,20 @@ public class PowerPointClient
     private NamedPipeClientStream? _evt;
     private CancellationTokenSource? _cts;
     private Task? _listenTask;
-    public bool IsRunning => OperatingSystem.IsWindows() && _cmd is { IsConnected: true } && _evt is { IsConnected: true };
+    private bool _isRunning;
+    public bool IsRunning => OperatingSystem.IsWindows() && _cmd is { IsConnected: true } && _evt is { IsConnected: true } && _isRunning;
 
     public async Task ConnectAsync()
     {
         if (OperatingSystem.IsWindows())
         {
+            #if !DEBUG
             EnsureWorkerRunning();
+            #endif
         }
 
-        if (_cmd is null)
-        {
-            _cmd = new NamedPipeClientStream(".", "ppt_cmd", PipeDirection.Out);
-        }
-
-        if (_evt is null)
-        {
-            _evt = new NamedPipeClientStream(".", "ppt_evt", PipeDirection.In);
-        }
+        _cmd ??= new NamedPipeClientStream(".", "ppt_cmd", PipeDirection.Out);
+        _evt ??= new NamedPipeClientStream(".", "ppt_evt", PipeDirection.In);
 
         if (!_cmd.IsConnected)
         {
@@ -94,6 +91,8 @@ public class PowerPointClient
             Type: "StartPowerPointViewer",
             Payload: new StartPowerPointViewerCommand(file)
         ), Shared.JsonContext.Default.GenericMessageStartPowerPointViewerCommand));
+        
+        _isRunning = true;
     }
 
     private Process? _workerProcess;
@@ -158,6 +157,8 @@ public class PowerPointClient
             await _evt.DisposeAsync();
             _evt = null;
         }
+
+        _isRunning = false;
     }
 
     private int _isListening;
@@ -221,7 +222,7 @@ public class PowerPointClient
                             continue;
                         }
 
-                        ImagesGenerated?.Invoke(igp.Payload.Files);
+                        Dispatcher.UIThread.Invoke(() => ImagesGenerated?.Invoke(igp.Payload.Files));
                         break;
                     }
                 }
@@ -246,6 +247,34 @@ public class PowerPointClient
         ), Shared.JsonContext.Default.GenericMessageHidePresentationCommand));
     }
 
+    public async Task ClosePresentationAsync()
+    {
+        if (!OperatingSystem.IsWindows() || _cmd is not { IsConnected: true } || _evt is not { IsConnected: true })
+        {
+            return;
+        }
+
+        await SendAsync(JsonSerializer.Serialize(new GenericMessage<ClosePresentationCommand>(
+            Type: "ClosePresentation",
+            Payload: new ClosePresentationCommand()
+        ), Shared.JsonContext.Default.GenericMessageClosePresentationCommand));
+
+        _isRunning = false;
+    }
+
+    public async Task ImagesSetAsync()
+    {
+        if (!OperatingSystem.IsWindows() || _cmd is not { IsConnected: true } || _evt is not { IsConnected: true })
+        {
+            return;
+        }
+
+        await SendAsync(JsonSerializer.Serialize(new GenericMessage<ImagesSetCommand>(
+            Type: "ImagesSet",
+            Payload: new ImagesSetCommand()
+        ), Shared.JsonContext.Default.GenericMessageImagesSetCommand));
+    }
+
     public async Task SetCurrentSlideAsync(int index, float left, float top, float width, float height)
     {
         if (!OperatingSystem.IsWindows() || _cmd is not { IsConnected: true } || _evt is not { IsConnected: true })
@@ -256,7 +285,7 @@ public class PowerPointClient
         await SendAsync(JsonSerializer.Serialize(new GenericMessage<SetCurrentSlideCommand>(
             Type: "SetCurrentSlide",
             Payload: new SetCurrentSlideCommand(index, left, top, width, height)
-        ), Shared.JsonContext.Default.GenericMessageHidePresentationCommand));
+        ), Shared.JsonContext.Default.GenericMessageSetCurrentSlideCommand));
     }
 
     private async Task SendAsync(string message)

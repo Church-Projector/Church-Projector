@@ -12,6 +12,7 @@ public class PowerPoint
     public Action? SlideShowBegin { get; set; }
     public Action<int>? SlideShowNextSlide { get; set; }
     public Action? SlideShowEnd { get; set; }
+    public Action? PowerPointImagesSet { get; set; }
     public Action<List<string>>? ImagesGenerated { get; set; }
     private readonly string _tempDirectory = Directory.CreateTempSubdirectory().FullName;
 
@@ -49,11 +50,13 @@ public class PowerPoint
         Directory.CreateDirectory(tempDir);
         (List<string> files, Presentation presentation) result = ConvertToImages(file, tempDir, _application);
 
+        PowerPointImagesSet = () =>
+        {
+            Presentation = result.presentation;
+            Presentation.SlideShowSettings.ShowPresenterView = MsoTriState.msoFalse;
+            new Thread(() => Presentation.SlideShowSettings.Run()).Start();
+        };
         ImagesGenerated?.Invoke(result.files);
-
-        Presentation = result.presentation;
-        Presentation.SlideShowSettings.ShowPresenterView = MsoTriState.msoFalse;
-        new Thread(() => Presentation.SlideShowSettings.Run()).Start();
     }
 
     private static (List<string> files, Presentation presentation) ConvertToImages(string powerPointFile,
@@ -89,7 +92,7 @@ public class PowerPoint
         Presentation.SlideShowWindow.Width = width;
         Presentation.SlideShowWindow.Height = height;
         
-        Presentation.SlideShowWindow.View.GotoSlide(index + 1);
+        Presentation.SlideShowWindow.View.GotoSlide(index);
     }
 
     public void Stop()
@@ -130,6 +133,25 @@ public class PowerPoint
 
     public void HidePresentationAsync()
     {
-        Presentation?.SlideShowWindow.View.State = PpSlideShowState.ppSlideShowBlackScreen;
+        if (Presentation is null)
+        {
+            return;
+        }
+        Presentation.SlideShowWindow.View.State = PpSlideShowState.ppSlideShowBlackScreen;
+    }
+
+    public void ClosePresentationAsync()
+    {
+        if (Presentation is null)
+        {
+            return;
+        }
+        Presentation.Close();
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        {
+            Marshal.FinalReleaseComObject(Presentation);
+        }
+        
+        Presentation = null;
     }
 }

@@ -5,6 +5,9 @@ using System.Text.Json.Serialization;
 [JsonSerializable(typeof(GenericMessage<StartPowerPointViewerCommand>))]
 [JsonSerializable(typeof(GenericMessage<ShutdownCommand>))]
 [JsonSerializable(typeof(GenericMessage<HidePresentationCommand>))]
+[JsonSerializable(typeof(GenericMessage<ClosePresentationCommand>))]
+[JsonSerializable(typeof(GenericMessage<SetCurrentSlideCommand>))]
+[JsonSerializable(typeof(GenericMessage<ImagesSetCommand>))]
 [JsonSerializable(typeof(GenericMessage<SlideShowNextSlidePayload>))]
 [JsonSerializable(typeof(GenericMessage<SlideShowBeginPayload>))]
 [JsonSerializable(typeof(GenericMessage<SlideShowEndPayload>))]
@@ -18,7 +21,9 @@ public record GenericMessage<TPayload>(string Type, TPayload Payload);
 public record StartPowerPointViewerCommand(string File);
 public record ShutdownCommand();
 public record HidePresentationCommand();
+public record ClosePresentationCommand();
 public record SetCurrentSlideCommand(int Index, float Left, float Top, float Width, float Height);
+public record ImagesSetCommand();
 
 public record SlideShowBeginPayload();
 public record SlideShowEndPayload();

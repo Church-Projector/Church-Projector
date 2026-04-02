@@ -1,15 +1,14 @@
 using ChurchProjector.Shared;
-
-namespace ChurchProjector.PowerPoint;
-
 using System.IO.Pipes;
 using System.Text;
 using System.Text.Json;
 
-static class Program
+namespace ChurchProjector.PowerPoint;
+
+public static class Program
 {
     [STAThread]
-    async static Task Main()
+    private static async Task Main()
     {
         NamedPipeServerStream cmdPipe = new("ppt_cmd", PipeDirection.In);
         NamedPipeServerStream evtPipe = new("ppt_evt", PipeDirection.Out);
@@ -71,6 +70,12 @@ static class Program
                     break;
                 case "HidePresentation":
                     ppt.HidePresentationAsync();
+                    break;
+                case "ClosePresentation":
+                    ppt.ClosePresentationAsync();
+                    break;
+                case "ImagesSet":
+                    ppt.PowerPointImagesSet?.Invoke();
                     break;
                 case "SetCurrentSlide":
                     if (JsonSerializer.Deserialize(line, typeof(GenericMessage<SetCurrentSlideCommand>),

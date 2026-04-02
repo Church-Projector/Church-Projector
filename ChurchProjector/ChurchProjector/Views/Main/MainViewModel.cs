@@ -45,19 +45,7 @@ public partial class MainViewModel : ObservableObject
                     }
                 }
 
-                // TODO Before only the presentation was cleaned up.
-                // Test if it is fine to just clean up all.
-                _powerPointClient?.StopPowerPointViewerAsync();
-                // if (Presentation is not null)
-                // {
-                //     Presentation.Close();
-                //     if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                //     {
-                //         Marshal.FinalReleaseComObject(Presentation);
-                //     }
-                //
-                //     Presentation = null;
-                // }
+                _powerPointClient?.ClosePresentationAsync();
 
                 SelectedImage = null;
                 field = value;
@@ -121,19 +109,10 @@ public partial class MainViewModel : ObservableObject
                     }
                     else
                     {
-                        // TODO Before only the presentation was cleaned up.
-                        // Test if it is fine to just clean up all.
-                        _powerPointClient?.StopPowerPointViewerAsync();
-                        //         // TODO Powerpoint history?!
-                        //         Presentation.Close();
-                        //         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                        //         {
-                        //             Marshal.FinalReleaseComObject(Presentation);
-                        //         }
-                        //         Presentation = null;
-                        //
-                        //         SelectedImage = null;
-                        //         Images = null;
+                        _powerPointClient?.ClosePresentationAsync();
+
+                        SelectedImage = null;
+                        Images = null;
                     }
                 }
 
@@ -200,7 +179,7 @@ public partial class MainViewModel : ObservableObject
                 // TODO Catch error
                 _powerPointClient.SlideShowNextSlide += PowerPoint_SlideShowNextSlider;
                 _powerPointClient.SlideShowEnd += PowerPoint_SlideShowEnd;
-                _powerPointClient.ImagesGenerated += result =>
+                _powerPointClient.ImagesGenerated += async result =>
                 {
                     PresentationFile presentationFile = new([], "file" /*TODO Filename*/);
                     foreach (var image in result)
@@ -210,6 +189,7 @@ public partial class MainViewModel : ObservableObject
                     }
 
                     Images = presentationFile;
+                    await _powerPointClient.ImagesSetAsync();
                 };
             }
             catch

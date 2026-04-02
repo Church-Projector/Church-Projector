@@ -8,7 +8,7 @@
         <PublishTrimmed>false</PublishTrimmed>
         <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
         <PublishSingleFile>true</PublishSingleFile>
-        <SelfContained>false</SelfContained>
+        <SelfContained>true</SelfContained>
     </PropertyGroup>
 
     <ItemGroup>

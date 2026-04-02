@@ -26,8 +26,8 @@ public class PowerPointClient
     private Task? _listenTask;
     private bool _isRunning;
 
-    public bool IsRunning => OperatingSystem.IsWindows() 
-                             && _cmd is { IsConnected: true } 
+    public bool IsRunning => OperatingSystem.IsWindows()
+                             && _cmd is { IsConnected: true }
                              && _evt is { IsConnected: true }
                              && _isRunning;
 
@@ -69,14 +69,25 @@ public class PowerPointClient
         _cmd ??= new NamedPipeClientStream(".", "ppt_cmd", PipeDirection.Out);
         _evt ??= new NamedPipeClientStream(".", "ppt_evt", PipeDirection.In);
 
+        var connectionSucceeded = false;
         if (!_cmd.IsConnected)
         {
-            await ConnectPipeWithRetry(_cmd);
+            connectionSucceeded = await ConnectPipeWithRetry(_cmd);
+        }
+
+        if (!connectionSucceeded)
+        {
+            return false;
         }
 
         if (!_evt.IsConnected)
         {
-            await ConnectPipeWithRetry(_evt);
+            connectionSucceeded = await ConnectPipeWithRetry(_evt);
+        }
+
+        if (!connectionSucceeded)
+        {
+            return false;
         }
 
         _cts = new CancellationTokenSource();
@@ -96,23 +107,22 @@ public class PowerPointClient
         return true;
     }
 
-    private static async Task ConnectPipeWithRetry(NamedPipeClientStream pipe, int timeoutMs = 5000)
+    private static async Task<bool> ConnectPipeWithRetry(NamedPipeClientStream pipe, int retryCount = 3)
     {
-        var start = DateTime.UtcNow;
-
-        while (true)
+        for (int i = 0; i < retryCount; i++)
         {
             try
             {
                 await pipe.ConnectAsync(500);
-                return;
+                return true;
             }
             catch (TimeoutException)
             {
-                if ((DateTime.UtcNow - start).TotalMilliseconds > timeoutMs)
-                    throw;
+                // Ignore
             }
         }
+
+        return false;
     }
 
     public async Task StartPowerPointViewerAsync(string file)

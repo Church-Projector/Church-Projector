@@ -25,17 +25,47 @@ public class PowerPointClient
     private CancellationTokenSource? _cts;
     private Task? _listenTask;
     private bool _isRunning;
-    public bool IsRunning => OperatingSystem.IsWindows() && _cmd is { IsConnected: true } && _evt is { IsConnected: true } && _isRunning;
 
-    public async Task ConnectAsync()
+    public bool IsRunning => OperatingSystem.IsWindows() 
+                             && _cmd is { IsConnected: true } 
+                             && _evt is { IsConnected: true }
+                             && _isRunning;
+
+    public PowerPointClient()
     {
         if (OperatingSystem.IsWindows())
         {
-            #if !DEBUG
-            EnsureWorkerRunning();
-            #endif
+            _ = EnsurePowerPointServiceIsConnected();
+        }
+    }
+
+    private async Task EnsurePowerPointServiceIsConnected()
+    {
+        // Maybe it is already running in the background.
+        if (await ConnectAsync())
+        {
+            return;
         }
 
+        EnsureWorkerRunning();
+
+        // Retry loop (service might need time to boot)
+        const int maxAttempts = 10;
+        const int delayMs = 300;
+
+        for (var i = 0; i < maxAttempts; i++)
+        {
+            await Task.Delay(delayMs);
+
+            if (await ConnectAsync())
+            {
+                break;
+            }
+        }
+    }
+
+    private async Task<bool> ConnectAsync()
+    {
         _cmd ??= new NamedPipeClientStream(".", "ppt_cmd", PipeDirection.Out);
         _evt ??= new NamedPipeClientStream(".", "ppt_evt", PipeDirection.In);
 
@@ -52,16 +82,21 @@ public class PowerPointClient
         _cts = new CancellationTokenSource();
         _listenTask = Task.Run(() => Listen(_cts.Token));
 
-        await _listenTask.ContinueWith(t =>
+        await _listenTask.ContinueWith(async t =>
         {
+            _listenTask = null;
             if (t.Exception != null)
             {
                 Log.Error(t.Exception, "PowerPoint listener failed");
+                await StopPowerPointViewerAsync();
+                await EnsurePowerPointServiceIsConnected();
             }
         }, TaskContinuationOptions.OnlyOnFaulted);
+
+        return true;
     }
 
-    private async Task ConnectPipeWithRetry(NamedPipeClientStream pipe, int timeoutMs = 5000)
+    private static async Task ConnectPipeWithRetry(NamedPipeClientStream pipe, int timeoutMs = 5000)
     {
         var start = DateTime.UtcNow;
 
@@ -84,14 +119,14 @@ public class PowerPointClient
     {
         if (_cmd is null || !_cmd.IsConnected)
         {
-            await ConnectAsync();
+            return;
         }
 
         await SendAsync(JsonSerializer.Serialize(new GenericMessage<StartPowerPointViewerCommand>(
             Type: "StartPowerPointViewer",
             Payload: new StartPowerPointViewerCommand(file)
         ), Shared.JsonContext.Default.GenericMessageStartPowerPointViewerCommand));
-        
+
         _isRunning = true;
     }
 
@@ -99,13 +134,13 @@ public class PowerPointClient
 
     private void EnsureWorkerRunning()
     {
-        if (!OperatingSystem.IsWindows())
+#if DEBUG
+        return;
+#endif
+        if (_workerProcess is { HasExited: false })
         {
             return;
         }
-
-        if (_workerProcess is { HasExited: false })
-            return;
 
         var exePath = Path.Combine(AppContext.BaseDirectory, "ChurchProjector.PowerPoint.exe");
 
@@ -174,6 +209,7 @@ public class PowerPointClient
         {
             return;
         }
+
         using var reader = new StreamReader(_evt);
 
         try

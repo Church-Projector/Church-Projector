@@ -10,85 +10,107 @@ public static class Program
     [STAThread]
     private static async Task Main()
     {
-        NamedPipeServerStream cmdPipe = new("ppt_cmd", PipeDirection.In);
-        NamedPipeServerStream evtPipe = new("ppt_evt", PipeDirection.Out);
+        PowerPoint? ppt = null;
 
-        await cmdPipe.WaitForConnectionAsync();
-        await evtPipe.WaitForConnectionAsync();
+        await using NamedPipeServerStream cmdPipe = new("ppt_cmd", PipeDirection.In);
+        await using NamedPipeServerStream evtPipe = new("ppt_evt", PipeDirection.Out);
 
-        var ppt = new PowerPoint
+        var timeout = Task.Delay(TimeSpan.FromSeconds(10));
+
+        var cmdConnectTask = cmdPipe.WaitForConnectionAsync();
+        var evtConnectTask = evtPipe.WaitForConnectionAsync();
+
+        var allConnectionsTask = Task.WhenAll(cmdConnectTask, evtConnectTask);
+
+        var completed = await Task.WhenAny(allConnectionsTask, timeout);
+
+        if (completed == timeout)
         {
-            SlideShowBegin = () => _ = SendAsync(evtPipe, JsonSerializer.Serialize(
-                new GenericMessage<SlideShowBeginPayload>(
-                    Type: "SlideShowBegin",
-                    Payload: new SlideShowBeginPayload()
-                ), JsonContext.Default.GenericMessageSlideShowBeginPayload)),
-            SlideShowEnd = () => _ = SendAsync(evtPipe, JsonSerializer.Serialize(
-                new GenericMessage<SlideShowEndPayload>(
-                    Type: "SlideShowEnd",
-                    Payload: new SlideShowEndPayload()
-                ), JsonContext.Default.GenericMessageSlideShowEndPayload)),
-            SlideShowNextSlide = i =>
-                _ = SendAsync(evtPipe, JsonSerializer.Serialize(new GenericMessage<SlideShowNextSlidePayload>(
-                    Type: "SlideShowNextSlide",
-                    Payload: new SlideShowNextSlidePayload(i)
-                ), JsonContext.Default.GenericMessageSlideShowNextSlidePayload)),
-            ImagesGenerated = files =>
-                _ = SendAsync(evtPipe, JsonSerializer.Serialize(new GenericMessage<ImagesGeneratedPayload>(
-                    Type: "ImagesGenerated",
-                    Payload: new ImagesGeneratedPayload(files)
-                ), JsonContext.Default.GenericMessageImagesGeneratedPayload))
-        };
+            return;
+        }
 
-        using var reader = new StreamReader(cmdPipe);
-
-        while (true)
+        try
         {
-            var line = await reader.ReadLineAsync();
-            if (line == null) break;
-
-            if (JsonSerializer.Deserialize(line, typeof(BaseMessage), JsonContext.Default) is not BaseMessage
-                msg)
+            ppt = new PowerPoint
             {
-                continue;
-            }
+                SlideShowBegin = () => _ = SendAsync(evtPipe, JsonSerializer.Serialize(
+                    new GenericMessage<SlideShowBeginPayload>(
+                        Type: "SlideShowBegin",
+                        Payload: new SlideShowBeginPayload()
+                    ), JsonContext.Default.GenericMessageSlideShowBeginPayload)),
+                SlideShowEnd = () => _ = SendAsync(evtPipe, JsonSerializer.Serialize(
+                    new GenericMessage<SlideShowEndPayload>(
+                        Type: "SlideShowEnd",
+                        Payload: new SlideShowEndPayload()
+                    ), JsonContext.Default.GenericMessageSlideShowEndPayload)),
+                SlideShowNextSlide = i =>
+                    _ = SendAsync(evtPipe, JsonSerializer.Serialize(new GenericMessage<SlideShowNextSlidePayload>(
+                        Type: "SlideShowNextSlide",
+                        Payload: new SlideShowNextSlidePayload(i)
+                    ), JsonContext.Default.GenericMessageSlideShowNextSlidePayload)),
+                ImagesGenerated = files =>
+                    _ = SendAsync(evtPipe, JsonSerializer.Serialize(new GenericMessage<ImagesGeneratedPayload>(
+                        Type: "ImagesGenerated",
+                        Payload: new ImagesGeneratedPayload(files)
+                    ), JsonContext.Default.GenericMessageImagesGeneratedPayload))
+            };
 
-            switch (msg.Type)
+            using var reader = new StreamReader(cmdPipe);
+
+            while (true)
             {
-                case "StartPowerPointViewer":
-                    if (JsonSerializer.Deserialize(line, typeof(GenericMessage<StartPowerPointViewerCommand>),
-                            JsonContext.Default) is not GenericMessage<StartPowerPointViewerCommand> sppvc)
-                    {
-                        continue;
-                    }
+                var line = await reader.ReadLineAsync();
+                if (line == null) break;
 
-                    ppt.StartPowerPointViewer(sppvc.Payload.File);
-                    break;
-                case "Shutdown":
-                    ppt.Stop();
-                    Environment.Exit(0);
-                    break;
-                case "HidePresentation":
-                    ppt.HidePresentationAsync();
-                    break;
-                case "ClosePresentation":
-                    ppt.ClosePresentationAsync();
-                    break;
-                case "ImagesSet":
-                    ppt.PowerPointImagesSet?.Invoke();
-                    break;
-                case "SetCurrentSlide":
-                    if (JsonSerializer.Deserialize(line, typeof(GenericMessage<SetCurrentSlideCommand>),
-                            JsonContext.Default) is not GenericMessage<SetCurrentSlideCommand> scsc)
-                    {
-                        continue;
-                    }
+                if (JsonSerializer.Deserialize(line, typeof(BaseMessage), JsonContext.Default) is not BaseMessage
+                    msg)
+                {
+                    continue;
+                }
 
-                    ppt.SetCurrentSlide(scsc.Payload.Index, scsc.Payload.Left, scsc.Payload.Top, scsc.Payload.Width,
-                        scsc.Payload.Height);
-                    break;
+                switch (msg.Type)
+                {
+                    case "StartPowerPointViewer":
+                        if (JsonSerializer.Deserialize(line, typeof(GenericMessage<StartPowerPointViewerCommand>),
+                                JsonContext.Default) is not GenericMessage<StartPowerPointViewerCommand> sppvc)
+                        {
+                            continue;
+                        }
+
+                        ppt.StartPowerPointViewer(sppvc.Payload.File);
+                        break;
+                    case "Shutdown":
+                        ppt.Stop();
+                        Environment.Exit(0);
+                        break;
+                    case "HidePresentation":
+                        ppt.HidePresentationAsync();
+                        break;
+                    case "ClosePresentation":
+                        ppt.ClosePresentationAsync();
+                        break;
+                    case "ImagesSet":
+                        ppt.PowerPointImagesSet?.Invoke();
+                        break;
+                    case "SetCurrentSlide":
+                        if (JsonSerializer.Deserialize(line, typeof(GenericMessage<SetCurrentSlideCommand>),
+                                JsonContext.Default) is not GenericMessage<SetCurrentSlideCommand> scsc)
+                        {
+                            continue;
+                        }
+
+                        ppt.SetCurrentSlide(scsc.Payload.Index, scsc.Payload.Left, scsc.Payload.Top, scsc.Payload.Width,
+                            scsc.Payload.Height);
+                        break;
+                }
             }
         }
+        catch
+        {
+            ppt?.Stop();
+        }
+
+        return;
 
         async Task SendAsync(Stream pipe, string value)
         {

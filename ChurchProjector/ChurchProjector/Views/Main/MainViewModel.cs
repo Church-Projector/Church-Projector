@@ -45,6 +45,13 @@ public partial class MainViewModel : ObservableObject
                     }
                 }
 
+                if (_powerPointClient?.IsRunning ?? false)
+                {
+                    // If we set images and currently PowerPoint is running it means that the presentation gets closed anyway.
+                    // If we don't unset the image we will get a disposed exception when the image window will be displayed again.
+                    ImageWindow.ViewModel.ImageSource = null;
+                }
+
                 _powerPointClient?.ClosePresentationAsync();
 
                 SelectedImage = null;
@@ -421,8 +428,6 @@ public partial class MainViewModel : ObservableObject
                         }
                     }
                 }
-
-                ;
 
                 List<ImageWithName> images = ranges.AsParallel()
                     .Select((range, i) =>

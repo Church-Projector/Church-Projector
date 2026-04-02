@@ -6,7 +6,7 @@ namespace ChurchProjector.PowerPoint;
 
 public class PowerPoint
 {
-    private readonly Application _application;
+    private Application? _application;
     private Presentation? Presentation { get; set; }
 
     public Action? SlideShowBegin { get; set; }
@@ -48,13 +48,28 @@ public class PowerPoint
     {
         string tempDir = Path.Combine(_tempDirectory, Guid.NewGuid().ToString());
         Directory.CreateDirectory(tempDir);
+        if (Presentation is not null)
+        {
+            Presentation.Close();
+            Marshal.FinalReleaseComObject(Presentation);
+            Presentation = null;
+            
+            for (var i = 0; i < 15; i++)
+            {
+                // PowerPoint needs some time...
+                Thread.Sleep(10);
+            }
+        }
+
         (List<string> files, Presentation presentation) result = ConvertToImages(file, tempDir, _application);
 
         PowerPointImagesSet = () =>
         {
             Presentation = result.presentation;
             Presentation.SlideShowSettings.ShowPresenterView = MsoTriState.msoFalse;
-            new Thread(() => Presentation.SlideShowSettings.Run()).Start();
+            var thread = new Thread(() => Presentation.SlideShowSettings.Run());
+            thread.SetApartmentState(ApartmentState.STA);
+            thread.Start();
         };
         ImagesGenerated?.Invoke(result.files);
     }
@@ -73,6 +88,8 @@ public class PowerPoint
             string imagePath = Path.Combine(outputDirectory, $"slide_{i}.png");
             slide.Export(imagePath, "PNG");
             imagePaths.Add(imagePath);
+
+            Marshal.ReleaseComObject(slide);
         }
 
         return (imagePaths, pptPresentation);
@@ -84,14 +101,12 @@ public class PowerPoint
         {
             return;
         }
-        
-        Presentation.SlideShowSettings.Run();
-        
+
         Presentation.SlideShowWindow.Left = left;
         Presentation.SlideShowWindow.Top = top;
         Presentation.SlideShowWindow.Width = width;
         Presentation.SlideShowWindow.Height = height;
-        
+
         Presentation.SlideShowWindow.View.GotoSlide(index);
     }
 
@@ -100,21 +115,24 @@ public class PowerPoint
         if (Presentation is not null)
         {
             Presentation.Close();
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                Marshal.FinalReleaseComObject(Presentation);
-            }
+            Marshal.FinalReleaseComObject(Presentation);
 
             Presentation = null;
         }
 
         try
         {
-            _application.Quit();
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            if (_application is not null)
             {
+                _application.SlideShowBegin -= ApplicationSlideShowBegin;
+                _application.SlideShowNextSlide -= ApplicationSlideShowNextSlide;
+                _application.SlideShowEnd -= ApplicationSlideShowEnd;
+                
+                _application.Quit();
                 Marshal.FinalReleaseComObject(_application);
             }
+
+            _application = null;
         }
         catch
         {
@@ -137,6 +155,7 @@ public class PowerPoint
         {
             return;
         }
+
         Presentation.SlideShowWindow.View.State = PpSlideShowState.ppSlideShowBlackScreen;
     }
 
@@ -146,12 +165,9 @@ public class PowerPoint
         {
             return;
         }
+
         Presentation.Close();
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-        {
-            Marshal.FinalReleaseComObject(Presentation);
-        }
-        
+        Marshal.FinalReleaseComObject(Presentation);
         Presentation = null;
     }
 }

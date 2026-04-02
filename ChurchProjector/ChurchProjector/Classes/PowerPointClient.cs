@@ -319,6 +319,8 @@ public class PowerPointClient
             Type: "ImagesSet",
             Payload: new ImagesSetCommand()
         ), Shared.JsonContext.Default.GenericMessageImagesSetCommand));
+        
+        _isRunning = true;
     }
 
     public async Task SetCurrentSlideAsync(int index, float left, float top, float width, float height)

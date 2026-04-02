@@ -70,16 +70,14 @@ public partial class MainViewModel : ObservableObject
         Dispatcher.UIThread.Invoke(ImageWindow.Show);
     }
 
-    private ImageWithName? _selectedImage;
-
     public ImageWithName? SelectedImage
     {
-        get => _selectedImage;
+        get;
         set
         {
-            if (_selectedImage != value)
+            if (field != value)
             {
-                _selectedImage = value;
+                field = value;
                 OnPropertyChanged();
                 // TODO
                 // if (Presentation is null)
@@ -93,7 +91,12 @@ public partial class MainViewModel : ObservableObject
                 }
                 else
                 {
-                    int index = _selectedImage == null ? -1 : Images.Images.IndexOf(_selectedImage);
+                    int index = field == null ? -1 : Images.Images.IndexOf(value);
+                    if (value is not null)
+                    {
+                        ImageWindow.ViewModel.ImageSource = value.Image;
+                    }
+
                     if (index >= 0)
                     {
                         // This is in points
@@ -109,10 +112,9 @@ public partial class MainViewModel : ObservableObject
                     }
                     else
                     {
-                        _powerPointClient?.ClosePresentationAsync();
-
-                        SelectedImage = null;
-                        Images = null;
+                        PowerPoint_SlideShowEnd();
+                        ImageWindow.ViewModel.CurrentFileType = FileType.Image;
+                        _powerPointClient?.HidePresentationAsync();
                     }
                 }
 
@@ -547,7 +549,6 @@ public partial class MainViewModel : ObservableObject
 
     public void HideImage(bool fadeOut)
     {
-        _powerPointClient?.HidePresentationAsync();
         SelectedImage = null;
         ImageWindow.ViewModel.HideImage(fadeOut);
     }

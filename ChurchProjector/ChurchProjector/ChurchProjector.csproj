@@ -12,8 +12,6 @@
     <ApplicationIcon>Assets\icon.ico</ApplicationIcon>
     <PublishAot>true</PublishAot>
     <PublishTrimmed>true</PublishTrimmed>
-    <!--will make the app start faster but be bigger (around 40 mb)-->
-    <PublishReadyToRun>true</PublishReadyToRun>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='Release'">

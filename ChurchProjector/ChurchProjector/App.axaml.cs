@@ -2,7 +2,6 @@
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using ChurchProjector.Classes;
-using ChurchProjector.Logging;
 using ChurchProjector.Views.Init;
 using ChurchProjector.Views.Main;
 using ChurchProjector.Views.Settings;
@@ -61,7 +60,6 @@ public partial class App : Application
             Log.Logger = new LoggerConfiguration()
                 .Enrich.FromLogContext()
                 .WriteTo.File("logs/log-.txt", rollingInterval: RollingInterval.Day)
-                .WriteTo.Sink(new ErrorListenerSink())
                 .CreateLogger();
 
             MainWindow mainWindow = new((DataContext as SettingsViewModel)!);

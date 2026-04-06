@@ -12,10 +12,7 @@ using CommunityToolkit.Mvvm.Input;
 using Serilog;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Threading;
 
 namespace ChurchProjector.Views.Main;
@@ -40,8 +37,6 @@ public partial class MainWindow : Window
         string? version = ChurchProjector.Classes.Version.GetCurrentVersion();
 
         Title = $"{Title} {version}";
-
-        List<Screen> screens = [.. Screens.All];
 
         settings.SetMonitors(GetMonitors());
 
@@ -68,14 +63,6 @@ public partial class MainWindow : Window
                 _viewModel.ImageWindow.StopBanner();
             }
         });
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-        {
-            _viewModel.OpenLogsCommand = new RelayCommand(() => Process.Start("explorer.exe", Path.Combine(AppContext.BaseDirectory, "logs")));
-        }
-        else
-        {
-            // todo
-        }
         _viewModel.EditCommand = new RelayCommand(async () =>
         {
             SongEditWindow songEditWindow = new(_viewModel.Images!.Filename!);
@@ -176,6 +163,14 @@ public partial class MainWindow : Window
         catch (Exception ex)
         {
             Log.Error(ex, "Fehler bei dem KeyUp");
+        }
+    }
+
+    private void BtnNotificationClose_OnClick(object? sender, RoutedEventArgs e)
+    {
+        if (sender is Button { DataContext: Notifications.NotificationViewModel notification })
+        {
+            _viewModel.Notifications.Notifications.Remove(notification);
         }
     }
 }

@@ -25,6 +25,7 @@ public class PowerPointClient
     private CancellationTokenSource? _cts;
     private Task? _listenTask;
     private bool _isRunning;
+    public Action<bool> PowerPointConnectionChanged;
 
     public bool IsRunning => OperatingSystem.IsWindows()
                              && _cmd is { IsConnected: true }
@@ -44,6 +45,7 @@ public class PowerPointClient
         // Maybe it is already running in the background.
         if (await ConnectAsync())
         {
+            PowerPointConnectionChanged.Invoke(true);
             return;
         }
 
@@ -59,9 +61,11 @@ public class PowerPointClient
 
             if (await ConnectAsync())
             {
+                PowerPointConnectionChanged.Invoke(true);
                 break;
             }
         }
+        PowerPointConnectionChanged.Invoke(false);
     }
 
     private async Task<bool> ConnectAsync()
@@ -95,6 +99,7 @@ public class PowerPointClient
 
         await _listenTask.ContinueWith(async t =>
         {
+            PowerPointConnectionChanged.Invoke(false);
             _listenTask = null;
             if (t.Exception != null)
             {

@@ -198,8 +198,8 @@
   <data name="BannerMessage" xml:space="preserve">
     <value>Banner-Nachricht</value>
   </data>
-  <data name="ErrorsOccurred" xml:space="preserve">
-    <value>Es sind Fehler aufgetreten.</value>
+  <data name="LogFolder_Colon" xml:space="preserve">
+    <value>Log-Pfad:</value>
   </data>
   <data name="OpenLogs" xml:space="preserve">
     <value>Logs öffnen</value>

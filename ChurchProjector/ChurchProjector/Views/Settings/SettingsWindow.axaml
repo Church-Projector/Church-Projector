@@ -325,7 +325,7 @@
 			</TabItem>
 
 			<TabItem Header="{x:Static lang:Resources.Info}">
-				<Grid RowDefinitions="auto,auto,auto, auto" ColumnDefinitions="auto,*">
+				<Grid RowDefinitions="auto,auto,auto,auto,auto" ColumnDefinitions="auto,*">
 					<TextBlock Grid.Row="0" Grid.Column="0" Text="{x:Static lang:Resources.HomePage_Colon}" VerticalAlignment="Center" />
 					<HyperlinkButton Grid.Row="0" Grid.Column="1" Click="BtnOpenLink_Click" Tag="https://church-projector.de">
 						https://church-projector.de
@@ -343,6 +343,9 @@
 					<HyperlinkButton Grid.Row="3" Grid.Column="1" Click="BtnOpenLink_Click" Tag="mailto:support@church-projector.de">
 						support@church-projector.de
 					</HyperlinkButton>
+
+					<TextBlock Grid.Row="4" Grid.Column="0" Text="{x:Static lang:Resources.LogFolder_Colon}" VerticalAlignment="Center" />
+					<HyperlinkButton Grid.Row="4" Grid.Column="1" Click="BtnOpenLink_Click" Tag="{Binding LogFolder}" Content="{Binding LogFolder}" />
 				</Grid>
 			</TabItem>
 		</TabControl>

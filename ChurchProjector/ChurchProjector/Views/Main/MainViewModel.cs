@@ -10,7 +10,6 @@ using ChurchProjector.Views.Schedule;
 using ChurchProjector.Views.Settings;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Serilog;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -20,6 +19,8 @@ using System.Windows.Input;
 using Avalonia.Media.Imaging;
 using Avalonia.Threading;
 using ChurchProjector.Classes.Schedule;
+using ChurchProjector.Views.Notification;
+using ChurchProjector.Views.Notifications;
 using MuPDFCore;
 using static ChurchProjector.Classes.DrawingHelper;
 
@@ -62,6 +63,8 @@ public partial class MainViewModel : ObservableObject
         }
     } = null;
 
+    public NotificationService Notifications { get; } = new();
+
     private void PowerPoint_SlideShowNextSlider(int slideIndex)
     {
         if (slideIndex < 0 || slideIndex >= Images.Images.Count)
@@ -86,8 +89,6 @@ public partial class MainViewModel : ObservableObject
             {
                 field = value;
                 OnPropertyChanged();
-                // TODO
-                // if (Presentation is null)
                 if (_powerPointClient is not { IsRunning: true })
                 {
                     if (value != null)
@@ -181,33 +182,29 @@ public partial class MainViewModel : ObservableObject
     {
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
         {
-            try
+            _powerPointClient = new PowerPointClient();
+            _powerPointClient.SlideShowNextSlide += PowerPoint_SlideShowNextSlider;
+            _powerPointClient.SlideShowEnd += PowerPoint_SlideShowEnd;
+            _powerPointClient.ImagesGenerated += async result =>
             {
-                _powerPointClient = new PowerPointClient();
-                // TODO Await
-                // TODO Catch error
-                _powerPointClient.SlideShowNextSlide += PowerPoint_SlideShowNextSlider;
-                _powerPointClient.SlideShowEnd += PowerPoint_SlideShowEnd;
-                _powerPointClient.ImagesGenerated += async result =>
+                PresentationFile presentationFile = new([], "file" /*TODO Filename*/);
+                foreach (var image in result)
                 {
-                    PresentationFile presentationFile = new([], "file" /*TODO Filename*/);
-                    foreach (var image in result)
-                    {
-                        presentationFile.Images.Add(new ImageWithName(Path.GetFileNameWithoutExtension(image),
-                            new Bitmap(image), false));
-                    }
+                    presentationFile.Images.Add(new ImageWithName(Path.GetFileNameWithoutExtension(image),
+                        new Bitmap(image), false));
+                }
 
-                    Images = presentationFile;
-                    await _powerPointClient.ImagesSetAsync();
-                };
-            }
-            catch
+                Images = presentationFile;
+                await _powerPointClient.ImagesSetAsync();
+            };
+            _powerPointClient.PowerPointConnectionChanged = isConnected =>
             {
-                Log.Error(Lang.Resources.PowerPointIsMissing);
-            }
+                if (!isConnected) {
+                    Dispatcher.UIThread.Invoke(() => Notifications.Show(Lang.Resources.PowerPointIsMissing, NotificationType.Error, 5000));
+                }
+            };
         }
 
-        GlobalConfig.HasError.PropertyChanged += HasError_PropertyChanged;
         HistoryViewModel = new()
         {
             OpenHistoryEntryCommand = new RelayCommand<HistoryEntry>((HistoryEntry? historyEntry) =>
@@ -504,11 +501,6 @@ public partial class MainViewModel : ObservableObject
         }
     }
 
-    private void HasError_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
-    {
-        OnPropertyChanged(nameof(HasError));
-    }
-
     internal void OpenVerse(ExactVerse verse)
     {
         if (BibleViewModel.SelectedBible1 is null ||
@@ -523,8 +515,6 @@ public partial class MainViewModel : ObservableObject
         BibleViewModel.AcceptSearchTextCommand.Execute(null);
     }
 
-    public bool HasError => GlobalConfig.HasError.Value;
-
     [ObservableProperty] private ICommand openSongQuickSearchCommand;
 
     [ObservableProperty] private ICommand openSongSearchCommand;
@@ -534,8 +524,6 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty] private ICommand hideImageCommand;
 
     [ObservableProperty] private ICommand openShowNotificationCommand;
-
-    [ObservableProperty] private ICommand openLogsCommand;
 
     [ObservableProperty] private ICommand editCommand;
 

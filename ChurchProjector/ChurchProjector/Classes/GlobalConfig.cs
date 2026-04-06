@@ -37,14 +37,4 @@ public static class GlobalConfig
 
     public static ObservableCollection<Song> Songs { get; } = [];
     public static ObservableCollection<Bible?> Bibles { get; } = [];
-    public static HasError HasError { get; set; } = new();
-}
-
-public class HasError : ObservableObject
-{
-    public bool Value
-    {
-        get;
-        set => SetProperty(ref field, value);
-    }
 }

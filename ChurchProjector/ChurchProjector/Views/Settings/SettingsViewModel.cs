@@ -7,6 +7,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace ChurchProjector.Views.Settings;
@@ -20,16 +21,29 @@ public partial class SettingsViewModel : ObservableObject
 
     public Classes.Settings Settings => GlobalConfig.JsonFile.Settings;
 
+    public string LogFolder
+    {
+        get => field;
+        set => SetProperty(ref field, value);
+    } = Path.Combine(AppContext.BaseDirectory, "logs");
+
     #region Events
+
     public event Action? RecreateBanner;
+
     #endregion
 
     #region Monitors
+
     public IDictionary<string, Screen> Monitors { get; internal set; } = new Dictionary<string, Screen>();
+
     // TODO: https://github.com/AvaloniaUI/Avalonia/issues/11512
     public KeyValuePair<string, Screen> SelectedMonitore
     {
-        get => GlobalConfig.JsonFile.Settings.SelectedMonitorName != null && Monitors.ContainsKey(GlobalConfig.JsonFile.Settings.SelectedMonitorName) ? Monitors.Single(x => x.Key == GlobalConfig.JsonFile.Settings.SelectedMonitorName) : GetFirstMonitor();
+        get => GlobalConfig.JsonFile.Settings.SelectedMonitorName != null &&
+               Monitors.ContainsKey(GlobalConfig.JsonFile.Settings.SelectedMonitorName)
+            ? Monitors.Single(x => x.Key == GlobalConfig.JsonFile.Settings.SelectedMonitorName)
+            : GetFirstMonitor();
         set
         {
             if (GlobalConfig.JsonFile.Settings.SelectedMonitorName != value.Key)
@@ -56,6 +70,7 @@ public partial class SettingsViewModel : ObservableObject
         {
             screen = Monitors.FirstOrDefault();
         }
+
         return screen;
     }
 
@@ -65,9 +80,11 @@ public partial class SettingsViewModel : ObservableObject
     }
 
     public string BannerFontSizeText => $"{Lang.Resources.FontSize_Colon} {BannerFontSize}";
+
     #endregion
 
     public List<Theme> Themes { get; } = Enum.GetValues<Theme>().ToList();
+
     public Theme Theme
     {
         get => GlobalConfig.JsonFile.Settings.Theme;
@@ -81,9 +98,11 @@ public partial class SettingsViewModel : ObservableObject
             }
         }
     }
+
     public string ThemeName => Theme == Theme.Light ? "Light" : "Dark";
 
     public List<Language> Languages { get; } = Enum.GetValues<Language>().ToList();
+
     public Language Language
     {
         get => GlobalConfig.JsonFile.Settings.Language;
@@ -98,8 +117,9 @@ public partial class SettingsViewModel : ObservableObject
     }
 
     #region display
-    [ObservableProperty]
-    private WindowState _windowState = WindowState.FullScreen;
+
+    [ObservableProperty] private WindowState _windowState = WindowState.FullScreen;
+
     #endregion
 
     public bool ShowClock
@@ -109,6 +129,7 @@ public partial class SettingsViewModel : ObservableObject
     }
 
     #region paths
+
     public string? BiblesPath
     {
         get => GlobalConfig.JsonFile.Settings.PathSettings.BiblePath;
@@ -128,9 +149,11 @@ public partial class SettingsViewModel : ObservableObject
             OnPropertyChanged();
         }
     }
+
     #endregion
 
     #region banner
+
     public int BannerSpeed
     {
         get => GlobalConfig.JsonFile.Settings.BannerSettings.Speed;
@@ -168,19 +191,26 @@ public partial class SettingsViewModel : ObservableObject
             RecreateBanner?.Invoke();
         }
     }
+
     #endregion
 
     #region bible settings
+
     public List<BookLanguage> BookLanguages { get; } = Enum.GetValues<BookLanguage>().ToList();
+
     public BookLanguage BookLanguage
     {
         get => GlobalConfig.JsonFile.Settings.BibleSettings.BookLanguage;
-        set => this.SetProperty(GlobalConfig.JsonFile.Settings.BibleSettings.BookLanguage, value, (newValue) => GlobalConfig.JsonFile.Settings.BibleSettings.BookLanguage = newValue);
+        set => this.SetProperty(GlobalConfig.JsonFile.Settings.BibleSettings.BookLanguage, value,
+            (newValue) => GlobalConfig.JsonFile.Settings.BibleSettings.BookLanguage = newValue);
     }
+
     #endregion
 
     #region Commands
+
     private bool MayIncreaseBannerSpeed => BannerSpeed < 100;
+
     [RelayCommand(CanExecute = nameof(MayIncreaseBannerSpeed))]
     private void IncreaseBannerSpeed()
     {
@@ -188,6 +218,7 @@ public partial class SettingsViewModel : ObservableObject
     }
 
     private bool MayDecreaseBannerSpeed => BannerSpeed > 1;
+
     [RelayCommand(CanExecute = nameof(MayDecreaseBannerSpeed))]
     private void DecreaseBannerSpeed()
     {
@@ -195,6 +226,7 @@ public partial class SettingsViewModel : ObservableObject
     }
 
     private bool MayIncreaseBannerSize => BannerFontSize < 50;
+
     [RelayCommand(CanExecute = nameof(MayIncreaseBannerSize))]
     private void IncreaseBannerSize()
     {
@@ -202,10 +234,12 @@ public partial class SettingsViewModel : ObservableObject
     }
 
     private bool MayDecreaseBannerSize => BannerFontSize > 10;
+
     [RelayCommand(CanExecute = nameof(MayDecreaseBannerSize))]
     private void DecreaseBannerSize()
     {
         BannerFontSize--;
     }
+
     #endregion
 }

@@ -4,6 +4,7 @@ using Avalonia.Platform.Storage;
 using ChurchProjector.Classes;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Runtime.InteropServices;
 
 namespace ChurchProjector.Views.Settings;
@@ -62,6 +63,8 @@ public partial class SettingsWindow : Window
         }
         else
         {
+            Directory.CreateDirectory(url);
+            
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
                 Process.Start("explorer.exe", url);

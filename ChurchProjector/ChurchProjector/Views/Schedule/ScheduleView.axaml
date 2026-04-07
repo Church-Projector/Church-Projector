@@ -4,7 +4,6 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:local="clr-namespace:ChurchProjector.Views.Schedule"
              xmlns:converters="clr-namespace:ChurchProjector.Converters"
-             xmlns:svg="clr-namespace:Avalonia.Svg.Skia"
              xmlns:lang="clr-namespace:ChurchProjector.Lang"
 			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="ChurchProjector.Views.Schedule.ScheduleView"

@@ -4,7 +4,6 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ChurchProjector.Views.Settings"
-        xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
         xmlns:converters="clr-namespace:ChurchProjector.Converters"
 		xmlns:dc="clr-namespace:ChurchProjector.Views.Settings.DisplayConfiguration.DisplayConfiguration"
 		xmlns:generic="clr-namespace:System.Collections.Generic;assembly=mscorlib"

@@ -7,11 +7,9 @@
     xmlns:local="using:ChurchProjector.Views.Main"
     xmlns:schedule="clr-namespace:ChurchProjector.Views.Schedule"
     xmlns:history="clr-namespace:ChurchProjector.Views.History"
-    xmlns:classes="clr-namespace:ChurchProjector.Classes"
     xmlns:bibleview="clr-namespace:ChurchProjector.Views.Bible"
 	xmlns:lang="clr-namespace:ChurchProjector.Lang"
-	xmlns:vm="clr-namespace:ChurchProjector.Views.Notifications"
-	mc:Ignorable="d"
+    mc:Ignorable="d"
     WindowStartupLocation="CenterScreen"
     Title="Gottesdienst Projektor" Height="675" Width="1650"
     Icon="/Assets/icon.ico"
@@ -119,8 +117,6 @@
                                     Background="#e9003e" Foreground="#feccd2"
                                     Padding="4,2" Margin="8,0,0,0"
                                     Click="BtnNotificationClose_OnClick"/>
-                                    <!-- Command="{Binding (vm:NotificationService).DismissCommand, RelativeSource={RelativeSource AncestorType=Window}}" -->
-                                    <!-- CommandParameter="{Binding }" -->
                         </Grid>
                     </Border>
                 </DataTemplate>

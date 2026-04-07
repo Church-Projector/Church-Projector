@@ -352,20 +352,29 @@ public partial class BibleViewModel : ObservableObject
         }
     }
 
-    public List<string> GetPreviewSelectedBiblePosition(Classes.Bible bible, int bookNumber, int chapter, int? verseStart, int? verseEnd)
+    public DrawingHelper.TextLine GetPreviewSelectedBiblePosition(Classes.Bible bible, int bookNumber, int chapter, int? verseStart, int? verseEnd)
     {
         Dictionary<int, string> verses = GetPreviewSelectedBiblePositionInternal(bible, bookNumber, chapter, verseStart, verseEnd, withUpper: true);
 
         if (verses.Count == 1)
         {
-            return [verses.Values.First()];
+            return new DrawingHelper.TextLine(verses.Values.First());
         }
-        List<string> verseContent = [];
-        foreach (KeyValuePair<int, string> verse in verses)
+        
+        return new DrawingHelper.TextLine()
         {
-            verseContent.Add($"<upper>{verse.Key}</upper> {verse.Value}");
-        }
-        return verseContent;
+            Sections = verses
+                .SelectMany(verse =>  new List<DrawingHelper.TextSection>
+                    {
+                        new(verse.Key.ToString())
+                        {
+                            IsUpper = true,
+                            MayBeEndOfLine = false,
+                        },
+                        new(verse.Value),
+                    }
+                ).ToList()
+        };
     }
 
     public Dictionary<int, string> GetPreviewSelectedBiblePositionInternal(Classes.Bible bible, int bookNumber, int chapter, int? verseStart, int? verseEnd, bool withUpper = false, bool forceAllVerses = false)

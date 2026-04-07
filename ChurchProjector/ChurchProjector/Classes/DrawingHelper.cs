@@ -25,12 +25,12 @@ public static class DrawingHelper
         }
     }
 
-    public static (float headerTextSize, float contentTextSize, float bottomTextSize, List<List<string>> splittedContent) GetMaxTextSize(SKFont sKFont,
+    public static (float headerTextSize, float contentTextSize, float bottomTextSize, List<List<TextLine>> splittedContent) GetMaxTextSize(SKFont sKFont,
                                                                                                                                          ImageCreationConfiguration imageCreationConfiguration,
                                                                                                                                          float height,
                                                                                                                                          float width,
                                                                                                                                          List<string> header,
-                                                                                                                                         List<List<string>> content,
+                                                                                                                                         List<List<TextLine>> content,
                                                                                                                                          List<string> bottom,
                                                                                                                                          bool disableLineBreaks)
     {
@@ -43,8 +43,8 @@ public static class DrawingHelper
         float headerTextSize = imageCreationConfiguration.Header.MinFontSize;
         float contentTextSize = imageCreationConfiguration.Content.MinFontSize;
         float bottomTextSize = imageCreationConfiguration.Bottom.MinFontSize;
-        List<List<string>> tempContent = content.ToList();
-        List<List<string>> acceptedTempContent = tempContent.ToList();
+        List<List<TextLine>> tempContent = content.ToList();
+        List<List<TextLine>> acceptedTempContent = tempContent.ToList();
         while (true)
         {
             if (headerTextSize == imageCreationConfiguration.Header.MaxFontSize
@@ -63,63 +63,62 @@ public static class DrawingHelper
             foreach (string line in header)
             {
                 totalRenderedHeight += headerTextSize;
-                maxRenderedWidth = Math.Max(maxRenderedWidth, MeasureText(sKFont, headerTextSize, line));
+                maxRenderedWidth = Math.Max(maxRenderedWidth, MeasureText(sKFont, headerTextSize, new TextLine(line)));
             }
 
             if (!disableLineBreaks)
             {
-                foreach (List<string> tempLines in tempContent)
+                foreach (List<TextLine> tempLines in tempContent)
                 {
                     while (true)
                     {
                         sKFont.Size = contentTextSize;
                         for (int i = 0; i < tempLines.Count; i++)
                         {
-                            string currentLine = tempLines[i];
-                            // If MeasureText > maxWidth the tet can not be rendered in a single line.
+                            TextLine currentLine = tempLines[i];
+
                             if (MeasureText(sKFont, contentTextSize, currentLine) > maxWidth)
                             {
-                                // In that case we get the last space to check, if the text renders until the space without a break
-                                int lastSpace = currentLine.LastIndexOf(' '); 
-                                
-                                while (lastSpace > 0)
+                                // Try break the line
+                                List<TextSection>? breakOutPart = currentLine.Break();
+                                if (breakOutPart is { Count: > 0 })
                                 {
-                                    // We don't allow splitting inside some tags.
-                                    // If the space is inside some tags, we skip the space.
-                                    if (IsInsideLineBreakSafeTag(currentLine, lastSpace))
+                                    if (tempLines.Count - 1 <= i)
                                     {
-                                        lastSpace = currentLine.LastIndexOf(' ', lastSpace - 1);
-                                        continue;
-                                    }
-
-                                    // If the text now ends with an upper we skip the space.
-                                    // The text shouldn't be end on an upper
-                                    if (currentLine.Substring(0, lastSpace).EndsWith("</upper>"))
-                                    {
-                                        lastSpace = currentLine.Substring(0, lastSpace).LastIndexOf(' ');
-                                        continue;
-                                    }
-
-                                    break;
-                                }
-
-                                // If we have a space found
-                                if (lastSpace > 0)
-                                {
-                                    // We set the text of the current line to the text until the space
-                                    tempLines[i] = currentLine.Substring(0, lastSpace);
-
-                                    if (tempLines.Count == i + 1)
-                                    {
-                                        // If we are on the last line, we move the text behind the last space to a new line
-                                        tempLines.Add(currentLine.Substring(lastSpace + 1));
+                                        // Was already the last section, create a new
+                                        tempLines.Add(new TextLine()
+                                        {
+                                            Sections = breakOutPart,
+                                        });
                                     }
                                     else
                                     {
-                                        // If we are not on the last line we move the text behind the last word to the next line.
-                                        tempLines[i + 1] = $"{currentLine.Substring(lastSpace + 1)} {tempLines[i + 1]}";
+                                        TextLine nextLine = tempLines[i + 1];
+                                        while (true)
+                                        {
+                                            TextSection lastPart = breakOutPart.Last();
+                                            
+                                            if (lastPart.FlagEqual(nextLine.Sections[0]))
+                                            {
+                                                // If it is the same as the first section of the next line -> join them
+                                                nextLine.Sections[0].Text = $"{lastPart.Text} {nextLine.Sections[0].Text}";
+                                            }
+                                            else
+                                            {
+                                                // Else create a new section
+                                                nextLine.Sections.Insert(0, lastPart);
+                                            }
+
+                                            breakOutPart.Remove(lastPart);
+
+                                            if (breakOutPart.Count == 0)
+                                            {
+                                                break;
+                                            }
+                                        }
                                     }
 
+                                    // Line changed, reevaluate
                                     i--;
                                 }
                             }
@@ -129,9 +128,9 @@ public static class DrawingHelper
                 }
             }
 
-            foreach (List<string> lines in tempContent)
+            foreach (List<TextLine> lines in tempContent)
             {
-                foreach (string line in lines)
+                foreach (TextLine line in lines)
                 {
                     totalRenderedHeight += contentTextSize;
                     maxRenderedWidth = Math.Max(maxRenderedWidth, MeasureText(sKFont, contentTextSize, line));
@@ -141,7 +140,7 @@ public static class DrawingHelper
             foreach (string line in bottom)
             {
                 totalRenderedHeight += bottomTextSize;
-                maxRenderedWidth = Math.Max(maxRenderedWidth, MeasureText(sKFont, bottomTextSize, line));
+                maxRenderedWidth = Math.Max(maxRenderedWidth, MeasureText(sKFont, bottomTextSize, new TextLine(line)));
             }
 
             if (totalRenderedHeight > GetFreeHeight(tempContent.Sum(x => x.Count) + header.Count + bottom.Count) || maxRenderedWidth > maxWidth)
@@ -152,16 +151,6 @@ public static class DrawingHelper
         }
 
         return (headerTextSize - 1, contentTextSize - 1, bottomTextSize - 1, acceptedTempContent);
-    }
-    
-    private static bool IsInsideLineBreakSafeTag(string text, int index)
-    {
-        int lastOpen = text.LastIndexOf("<light>", index, StringComparison.Ordinal);
-        if (lastOpen < 0) return false;
-
-        int lastClose = text.LastIndexOf("</light>", index, StringComparison.Ordinal);
-
-        return lastClose < lastOpen;
     }
 
     public static bool MayRenderImage(this ImageCreation imageCreation)
@@ -181,7 +170,7 @@ public static class DrawingHelper
 
         // Normally we could just check, if the min text size works, but we want to split the content.
         // For even faster checks we could create a get split text method that just split's the text without searching for the text size.
-        (float headerTextSize, float contentTextSize, float bottomTextSize, List<List<string>> splittedContent) textSizes = GetMaxTextSize(_font,
+        (float headerTextSize, float contentTextSize, float bottomTextSize, List<List<TextLine>> splittedContent) textSizes = GetMaxTextSize(_font,
             imageCreation.Configuration,
             _height,
             _width,
@@ -233,7 +222,7 @@ public static class DrawingHelper
             imageCreation.ImageCreationContent.ConvertAll(x => x.Bottom),
             disableLineBreaks);
 
-        (float headerTextSize, float contentTextSize, float bottomTextSize, List<List<string>> splittedContent) textSizes = GetMaxTextSize(_font,
+        (float headerTextSize, float contentTextSize, float bottomTextSize, List<List<TextLine>> splittedContent) textSizes = GetMaxTextSize(_font,
             imageCreation.Configuration,
             _height,
             _width,
@@ -251,7 +240,7 @@ public static class DrawingHelper
         float y = (_padding / 2);
         int index = 0;
 
-        void DrawText(string text, HorizontalAlignment alignment, string color, float textSize, bool italic = false)
+        void DrawText(TextLine text, HorizontalAlignment alignment, string color, float textSize, bool italic = false)
         {
             _font.Size = textSize;
             _font.Typeface = SKTypeface.FromFamilyName(SKTypeface.Default.FamilyName, italic ? SKFontStyle.Italic : SKFontStyle.Normal);
@@ -267,11 +256,11 @@ public static class DrawingHelper
             if (!string.IsNullOrWhiteSpace(imageCreationItem.Header))
             {
                 int langIndex = imageCreation.ImageCreationContent.IndexOf(imageCreationItem);
-                DrawText(imageCreationItem.Header, imageCreation.Configuration.Header.HorizontalAlignment, imageCreation.Configuration.Header.GetColor(langIndex), textSizes.headerTextSize);
+                DrawText(new TextLine(imageCreationItem.Header), imageCreation.Configuration.Header.HorizontalAlignment, imageCreation.Configuration.Header.GetColor(langIndex), textSizes.headerTextSize);
             }
             foreach (var line in imageCreationItem.Content)
             {
-                if (string.IsNullOrEmpty(line))
+                if (line.Sections.All(x => string.IsNullOrWhiteSpace(x.Text)))
                 {
                     y += _font.Size + _padding;
                     continue;
@@ -293,7 +282,7 @@ public static class DrawingHelper
             if (!string.IsNullOrWhiteSpace(imageCreationItem.Bottom))
             {
                 int langIndex = imageCreation.ImageCreationContent.IndexOf(imageCreationItem);
-                DrawText(imageCreationItem.Bottom, imageCreation.Configuration.Bottom.HorizontalAlignment, imageCreation.Configuration.Bottom.GetColor(langIndex), textSizes.bottomTextSize);
+                DrawText(new TextLine(imageCreationItem.Bottom), imageCreation.Configuration.Bottom.HorizontalAlignment, imageCreation.Configuration.Bottom.GetColor(langIndex), textSizes.bottomTextSize);
             }
         }
         canvas.Save();
@@ -302,7 +291,7 @@ public static class DrawingHelper
         return (y - (_padding / 2) > _height, bitmap);
     }
 
-    private static float GetX(SKFont sKFont, float textSize, string text, HorizontalAlignment horizontalAlignment, float width, float padding)
+    private static float GetX(SKFont sKFont, float textSize, TextLine text, HorizontalAlignment horizontalAlignment, float width, float padding)
     {
         float textWidth = MeasureText(sKFont, textSize, text);
         if (horizontalAlignment == HorizontalAlignment.Left)
@@ -319,66 +308,29 @@ public static class DrawingHelper
         }
     }
 
-    private static void RenderText(SKCanvas canvas, SKPaint paint, SKFont font, float textSize, string text, float x, float y)
+    private static void RenderText(SKCanvas canvas, SKPaint paint, SKFont font, float textSize, TextLine text, float x, float y)
     {
-        int i = 0;
-
         var normalColor = paint.Color;
         var lightColor = normalColor.WithAlpha((byte)(normalColor.Alpha * 0.5f));
 
-        while (i < text.Length)
+       
+        var oldColor = paint.Color;
+        foreach (var textSection in text.Sections)
         {
-            if (text.IndexOf("<upper>", i) == i)
+            paint.Color = lightColor;
+            font.Size = textSection.IsUpper ? textSize / 3 * 2 : textSize;
+            paint.Color = textSection.IsLight ? lightColor : oldColor;
+            
+            if (textSection.IsUpper)
             {
-                i += "<upper>".Length;
-                int end = text.IndexOf("</upper>", i);
-
-                if (end < 0) end = text.Length;
-
-                string segment = text.Substring(i, end - i);
-
-                font.Size = textSize / 3 * 2;
-                canvas.DrawText(segment, x, y - (textSize / 2) + _padding, SKTextAlign.Left, font, paint);
-                x += font.MeasureText(segment);
-
-                i = end + "</upper>".Length;
-            }
-            else if (text.IndexOf("<light>", i) == i)
-            {
-                i += "<light>".Length;
-                int end = text.IndexOf("</light>", i);
-
-                if (end < 0) end = text.Length;
-
-                string segment = text.Substring(i, end - i);
-
-                var oldColor = paint.Color;
-                paint.Color = lightColor;
-
-                font.Size = textSize;
-                canvas.DrawText(segment, x, y, SKTextAlign.Left, font, paint);
-                x += font.MeasureText(segment);
-
-                paint.Color = oldColor;
-
-                i = end + "</light>".Length;
+                canvas.DrawText(textSection.Text, x, y - (textSize / 2) + _padding, SKTextAlign.Left, font, paint);
             }
             else
             {
-                int nextTag = text.IndexOf('<', i);
-                if (nextTag < 0)
-                {
-                    nextTag = text.Length;
-                }
-
-                string segment = text.Substring(i, nextTag - i);
-
-                font.Size = textSize;
-                canvas.DrawText(segment, x, y, SKTextAlign.Left, font, paint);
-                x += font.MeasureText(segment);
-
-                i = nextTag;
+                canvas.DrawText(textSection.Text, x, y, SKTextAlign.Left, font, paint);
             }
+
+            x += font.MeasureText(textSection.Text);
         }
 
         // Restore defaults
@@ -386,39 +338,25 @@ public static class DrawingHelper
         paint.Color = normalColor;
     }
 
-    private static float MeasureText(SKFont sKFont, float textSize, string text)
+    private static float MeasureText(SKFont sKFont, float textSize, TextLine text)
     {
-        if (string.IsNullOrWhiteSpace(text))
+        if (text.Sections.All(x => string.IsNullOrWhiteSpace(x.Text)))
         {
             return 0;
         }
-        // Replace tag's, that don't change the text size.
-        text = text.Replace("<light>", "").Replace("</light>", "");
         
         float width = 0;
-        int renderFrom = 0;
 
-        while (true)
+        foreach (var section in text.Sections)
         {
-            int renderTo = text.IndexOf("<upper>", renderFrom);
-            if (renderTo < 0)
+            if (section.IsUpper)
             {
-                break;
+                sKFont.Size = textSize / 3 * 2;
+            } else {
+                sKFont.Size = textSize;
             }
-            string textToRender = text.Substring(renderFrom, renderTo - renderFrom);
-            sKFont.Size = textSize;
-            width += sKFont.MeasureText(textToRender);
-
-            renderFrom = renderTo + "<upper>".Length;
-            renderTo = text.IndexOf("</upper>", renderFrom);
-            textToRender = text.Substring(renderFrom, renderTo - renderFrom);
-            sKFont.Size = textSize / 3 * 2;
-            width += sKFont.MeasureText(textToRender);
-            renderFrom += textToRender.Length + "</upper>".Length;
+            width += sKFont.MeasureText(section.Text);
         }
-
-        sKFont.Size = textSize;
-        width += sKFont.MeasureText(text.Substring(renderFrom, text.Length - renderFrom));
 
         return width;
     }
@@ -433,7 +371,94 @@ public static class DrawingHelper
     public class ImageCreationContent
     {
         public required string Header { get; set; }
-        public required List<string> Content { get; set; }
+        public required List<TextLine> Content { get; set; }
         public string? Bottom { get; set; }
     }
+    
+    public class TextLine
+    {
+        public TextLine(string baseLine)
+        {
+            Sections = [new TextSection(baseLine)];
+        }
+
+        public TextLine()
+        {
+            Sections = [];
+        }
+        public List<TextSection> Sections { get; set; }
+
+        // Breaks a section, returns the break-out part
+        public List<TextSection>? Break()
+        {
+            for (int i = Sections.Count - 1; i >= 0; i--)
+            {
+                TextSection section = Sections[i];
+                string? lastWord = section.Break();
+                if (lastWord != null)
+                {
+                    return
+                    [
+                        new TextSection(lastWord)
+                        {
+                            IsUpper = section.IsUpper,
+                            IsLight = section.IsLight,
+                            LinesMayBreak = section.LinesMayBreak,
+                        }
+                    ];
+                }
+                // If no word could be break, we break the entire section
+                List<TextSection> returnPart = [];
+                Sections.Remove(section);
+                var nowLastPart = Sections[i - 1];
+                
+                if (!nowLastPart.MayBeEndOfLine)
+                {
+                    // If the "now" last part can not be on the line end, we break it too.
+                    Sections.Remove(nowLastPart);
+                    returnPart.Add(nowLastPart);
+                }
+                
+                returnPart.Add(section);
+
+                return returnPart;
+            }
+
+            return null;
+        }
+    }
+    
+    public class TextSection(string text)
+    {
+        public string Text { get; set; } = text;
+
+        public bool IsUpper { get; set; }
+        public bool IsLight { get; set; }
+        public bool MayBeEndOfLine { get; set; }
+        public bool LinesMayBreak { get; set; } = true;
+
+        public string? Break()
+        {
+            if (LinesMayBreak)
+            {
+                int lastSpace = Text.LastIndexOf(' ');
+                if (lastSpace != -1)
+                {
+                    string lastWord = Text[(lastSpace + 1)..];
+                    Text = Text[..lastSpace]; 
+                    return lastWord;
+                }
+            }
+            return null;
+        }
+
+        public bool FlagEqual(TextSection other)
+        {
+            return other.IsUpper == IsUpper
+                   && other.IsLight == IsLight
+                   && other.LinesMayBreak == LinesMayBreak
+                   && other.LinesMayBreak == LinesMayBreak;
+        }
+    }
+    // public readonly record struct
 }

@@ -228,14 +228,21 @@ public static class SongExtensions
         var result = orderedVerses
             .Select((verse, index) =>
             {
-                var content = verse.Lines.ToList();
+                var content = verse.Lines.Select(x => new DrawingHelper.TextLine(x)).ToList();
 
                 if (GlobalConfig.JsonFile.Settings.SongSettings.ShowFirstLineOfNextSong && index < orderedVerses.Count - 1)
                 {
                     var nextVerse = orderedVerses[index + 1];
                     if (nextVerse.Lines.Count != 0)
                     {
-                        content.Add($"<light>{nextVerse.Lines.First()}</light>");
+                        content.Add(new DrawingHelper.TextLine()
+                        {
+                            Sections = [new DrawingHelper.TextSection(nextVerse.Lines.First())
+                            {
+                                IsLight = true,
+                                LinesMayBreak = false,
+                            }],
+                        });
                     }
                 }
 

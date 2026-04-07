@@ -345,12 +345,12 @@ public partial class MainViewModel : ObservableObject
                                 verses.Max()),
                             Content =
                             [
-                                string.Join(" ", BibleViewModel.GetPreviewSelectedBiblePosition(
+                                BibleViewModel.GetPreviewSelectedBiblePosition(
                                     BibleViewModel.SelectedBible1,
                                     BibleViewModel.SelectedBook.Number,
                                     BibleViewModel.SelectedChapter.Value,
                                     verses.Min(),
-                                    verses.Max()))
+                                    verses.Max())
                             ],
                             Bottom = BibleViewModel.SelectedBible1.Title,
                         });
@@ -365,12 +365,12 @@ public partial class MainViewModel : ObservableObject
                                 verses.Max()),
                             Content =
                             [
-                                string.Join(" ", BibleViewModel.GetPreviewSelectedBiblePosition(
+                                BibleViewModel.GetPreviewSelectedBiblePosition(
                                     BibleViewModel.SelectedBible2,
                                     BibleViewModel.SelectedBook.Number,
                                     BibleViewModel.SelectedChapter.Value,
                                     verses.Min(),
-                                    verses.Max()))
+                                    verses.Max())
                             ],
                             Bottom = BibleViewModel.SelectedBible2.Title,
                         });
@@ -385,12 +385,12 @@ public partial class MainViewModel : ObservableObject
                                 verses.Max()),
                             Content =
                             [
-                                string.Join(" ", BibleViewModel.GetPreviewSelectedBiblePosition(
+                                BibleViewModel.GetPreviewSelectedBiblePosition(
                                     BibleViewModel.SelectedBible3,
                                     BibleViewModel.SelectedBook.Number,
                                     BibleViewModel.SelectedChapter.Value,
                                     verses.Min(),
-                                    verses.Max()))
+                                    verses.Max())
                             ],
                             Bottom = BibleViewModel.SelectedBible3.Title,
                         });

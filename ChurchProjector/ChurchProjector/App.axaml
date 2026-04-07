@@ -1,11 +1,91 @@
 <Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="ChurchProjector.App"
-			 xmlns:settings="using:ChurchProjector.Views.Settings"
+             xmlns:settings="using:ChurchProjector.Views.Settings"
              RequestedThemeVariant="{Binding ThemeName}"
-			 x:DataType="settings:SettingsViewModel">
-	<Application.Styles>
-		<FluentTheme />
-		<StyleInclude Source="avares://Avalonia.Controls.ColorPicker/Themes/Fluent/Fluent.xaml" />
-	</Application.Styles>
+             x:DataType="settings:SettingsViewModel">
+
+    <Application.Resources>
+        <!-- Info -->
+        <SolidColorBrush x:Key="InfoBackground" Color="#135bf9" />
+        <SolidColorBrush x:Key="InfoForeground" Color="#bddafe" />
+
+        <!-- Warning -->
+        <SolidColorBrush x:Key="WarningBackground" Color="#d08700" />
+        <SolidColorBrush x:Key="WarningForeground" Color="#fdee84" />
+
+        <!-- Error -->
+        <SolidColorBrush x:Key="ErrorBackground" Color="#e9003e" />
+        <SolidColorBrush x:Key="ErrorForeground" Color="#feccd2" />
+
+        <!-- Success -->
+        <SolidColorBrush x:Key="SuccessBackground" Color="#00a43b" />
+        <SolidColorBrush x:Key="SuccessForeground" Color="#b7f6cd" />
+    </Application.Resources>
+
+    <Application.Styles>
+        <FluentTheme />
+        <StyleInclude Source="avares://Avalonia.Controls.ColorPicker/Themes/Fluent/Fluent.xaml" />
+
+        <!-- Notification Styles -->
+
+        <!-- Button -->
+        <Style Selector="Border.notification.info Button">
+            <Setter Property="Background" Value="{StaticResource InfoBackground}" />
+            <Setter Property="Foreground" Value="{StaticResource InfoForeground}" />
+        </Style>
+
+        <Style Selector="Border.notification.warning Button">
+            <Setter Property="Background" Value="{StaticResource WarningBackground}" />
+            <Setter Property="Foreground" Value="{StaticResource WarningForeground}" />
+        </Style>
+
+        <Style Selector="Border.notification.error Button">
+            <Setter Property="Background" Value="{StaticResource ErrorBackground}" />
+            <Setter Property="Foreground" Value="{StaticResource ErrorForeground}" />
+        </Style>
+
+        <Style Selector="Border.notification.success Button">
+            <Setter Property="Background" Value="{StaticResource SuccessBackground}" />
+            <Setter Property="Foreground" Value="{StaticResource SuccessForeground}" />
+        </Style>
+
+        <!-- TextBlock -->
+        <Style Selector="Border.notification.info TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource InfoBackground}" />
+        </Style>
+
+        <Style Selector="Border.notification.warning TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource WarningBackground}" />
+        </Style>
+
+        <Style Selector="Border.notification.error TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource ErrorBackground}" />
+        </Style>
+
+        <Style Selector="Border.notification.success TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource SuccessBackground}" />
+        </Style>
+
+        <!-- Border -->
+        <Style Selector="Border.notification.info">
+            <Setter Property="Background" Value="{StaticResource InfoForeground}" />
+            <Setter Property="BorderBrush" Value="{StaticResource InfoBackground}" />
+        </Style>
+
+        <Style Selector="Border.notification.warning">
+            <Setter Property="Background" Value="{StaticResource WarningForeground}" />
+            <Setter Property="BorderBrush" Value="{StaticResource WarningBackground}" />
+        </Style>
+
+        <Style Selector="Border.notification.error">
+            <Setter Property="Background" Value="{StaticResource ErrorForeground}" />
+            <Setter Property="BorderBrush" Value="{StaticResource ErrorBackground}" />
+        </Style>
+
+        <Style Selector="Border.notification.success">
+            <Setter Property="Background" Value="{StaticResource SuccessForeground}" />
+            <Setter Property="BorderBrush" Value="{StaticResource SuccessBackground}" />
+        </Style>
+    </Application.Styles>
 </Application>

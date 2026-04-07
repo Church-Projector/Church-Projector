@@ -200,7 +200,9 @@ public partial class MainViewModel : ObservableObject
             _powerPointClient.PowerPointConnectionChanged = isConnected =>
             {
                 if (!isConnected) {
-                    Dispatcher.UIThread.Invoke(() => Notifications.Show(Lang.Resources.PowerPointIsMissing, NotificationType.Error, 5000));
+                    Dispatcher.UIThread.Invoke(() => Notifications.Show(Lang.Resources.PowerPointIsMissing, NotificationType.Error));
+                } else {
+                    Dispatcher.UIThread.Invoke(() => Notifications.Show(Lang.Resources.PowerPointIsConnected, NotificationType.Success));
                 }
             };
         }

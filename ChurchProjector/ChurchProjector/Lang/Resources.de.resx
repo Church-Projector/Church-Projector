@@ -388,4 +388,7 @@ Die Pfade können später in den Einstellungen bearbeitet werden.</value>
   <data name="ShowClock_Colon" xml:space="preserve">
     <value>Uhrzeit anzeigen:</value>
   </data>
+  <data name="PowerPointIsConnected" xml:space="preserve">
+    <value>Der PowerPoint Dienst ist verbunden, es können Präsentationen angezeigt werden.</value>
+  </data>
 </root>

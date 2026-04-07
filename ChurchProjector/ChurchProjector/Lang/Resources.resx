@@ -213,6 +213,9 @@
   <data name="PowerPointIsMissing" xml:space="preserve">
     <value>PowerPoint presentations cannot be displayed because PowerPoint is not installed.</value>
   </data>
+  <data name="PowerPointIsConnected" xml:space="preserve">
+    <value>The PowerPoint presentation service is connected. Presentations can be displayed.</value>
+  </data>
   <data name="BannerText_Colon" xml:space="preserve">
     <value>Bannertext:</value>
   </data>

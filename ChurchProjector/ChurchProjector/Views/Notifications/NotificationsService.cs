@@ -10,7 +10,7 @@ public partial class NotificationService : ObservableObject
 {
     public ObservableCollection<NotificationViewModel> Notifications { get; } = [];
 
-    public void Show(string message, NotificationType type = NotificationType.Info, int durationMs = 3000)
+    public void Show(string message, NotificationType type, int durationMs = 5000)
     {
         var notification = new NotificationViewModel(message, type);
         Notifications.Add(notification);

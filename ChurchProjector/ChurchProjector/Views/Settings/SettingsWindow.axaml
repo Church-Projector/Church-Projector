@@ -18,7 +18,6 @@
 		x:DataType="local:SettingsViewModel">
 
 	<Window.Resources>
-		<converters:InverseBooleanConverter x:Key="InverseBool" />
 		<converters:EnumDescriptionConverter x:Key="EnumDescriptionConverter" />
 	</Window.Resources>
 

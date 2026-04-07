@@ -237,6 +237,12 @@ namespace ChurchProjector.Lang {
             }
         }
         
+        public static string PowerPointIsConnected {
+            get {
+                return ResourceManager.GetString("PowerPointIsConnected", resourceCulture);
+            }
+        }
+        
         public static string BannerText_Colon {
             get {
                 return ResourceManager.GetString("BannerText_Colon", resourceCulture);

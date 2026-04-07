@@ -9,11 +9,16 @@
     xmlns:history="clr-namespace:ChurchProjector.Views.History"
     xmlns:bibleview="clr-namespace:ChurchProjector.Views.Bible"
 	xmlns:lang="clr-namespace:ChurchProjector.Lang"
-    mc:Ignorable="d"
+	xmlns:converters="clr-namespace:ChurchProjector.Converters"
+	mc:Ignorable="d"
     WindowStartupLocation="CenterScreen"
     Title="Gottesdienst Projektor" Height="675" Width="1650"
     Icon="/Assets/icon.ico"
     x:DataType="local:MainViewModel">
+    
+    <Window.Resources>
+        <converters:NotificationTypeConverter x:Key="NotificationTypeConverter" />
+    </Window.Resources>
 
     <Panel>
         <Grid>
@@ -108,15 +113,16 @@
                       Margin="16" MaxWidth="480">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <Border Background="#feccd2" CornerRadius="8" Padding="12,8"
-                            Margin="0,0,0,8" BorderBrush="#e9003e" BorderThickness="1">
+                    <Border CornerRadius="8" Padding="12,8" Margin="0,0,0,8" BorderThickness="1"
+                            Classes="notification"
+                            Classes.info="{Binding Type, Converter={StaticResource NotificationTypeConverter}, ConverterParameter=Info}"
+                            Classes.warning="{Binding Type, Converter={StaticResource NotificationTypeConverter}, ConverterParameter=Warning}"
+                            Classes.error="{Binding Type, Converter={StaticResource NotificationTypeConverter}, ConverterParameter=Error}"
+                            Classes.success="{Binding Type, Converter={StaticResource NotificationTypeConverter}, ConverterParameter=Success}"
+                            MinWidth="320">
                         <Grid ColumnDefinitions="*,Auto">
-                            <TextBlock Text="{Binding Message}" TextWrapping="Wrap"
-                                       Foreground="White" VerticalAlignment="Center" TextElement.Foreground="#e9003e"  />
-                            <Button Grid.Column="1" Content="X" FontSize="14"
-                                    Background="#e9003e" Foreground="#feccd2"
-                                    Padding="4,2" Margin="8,0,0,0"
-                                    Click="BtnNotificationClose_OnClick"/>
+                            <TextBlock Text="{Binding Message}" TextWrapping="Wrap" VerticalAlignment="Center" />
+                            <Button Grid.Column="1" Content="X" FontSize="14" Padding="4,2" Margin="8,0,0,0" Click="BtnNotificationClose_OnClick"/>
                         </Grid>
                     </Border>
                 </DataTemplate>

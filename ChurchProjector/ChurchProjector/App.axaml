@@ -82,10 +82,27 @@
             <Setter Property="Background" Value="{StaticResource ErrorForeground}" />
             <Setter Property="BorderBrush" Value="{StaticResource ErrorBackground}" />
         </Style>
-
+        
         <Style Selector="Border.notification.success">
             <Setter Property="Background" Value="{StaticResource SuccessForeground}" />
             <Setter Property="BorderBrush" Value="{StaticResource SuccessBackground}" />
+        </Style>
+
+        <!-- ProgressBar -->
+        <Style Selector="Border.notification.info ProgressBar">
+            <Setter Property="Foreground" Value="{StaticResource InfoBackground}"/>
+        </Style>
+
+        <Style Selector="Border.notification.warning ProgressBar">
+            <Setter Property="Foreground" Value="{StaticResource WarningBackground}"/>
+        </Style>
+
+        <Style Selector="Border.notification.error ProgressBar">
+            <Setter Property="Foreground" Value="{StaticResource ErrorBackground}"/>
+        </Style>
+
+        <Style Selector="Border.notification.success ProgressBar">
+            <Setter Property="Foreground" Value="{StaticResource SuccessBackground}"/>
         </Style>
     </Application.Styles>
 </Application>

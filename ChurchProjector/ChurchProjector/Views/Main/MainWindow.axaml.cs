@@ -173,4 +173,20 @@ public partial class MainWindow : Window
             _viewModel.Notifications.Notifications.Remove(notification);
         }
     }
+
+    private void OnNotificationEnter(object? sender, PointerEventArgs e)
+    {
+        if (sender is Border { DataContext: Notifications.NotificationViewModel vm })
+        {
+            vm.IsPaused = true;
+        }
+    }
+
+    private void OnNotificationExit(object? sender, PointerEventArgs e)
+    {
+        if (sender is Border { DataContext: Notifications.NotificationViewModel vm })
+        {
+            vm.IsPaused = false;
+        }
+    }
 }

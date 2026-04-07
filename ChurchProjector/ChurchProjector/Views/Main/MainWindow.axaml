@@ -119,10 +119,28 @@
                             Classes.warning="{Binding Type, Converter={StaticResource NotificationTypeConverter}, ConverterParameter=Warning}"
                             Classes.error="{Binding Type, Converter={StaticResource NotificationTypeConverter}, ConverterParameter=Error}"
                             Classes.success="{Binding Type, Converter={StaticResource NotificationTypeConverter}, ConverterParameter=Success}"
-                            MinWidth="320">
-                        <Grid ColumnDefinitions="*,Auto">
-                            <TextBlock Text="{Binding Message}" TextWrapping="Wrap" VerticalAlignment="Center" />
-                            <Button Grid.Column="1" Content="X" FontSize="14" Padding="4,2" Margin="8,0,0,0" Click="BtnNotificationClose_OnClick"/>
+                            MinWidth="320"
+                            PointerEntered="OnNotificationEnter"
+                            PointerExited="OnNotificationExit">
+                        <Grid RowDefinitions="*,Auto" ColumnDefinitions="*,Auto">
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="{Binding Message}" TextWrapping="Wrap" VerticalAlignment="Center" />
+                            <Button Grid.Row="0" Grid.Column="1" Content="X" FontSize="14" Padding="4,2" Margin="8,0,0,0" Click="BtnNotificationClose_OnClick"/>
+                            
+                            <ProgressBar Grid.Row="1"
+                                         Grid.Column="0"
+                                         Grid.ColumnSpan="2"
+                                         Height="4"
+                                         Margin="0,8,0,0"
+                                         Minimum="0"
+                                         Maximum="1"
+                                         Value="{Binding Progress}"
+                                         IsVisible="{Binding IsRunning}">
+                                <ProgressBar.Transitions>
+                                    <Transitions>
+                                        <DoubleTransition Property="Value" Duration="0:0:0.1"/>
+                                    </Transitions>
+                                </ProgressBar.Transitions>
+                            </ProgressBar>
                         </Grid>
                     </Border>
                 </DataTemplate>

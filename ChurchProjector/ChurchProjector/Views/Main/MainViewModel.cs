@@ -534,6 +534,7 @@ public partial class MainViewModel : ObservableObject
     public bool MayEdit => Images is not null && !string.IsNullOrWhiteSpace(Images.Filename) &&
                            Path.GetExtension(Images.Filename).ToLowerInvariant() is ".sng";
 
+    [ObservableProperty] private bool _bannerIsRunning;
     public void StopAll()
     {
         ImageWindow.StopBanner();

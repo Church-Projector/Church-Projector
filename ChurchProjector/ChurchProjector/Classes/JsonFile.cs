@@ -11,7 +11,7 @@ namespace ChurchProjector.Classes;
 
 public class JsonFile : ObservableObject
 {
-    public Settings Settings { get; set; } = new Settings();
+    public Settings Settings { get; set; } = new();
     public List<string> Schedules { get; set; } = [];
     public List<string> SelectedBibles { get; set; } = [];
 }
@@ -33,6 +33,7 @@ public class Settings : ObservableObject
     public BannerSettings BannerSettings { get; set; } = new();
     public PathSettings PathSettings { get; set; } = new();
     public BibleSettings BibleSettings { get; set; } = new();
+    public SongSettings SongSettings { get; set; } = new();
 
     public string? SelectedMonitorName { get; set; }
 }
@@ -186,4 +187,9 @@ public class PathSettings : ObservableObject
 public class BibleSettings
 {
     public BookLanguage BookLanguage { get; set; }
+}
+
+public class SongSettings
+{
+    public bool ShowFirstLineOfNextSong { get; set; }
 }

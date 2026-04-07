@@ -14,6 +14,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace ChurchProjector.Views.Main;
 
@@ -42,6 +43,21 @@ public partial class MainWindow : Window
 
         DataContext = _viewModel = new MainViewModel(this, settings, StorageProvider, Clipboard, version);
 
+        new Task(() =>
+        {
+            while (true)
+            {
+                Avalonia.Threading.Dispatcher.UIThread.Invoke(() =>
+                {
+                    _viewModel.Notifications.Show("Notification Info", NotificationType.Info, 0);
+                    _viewModel.Notifications.Show("Notification Warning", NotificationType.Warning);
+                    _viewModel.Notifications.Show("Notification Success", NotificationType.Success);
+                    _viewModel.Notifications.Show("Notification Error", NotificationType.Error);
+                });
+                break;
+            }
+        }).Start();
+
         _viewModel.SetHasSecondScreen(Screens.ScreenCount > 1);
 
         _viewModel.PropertyChanged += _viewModel_PropertyChanged;
@@ -54,7 +70,7 @@ public partial class MainWindow : Window
         {
             if (string.IsNullOrWhiteSpace(_viewModel.ImageWindow.ViewModel.BannerText))
             {
-                await new NotificationWindow() { ShowNotification = (string value) => _viewModel.ImageWindow.ViewModel.BannerText = value }.ShowDialog(this);
+                await new NotificationWindow() { ShowNotification = value => _viewModel.ImageWindow.ViewModel.BannerText = value }.ShowDialog(this);
                 _viewModel.ImageWindow.CreateBanner();
             }
             else
@@ -62,6 +78,7 @@ public partial class MainWindow : Window
                 _viewModel.ImageWindow.ViewModel.BannerText = string.Empty;
                 _viewModel.ImageWindow.StopBanner();
             }
+            _viewModel.BannerIsRunning = !string.IsNullOrWhiteSpace(_viewModel.ImageWindow.ViewModel.BannerText);
         });
         _viewModel.EditCommand = new RelayCommand(async () =>
         {

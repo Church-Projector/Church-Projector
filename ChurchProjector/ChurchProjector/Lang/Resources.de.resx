@@ -300,6 +300,9 @@
   <data name="BookLang_Colon" xml:space="preserve">
     <value>Sprache der Bücher:</value>
   </data>
+  <data name="SongShowFirstLineOfNextSong_Colon" xml:space="preserve">
+    <value>Erste Zeile des nächsten Liedes anzeigen:</value>
+  </data>
   <data name="ForTheSearch" xml:space="preserve">
     <value>(Für die Suche)</value>
   </data>

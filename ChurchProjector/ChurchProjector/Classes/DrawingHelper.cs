@@ -76,27 +76,50 @@ public static class DrawingHelper
                         for (int i = 0; i < tempLines.Count; i++)
                         {
                             string currentLine = tempLines[i];
+                            // If MeasureText > maxWidth the tet can not be rendered in a single line.
                             if (MeasureText(sKFont, contentTextSize, currentLine) > maxWidth)
                             {
-                                int lastSpace = currentLine.LastIndexOf(' ');
-                                if (lastSpace > 0)
+                                // In that case we get the last space to check, if the text renders until the space without a break
+                                int lastSpace = currentLine.LastIndexOf(' '); 
+                                
+                                while (lastSpace > 0)
                                 {
+                                    // We don't allow splitting inside some tags.
+                                    // If the space is inside some tags, we skip the space.
+                                    if (IsInsideLineBreakSafeTag(currentLine, lastSpace))
+                                    {
+                                        lastSpace = currentLine.LastIndexOf(' ', lastSpace - 1);
+                                        continue;
+                                    }
+
+                                    // If the text now ends with an upper we skip the space.
+                                    // The text shouldn't be end on an upper
                                     if (currentLine.Substring(0, lastSpace).EndsWith("</upper>"))
                                     {
-                                        lastSpace = currentLine.Substring(0, currentLine.LastIndexOf(' ')).LastIndexOf(' ');
+                                        lastSpace = currentLine.Substring(0, lastSpace).LastIndexOf(' ');
+                                        continue;
                                     }
+
+                                    break;
                                 }
+
+                                // If we have a space found
                                 if (lastSpace > 0)
                                 {
+                                    // We set the text of the current line to the text until the space
                                     tempLines[i] = currentLine.Substring(0, lastSpace);
+
                                     if (tempLines.Count == i + 1)
                                     {
+                                        // If we are on the last line, we move the text behind the last space to a new line
                                         tempLines.Add(currentLine.Substring(lastSpace + 1));
                                     }
                                     else
                                     {
+                                        // If we are not on the last line we move the text behind the last word to the next line.
                                         tempLines[i + 1] = $"{currentLine.Substring(lastSpace + 1)} {tempLines[i + 1]}";
                                     }
+
                                     i--;
                                 }
                             }
@@ -129,6 +152,16 @@ public static class DrawingHelper
         }
 
         return (headerTextSize - 1, contentTextSize - 1, bottomTextSize - 1, acceptedTempContent);
+    }
+    
+    private static bool IsInsideLineBreakSafeTag(string text, int index)
+    {
+        int lastOpen = text.LastIndexOf("<light>", index, StringComparison.Ordinal);
+        if (lastOpen < 0) return false;
+
+        int lastClose = text.LastIndexOf("</light>", index, StringComparison.Ordinal);
+
+        return lastClose < lastOpen;
     }
 
     public static bool MayRenderImage(this ImageCreation imageCreation)
@@ -286,33 +319,71 @@ public static class DrawingHelper
         }
     }
 
-    private static void RenderText(SKCanvas sKCanvas, SKPaint sKPaint, SKFont sKFont, float textSize, string text, float x, float y)
+    private static void RenderText(SKCanvas canvas, SKPaint paint, SKFont font, float textSize, string text, float x, float y)
     {
-        int renderFrom = 0;
+        int i = 0;
 
-        while (true)
+        var normalColor = paint.Color;
+        var lightColor = normalColor.WithAlpha((byte)(normalColor.Alpha * 0.5f));
+
+        while (i < text.Length)
         {
-            int renderTo = text.IndexOf("<upper>", renderFrom);
-            if (renderTo < 0)
+            if (text.IndexOf("<upper>", i) == i)
             {
-                break;
-            }
-            string textToRender = text.Substring(renderFrom, renderTo - renderFrom);
-            sKFont.Size = textSize;
-            sKCanvas.DrawText(textToRender, x, y, SKTextAlign.Left, sKFont, sKPaint);
-            x += sKFont.MeasureText(textToRender);
+                i += "<upper>".Length;
+                int end = text.IndexOf("</upper>", i);
 
-            renderFrom = renderTo + "<upper>".Length;
-            renderTo = text.IndexOf("</upper>", renderFrom);
-            textToRender = text.Substring(renderFrom, renderTo - renderFrom);
-            sKFont.Size = textSize / 3 * 2;
-            sKCanvas.DrawText(textToRender, x, y - (textSize / 2) + _padding, SKTextAlign.Left, sKFont, sKPaint);
-            x += sKFont.MeasureText(textToRender);
-            renderFrom += textToRender.Length + "</upper>".Length;
+                if (end < 0) end = text.Length;
+
+                string segment = text.Substring(i, end - i);
+
+                font.Size = textSize / 3 * 2;
+                canvas.DrawText(segment, x, y - (textSize / 2) + _padding, SKTextAlign.Left, font, paint);
+                x += font.MeasureText(segment);
+
+                i = end + "</upper>".Length;
+            }
+            else if (text.IndexOf("<light>", i) == i)
+            {
+                i += "<light>".Length;
+                int end = text.IndexOf("</light>", i);
+
+                if (end < 0) end = text.Length;
+
+                string segment = text.Substring(i, end - i);
+
+                var oldColor = paint.Color;
+                paint.Color = lightColor;
+
+                font.Size = textSize;
+                canvas.DrawText(segment, x, y, SKTextAlign.Left, font, paint);
+                x += font.MeasureText(segment);
+
+                paint.Color = oldColor;
+
+                i = end + "</light>".Length;
+            }
+            else
+            {
+                int nextTag = text.IndexOf('<', i);
+                if (nextTag < 0)
+                {
+                    nextTag = text.Length;
+                }
+
+                string segment = text.Substring(i, nextTag - i);
+
+                font.Size = textSize;
+                canvas.DrawText(segment, x, y, SKTextAlign.Left, font, paint);
+                x += font.MeasureText(segment);
+
+                i = nextTag;
+            }
         }
 
-        sKFont.Size = textSize;
-        sKCanvas.DrawText(text.Substring(renderFrom, text.Length - renderFrom), x, y, SKTextAlign.Left, sKFont, sKPaint);
+        // Restore defaults
+        font.Size = textSize;
+        paint.Color = normalColor;
     }
 
     private static float MeasureText(SKFont sKFont, float textSize, string text)
@@ -321,6 +392,9 @@ public static class DrawingHelper
         {
             return 0;
         }
+        // Replace tag's, that don't change the text size.
+        text = text.Replace("<light>", "").Replace("</light>", "");
+        
         float width = 0;
         int renderFrom = 0;
 

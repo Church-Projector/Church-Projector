@@ -207,34 +207,56 @@ public static class SongExtensions
 {
     public static List<(string title, Bitmap bitmap, bool isOverflowing)> GetImages(this Song song)
     {
-        List<KeyValuePair<string, (string Title, Bitmap bitmap, bool isOverflowing)>> dic = song.Verses
-            .AsParallel()
-            .Select(verse =>
+        List<(string Title, List<string> Lines)> orderedVerses;
+
+        if (song.VerseOrder is { Count: > 0 }
+            && song.VerseOrder.All(vo => song.Verses.Any(v => v.Title == vo))
+            && song.Verses.All(v => song.VerseOrder.Any(vo => vo == v.Title)))
+        {
+            orderedVerses = song.VerseOrder
+                .SelectMany(vo => song.Verses.Where(v => v.Title == vo))
+                .Select(v => (v.Title, v.Lines.ToList()))
+                .ToList();
+        }
+        else
+        {
+            orderedVerses = song.Verses
+                .Select(v => (v.Title, v.Lines.ToList()))
+                .ToList();
+        }
+
+        var result = orderedVerses
+            .Select((verse, index) =>
             {
-                var renderResult = DrawingHelper.GetImage(new DrawingHelper.ImageCreation()
+                var content = verse.Lines.ToList();
+
+                if (GlobalConfig.JsonFile.Settings.SongSettings.ShowFirstLineOfNextSong && index < orderedVerses.Count - 1)
+                {
+                    var nextVerse = orderedVerses[index + 1];
+                    if (nextVerse.Lines.Count != 0)
+                    {
+                        content.Add($"<light>{nextVerse.Lines.First()}</light>");
+                    }
+                }
+
+                var renderResult = new DrawingHelper.ImageCreation()
                 {
                     Configuration = GlobalConfig.JsonFile.Settings.DisplayConfiguration.SongConfiguration,
                     LangCount = song.LangCount,
                     ImageCreationContent =
                     [
-                        new()
+                        new DrawingHelper.ImageCreationContent
                         {
                             Header = song.ChurchSongID,
-                            Content = verse.Lines,
+                            Content = content,
                         }
                     ]
-                });
-        return new KeyValuePair<string, (string Title, Bitmap bitmap, bool isOverflowing)>(verse.Title, (verse.Title, renderResult.bitmap, renderResult.isOverflowing));
-    }).ToList();
+                }.GetImage();
 
-        if (song.VerseOrder is
-            {
-                Count: > 0
-            } && song.VerseOrder.All(vo => song.Verses.Any(v => v.Title == vo))
-            && song.Verses.All(v => song.VerseOrder.Any(vo => vo == v.Title)))
-        {
-            return song.VerseOrder.SelectMany(x => dic.Where(d => d.Key == x).Select(y => y.Value)).ToList();
-        }
-        return dic.Select(x => x.Value).ToList();
+                return (verse.Title, renderResult.bitmap, renderResult.isOverflowing);
+            })
+            .ToList();
+
+        return result;
     }
 }

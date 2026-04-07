@@ -417,6 +417,12 @@ namespace ChurchProjector.Lang {
             }
         }
         
+        public static string SongShowFirstLineOfNextSong_Colon {
+            get {
+                return ResourceManager.GetString("SongShowFirstLineOfNextSong_Colon", resourceCulture);
+            }
+        }
+        
         public static string ForTheSearch {
             get {
                 return ResourceManager.GetString("ForTheSearch", resourceCulture);

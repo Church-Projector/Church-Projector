@@ -302,7 +302,10 @@
     <value>FPS (Images per Seconds)</value>
   </data>
   <data name="BookLang_Colon" xml:space="preserve">
-    <value>Language_Books:</value>
+    <value>Language books:</value>
+  </data>
+  <data name="SongShowFirstLineOfNextSong_Colon" xml:space="preserve">
+    <value>Show first line of next song:</value>
   </data>
   <data name="ForTheSearch" xml:space="preserve">
     <value>(For the search)</value>

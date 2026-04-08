@@ -14,7 +14,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace ChurchProjector.Views.Main;
 
@@ -42,21 +41,6 @@ public partial class MainWindow : Window
         settings.SetMonitors(GetMonitors());
 
         DataContext = _viewModel = new MainViewModel(this, settings, StorageProvider, Clipboard, version);
-
-        new Task(() =>
-        {
-            while (true)
-            {
-                Avalonia.Threading.Dispatcher.UIThread.Invoke(() =>
-                {
-                    _viewModel.Notifications.Show("Notification Info", NotificationType.Info, 0);
-                    _viewModel.Notifications.Show("Notification Warning", NotificationType.Warning);
-                    _viewModel.Notifications.Show("Notification Success", NotificationType.Success);
-                    _viewModel.Notifications.Show("Notification Error", NotificationType.Error);
-                });
-                break;
-            }
-        }).Start();
 
         _viewModel.SetHasSecondScreen(Screens.ScreenCount > 1);
 

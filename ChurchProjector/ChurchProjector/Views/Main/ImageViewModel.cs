@@ -149,4 +149,10 @@ public partial class ImageViewModel : ObservableObject
 
     public SettingsViewModel Settings { get; set; }
     public double TextSize => GlobalConfig.JsonFile.Settings.BannerSettings.TextSize;
+
+    public void FirePropertyChanged()
+    {
+        // TODO Make the property reactive
+        OnPropertyChanged(nameof(TextSize));
+    }
 }

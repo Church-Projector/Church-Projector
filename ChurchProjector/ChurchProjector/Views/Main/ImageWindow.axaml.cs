@@ -16,17 +16,20 @@ namespace ChurchProjector.Views.Main;
 /// </summary>
 public partial class ImageWindow : Window
 {
-    private const double BannerPadding = 10.0; // Zusätzlicher Padding für den Banner-Text
+    private const double BannerPadding = 10.0; // Should be the same as the clock
     private const int REPETITION_COUNT = 2;
 
     public ImageViewModel ViewModel { get; }
 
     public void CreateBanner()
     {
+        ViewModel.FirePropertyChanged();
+       
         if (string.IsNullOrWhiteSpace(ViewModel.BannerText))
         {
             return;
         }
+
         ViewModel.IsBannerVisible = true;
         SpBanner.Children.Clear();
         for (int i = 0; i < REPETITION_COUNT; i++)

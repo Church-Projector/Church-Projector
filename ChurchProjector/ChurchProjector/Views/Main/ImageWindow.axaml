@@ -28,11 +28,16 @@
             Grid.Row="1"
 			Orientation="Horizontal"
 			IsVisible="{Binding ShowBottomBar}">
+			<!-- The padding of the clock should be the same as in the banner -->
 			<TextBlock
 				Text="{Binding ClockText}"
 				IsVisible="{Binding IsClockVisible}"
 				FontSize="{Binding TextSize}"
-				Width="250" />
+				Foreground="White"
+				VerticalAlignment="Bottom"
+				Padding="10"
+				Background="Black"
+				ZIndex="1" />
 			<StackPanel
 				Name="SpBanner"
 				Orientation="Horizontal"

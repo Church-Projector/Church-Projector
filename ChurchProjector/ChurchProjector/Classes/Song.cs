@@ -209,9 +209,11 @@ public static class SongExtensions
     {
         List<(string Title, List<string> Lines)> orderedVerses;
 
-        if (song.VerseOrder is { Count: > 0 }
+        bool hasValidVerseOrder = song.VerseOrder is { Count: > 0 }
             && song.VerseOrder.All(vo => song.Verses.Any(v => v.Title == vo))
-            && song.Verses.All(v => song.VerseOrder.Any(vo => vo == v.Title)))
+                                  && song.Verses.All(v => song.VerseOrder.Any(vo => vo == v.Title));
+        
+        if (hasValidVerseOrder)
         {
             orderedVerses = song.VerseOrder
                 .SelectMany(vo => song.Verses.Where(v => v.Title == vo))
@@ -230,7 +232,7 @@ public static class SongExtensions
             {
                 var content = verse.Lines.Select(x => new DrawingHelper.TextLine(x)).ToList();
 
-                if (GlobalConfig.JsonFile.Settings.SongSettings.ShowFirstLineOfNextSong && index < orderedVerses.Count - 1)
+                if (GlobalConfig.JsonFile.Settings.SongSettings.ShowFirstLineOfNextSong && hasValidVerseOrder && index < orderedVerses.Count - 1)
                 {
                     var nextVerse = orderedVerses[index + 1];
                     if (nextVerse.Lines.Count != 0)

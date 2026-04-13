@@ -28,19 +28,19 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Avalonia" Version="12.0.0" />
-    <PackageReference Include="Avalonia.Controls.ColorPicker" Version="12.0.0" />
-    <PackageReference Include="Avalonia.Desktop" Version="12.0.0" />
+    <PackageReference Include="Avalonia" Version="12.0.1" />
+    <PackageReference Include="Avalonia.Controls.ColorPicker" Version="12.0.1" />
+    <PackageReference Include="Avalonia.Desktop" Version="12.0.1" />
     <PackageReference Include="Avalonia.Svg.Skia" Version="11.3.0" />
-    <PackageReference Include="Avalonia.Themes.Fluent" Version="12.0.0" />
-    <PackageReference Include="Avalonia.Fonts.Inter" Version="12.0.0" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="12.0.1" />
+    <PackageReference Include="Avalonia.Fonts.Inter" Version="12.0.1" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
     <PackageReference Include="MuPDFCore" Version="2.0.2-a3" />
     <PackageReference Include="Serilog.Extensions.Logging" Version="10.0.0" />
     <PackageReference Include="Serilog.Sinks.File" Version="8.0.0-nblumhardt-02322" />
     <PackageReference Include="SkiaSharp" Version="3.119.3-preview.1.1" />
     <PackageReference Condition="$(RuntimeIdentifier.StartsWith('linux'))" Include="SkiaSharp.NativeAssets.Linux" Version="3.119.3-preview.1.1" />
-    <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.3.13" />
+    <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.3.14" />
   </ItemGroup>
 
   <ItemGroup>

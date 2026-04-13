@@ -34,8 +34,7 @@ public partial class ScheduleView : UserControl
             {
                 viewModel.Schedules.Add(ScheduleEntry.FromFile(file.Path.LocalPath));
             }
-        }
-        else if (e.DataTransfer is ScheduleEntryDataTransfer { ScheduleEntry: { } scheduleEntry })
+        } else if (e.DataTransfer.TryGetValue(DataFormat.CreateInProcessFormat<ScheduleEntry>(nameof(ScheduleEntry))) is {} scheduleEntry)
         {
             Point position = e.GetPosition(LboSchedules);
             ScheduleEntry? otherEntry = LboSchedules.GetVisualDescendants()
@@ -52,14 +51,17 @@ public partial class ScheduleView : UserControl
 
     private async void Svg_PointerPressed(object? sender, PointerPressedEventArgs e)
     {
-        if (DataContext is not ScheduleViewModel viewModel || sender is not Visual visual ||
-            visual.DataContext is not ScheduleEntry scheduleEntry)
+        if (DataContext is not ScheduleViewModel || sender is not Visual { DataContext: ScheduleEntry scheduleEntry })
         {
             return;
         }
 
-        await DragDrop.DoDragDropAsync(e, new ScheduleEntryDataTransfer() { ScheduleEntry = scheduleEntry },
-            DragDropEffects.Move);
+        DataTransfer dt = new();
+        DataTransferItem dti = new();
+        dti.Set(DataFormat.CreateInProcessFormat<ScheduleEntry>(nameof(ScheduleEntry)), scheduleEntry);
+        dt.Add(dti);
+        
+        await DragDrop.DoDragDropAsync(e, dt, DragDropEffects.Move);
     }
 
     private void DragOver(object? sender, DragEventArgs e)
@@ -69,7 +71,7 @@ public partial class ScheduleView : UserControl
             return;
         }
 
-        if (e.DataTransfer is ScheduleEntryDataTransfer { ScheduleEntry: { } scheduleEntry })
+        if (e.DataTransfer.TryGetValue(DataFormat.CreateInProcessFormat<ScheduleEntry>(nameof(ScheduleEntry))) is {} scheduleEntry)
         {
             Point position = e.GetPosition(LboSchedules);
             ScheduleEntry? otherEntry = LboSchedules.GetVisualDescendants()

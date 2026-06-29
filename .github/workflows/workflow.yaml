@@ -21,9 +21,6 @@ jobs:
         - platform: osx-x64
           os: macos-latest
 
-        - platform: osx-arm64
-          os: macos-latest
-
     runs-on: ${{ matrix.os }}
     steps:
       - name: Setup Node.js
@@ -77,7 +74,7 @@ jobs:
         shell: bash
         run: |
           chmod +x ./build/macos/build-app.sh
-          ./build/macos/build-app.sh "${{ matrix.platform }}" "${{ github.ref_name }}"
+          ./build/macos/build-app.sh osx "${{ github.ref_name }}"
 
       # Upload the .deb package for Linux platforms
       - name: Upload .deb package artifact

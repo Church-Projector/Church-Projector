@@ -57,6 +57,7 @@ jobs:
         run: |
           find . -type f -path '*/win-x86/*' -delete
           find . -type f -path '*.pdb' -delete
+          find ./publish -name "*.dSYM" -type d -exec rm -rf {} +
 
       # Build the .deb package for Linux platforms only
       - name: Create .deb package for Linux

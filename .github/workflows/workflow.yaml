@@ -56,7 +56,7 @@ jobs:
         shell: bash
         run: |
           find . -type f -path '*/win-x86/*' -delete
-          find . -type f -path '*.pdb' -delete
+          find . -type f -name '*.pdb' -delete
           find ./publish -name "*.dSYM" -type d -exec rm -rf {} +
 
       # Build the .deb package for Linux platforms only
@@ -72,12 +72,12 @@ jobs:
         run: |
           Compress-Archive -Path "./publish/${{ matrix.platform }}/*" -DestinationPath "${{ matrix.platform }}.zip"
       
-      - name: Package artifact (macOS)
+      - name: Package macOS App
         if: startsWith(matrix.platform, 'osx')
         shell: bash
         run: |
-          cd ./publish/${{ matrix.platform }}
-          zip -r ../../${{ matrix.platform }}.zip .
+          chmod +x ./build/macos/build-app.sh
+          ./build/macos/build-app.sh "${{ matrix.platform }}" "${{ github.ref_name }}"
 
       # Upload the .deb package for Linux platforms
       - name: Upload .deb package artifact

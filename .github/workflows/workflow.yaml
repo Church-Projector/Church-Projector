@@ -14,8 +14,15 @@ jobs:
           os: ubuntu-latest
         - platform: linux-arm64
           os: ubuntu-24.04-arm
+          
         - platform: win-x64
           os: windows-latest
+
+        - platform: osx-x64
+          os: macos-latest
+
+        - platform: osx-arm64
+          os: macos-latest
 
     runs-on: ${{ matrix.os }}
     steps:
@@ -63,6 +70,13 @@ jobs:
         if: matrix.platform == 'win-x64'
         run: |
           Compress-Archive -Path "./publish/${{ matrix.platform }}/*" -DestinationPath "${{ matrix.platform }}.zip"
+      
+      - name: Package artifact (macOS)
+        if: startsWith(matrix.platform, 'osx')
+        shell: bash
+        run: |
+          cd ./publish/${{ matrix.platform }}
+          zip -r ../../${{ matrix.platform }}.zip .
 
       # Upload the .deb package for Linux platforms
       - name: Upload .deb package artifact
@@ -73,8 +87,8 @@ jobs:
           path: ${{ matrix.platform }}.deb
 
       # Upload the zip artifact for non-Linux platforms (Windows)
-      - name: 'Upload Artifact'
-        if: matrix.platform == 'win-x64'
+      - name: Upload Artifact
+        if: matrix.platform == 'win-x64' || startsWith(matrix.platform, 'osx')
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.platform }}

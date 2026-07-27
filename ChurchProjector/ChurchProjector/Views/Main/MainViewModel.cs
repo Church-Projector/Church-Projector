@@ -535,11 +535,9 @@ public partial class MainViewModel : ObservableObject
                            Path.GetExtension(Images.Filename).ToLowerInvariant() is ".sng";
 
     [ObservableProperty] private bool _bannerIsRunning;
-    public void StopAll()
+    public void Shutdown()
     {
-        ImageWindow.StopBanner();
-        ImageWindow.Hide();
-        ImageWindow.ViewModel.ImageSource = null;
+        ImageWindow.Shutdown();
         _powerPointClient?.StopPowerPointViewerAsync();
     }
 

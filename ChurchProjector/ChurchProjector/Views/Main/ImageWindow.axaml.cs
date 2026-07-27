@@ -126,12 +126,4 @@ public partial class ImageWindow : Window
         ViewModel.IsBannerVisible = false;
         SpBanner.Children.Clear();
     }
-
-    internal void Shutdown()
-    {
-        cancellationTokenSource.Cancel();
-        ViewModel.Shutdown();
-        ViewModel.Settings.PropertyChanged -= Settings_PropertyChanged;
-        ViewModel.Settings.PropertyChanged -= SettingsViewModel_PropertyChanged;
-    }
 }

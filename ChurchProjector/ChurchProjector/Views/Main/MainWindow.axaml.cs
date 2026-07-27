@@ -11,7 +11,6 @@ using ChurchProjector.Views.Song;
 using CommunityToolkit.Mvvm.Input;
 using Serilog;
 using System;
-using System.ComponentModel;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -25,7 +24,6 @@ public partial class MainWindow : Window
 {
     private readonly MainViewModel _viewModel;
     private readonly CancellationTokenSource _cancellationTokenSource = new();
-    private bool _isShuttingDown;
 
     public MainWindow()
     {
@@ -109,17 +107,13 @@ public partial class MainWindow : Window
         }
     }
 
-    protected override void OnClosing(WindowClosingEventArgs e)
+    protected override void OnClosed(EventArgs e)
     {
-        if (!_isShuttingDown)
-        {
-            _isShuttingDown = true;
-            _cancellationTokenSource.Cancel();
-            GlobalConfig.SaveChanges();
-            _viewModel.Shutdown();
-        }
-
-        base.OnClosing(e);
+        base.OnClosed(e);
+        _cancellationTokenSource.Cancel();
+        GlobalConfig.SaveChanges();
+        _viewModel.StopAll();
+        Environment.Exit(0);
     }
 
     private void OnBtnSettingsClick(object sender, RoutedEventArgs e)

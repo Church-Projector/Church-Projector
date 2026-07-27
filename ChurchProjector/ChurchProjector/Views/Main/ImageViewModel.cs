@@ -155,14 +155,4 @@ public partial class ImageViewModel : ObservableObject
         // TODO Make the property reactive
         OnPropertyChanged(nameof(TextSize));
     }
-
-    public void Shutdown()
-    {
-        _cancellationTokenSource?.Cancel();
-        _cancellationTokenSource?.Dispose();
-        _cancellationTokenSource = null;
-        _dispatcherTimer.Stop();
-        _dispatcherTimer.Tick -= DispatcherTimer_Tick;
-        GlobalConfig.JsonFile.Settings.PropertyChanged -= Settings_PropertyChanged;
-    }
 }

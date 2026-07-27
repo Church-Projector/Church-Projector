@@ -30,7 +30,12 @@ find "${APP_DIR}" -name "*.dSYM" -type d -exec rm -rf {} +
 # make executable
 chmod +x "${APP_DIR}/Contents/MacOS/${APP_NAME}"
 
+# ad-hoc sign the bundle so Gatekeeper doesn't treat the rebuilt app as damaged
+codesign --force --deep --sign - "${APP_DIR}"
+codesign --verify --deep --strict --verbose=2 "${APP_DIR}"
+
 # create zip
-zip -r "${RUNTIME}.zip" "${APP_NAME}.app"
+rm -f "${RUNTIME}.zip"
+ditto -c -k --keepParent "${APP_DIR}" "${RUNTIME}.zip"
 
 echo "Done: ${RUNTIME}.zip"

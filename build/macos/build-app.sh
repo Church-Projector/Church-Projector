@@ -5,8 +5,7 @@ RUNTIME="$1"
 VERSION="$2"
 
 APP_NAME="ChurchProjector"
-# PUBLISH_DIR="./publish/${RUNTIME}"
-PUBLISH_DIR="./publish/osx-x64"
+PUBLISH_DIR="./publish/${RUNTIME}"
 APP_DIR="./${APP_NAME}.app"
 
 echo "Creating macOS app bundle for ${RUNTIME}"
@@ -32,7 +31,6 @@ find "${APP_DIR}" -name "*.dSYM" -type d -exec rm -rf {} +
 chmod +x "${APP_DIR}/Contents/MacOS/${APP_NAME}"
 
 # create zip
-# zip -r "${RUNTIME}.zip" "${APP_NAME}.app"
-zip -r "osx-x64.zip" "${APP_NAME}.app"
+zip -r "${RUNTIME}.zip" "${APP_NAME}.app"
 
 echo "Done: ${RUNTIME}.zip"

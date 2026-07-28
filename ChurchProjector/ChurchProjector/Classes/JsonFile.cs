@@ -36,6 +36,16 @@ public class Settings : ObservableObject
     public SongSettings SongSettings { get; set; } = new();
 
     public string? SelectedMonitorName { get; set; }
+    public WindowPlacement MainWindowPlacement { get; set; } = new();
+}
+
+public class WindowPlacement
+{
+    public int? X { get; set; }
+    public int? Y { get; set; }
+    public double? Width { get; set; }
+    public double? Height { get; set; }
+    public bool IsMaximized { get; set; }
 }
 
 public class DisplayConfiguration : ObservableObject

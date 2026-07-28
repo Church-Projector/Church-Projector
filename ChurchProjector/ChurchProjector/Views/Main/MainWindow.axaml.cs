@@ -1,4 +1,5 @@
-﻿using Avalonia.Controls;
+﻿using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Platform;
@@ -25,6 +26,8 @@ public partial class MainWindow : Window
 {
     private readonly MainViewModel _viewModel;
     private readonly CancellationTokenSource _cancellationTokenSource = new();
+    private PixelPoint _normalPosition;
+    private Size _normalSize;
 
     public MainWindow()
     {
@@ -40,6 +43,7 @@ public partial class MainWindow : Window
         Title = $"{Title} {version}";
 
         settings.SetMonitors(GetMonitors());
+        RestoreWindowPlacement();
 
         DataContext = _viewModel = new MainViewModel(this, settings, StorageProvider, Clipboard, version);
 
@@ -94,7 +98,61 @@ public partial class MainWindow : Window
         });
         _viewModel.AddSongCommand = new RelayCommand(() => new SongEditWindow().ShowDialog(this));
 
+        PositionChanged += (_, _) => CaptureNormalWindowPlacement();
+        Resized += (_, _) => CaptureNormalWindowPlacement();
         Screens.Changed += Screens_Changed;
+    }
+
+    private void RestoreWindowPlacement()
+    {
+        WindowPlacement placement = GlobalConfig.JsonFile.Settings.MainWindowPlacement;
+        _normalSize = new Size(Width, Height);
+
+        if (placement.Width is > 0 && placement.Height is > 0)
+        {
+            Width = placement.Width.Value;
+            Height = placement.Height.Value;
+            _normalSize = new Size(Width, Height);
+        }
+
+        if (placement.X is not null && placement.Y is not null)
+        {
+            PixelPoint savedPosition = new(placement.X.Value, placement.Y.Value);
+            if (Screens.All.Any(screen => screen.WorkingArea.Contains(savedPosition)))
+            {
+                WindowStartupLocation = WindowStartupLocation.Manual;
+                Position = savedPosition;
+                _normalPosition = savedPosition;
+            }
+        }
+
+        if (placement.IsMaximized)
+        {
+            WindowState = WindowState.Maximized;
+        }
+    }
+
+    private void CaptureNormalWindowPlacement()
+    {
+        if (WindowState != WindowState.Normal)
+        {
+            return;
+        }
+
+        _normalPosition = Position;
+        _normalSize = new Size(Width, Height);
+    }
+
+    private void SaveWindowPlacement()
+    {
+        CaptureNormalWindowPlacement();
+
+        WindowPlacement placement = GlobalConfig.JsonFile.Settings.MainWindowPlacement;
+        placement.X = _normalPosition.X;
+        placement.Y = _normalPosition.Y;
+        placement.Width = _normalSize.Width;
+        placement.Height = _normalSize.Height;
+        placement.IsMaximized = WindowState == WindowState.Maximized;
     }
 
     private void Screens_Changed(object? sender, EventArgs e)
@@ -126,6 +184,7 @@ public partial class MainWindow : Window
 
     protected override void OnClosed(EventArgs e)
     {
+        SaveWindowPlacement();
         base.OnClosed(e);
         _cancellationTokenSource.Cancel();
         GlobalConfig.SaveChanges();

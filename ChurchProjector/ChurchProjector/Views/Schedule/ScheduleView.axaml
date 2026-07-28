@@ -12,32 +12,74 @@
 
 	<UserControl.Resources>
 		<converters:InverseBooleanConverter x:Key="InverseBool" />
+		<StreamGeometry x:Key="AddIcon">M11 4H13V11H20V13H13V20H11V13H4V11H11V4Z</StreamGeometry>
+		<StreamGeometry x:Key="RemoveIcon">M18.3 5.71L12 12L5.7 5.71L4.29 7.12L10.59 13.41L4.29 19.71L5.7 21.12L12 14.83L18.3 21.12L19.71 19.71L13.41 13.41L19.71 7.12L18.3 5.71Z</StreamGeometry>
 	</UserControl.Resources>
 
-	<Grid RowDefinitions="auto,*">
-		<Button Grid.Row="0" Content="{x:Static lang:Resources.AddFile}" Command="{Binding AddScheduleEntryCommand}" Margin="0 0 0 10" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" />
+	<UserControl.Styles>
+		<Style Selector="ListBox.scheduleList > ListBoxItem">
+			<Setter Property="Padding" Value="0" />
+			<Setter Property="Margin" Value="0,0,0,6" />
+			<Setter Property="HorizontalContentAlignment" Value="Stretch" />
+			<Setter Property="Background" Value="Transparent" />
+		</Style>
+		<Style Selector="Border.scheduleEntry">
+			<Setter Property="Background" Value="#07808080" />
+			<Setter Property="BorderBrush" Value="#28808080" />
+			<Setter Property="BorderThickness" Value="1" />
+			<Setter Property="CornerRadius" Value="6" />
+			<Setter Property="Padding" Value="5" />
+		</Style>
+		<Style Selector="ListBox.scheduleList > ListBoxItem:pointerover Border.scheduleEntry">
+			<Setter Property="Background" Value="#14808080" />
+			<Setter Property="BorderBrush" Value="#58808080" />
+		</Style>
+		<Style Selector="Button.scheduleOpen">
+			<Setter Property="Background" Value="Transparent" />
+			<Setter Property="BorderThickness" Value="0" />
+			<Setter Property="Padding" Value="7,6" />
+			<Setter Property="HorizontalContentAlignment" Value="Left" />
+		</Style>
+		<Style Selector="Button.scheduleRemove">
+			<Setter Property="Background" Value="Transparent" />
+			<Setter Property="BorderThickness" Value="0" />
+			<Setter Property="Padding" Value="7" />
+		</Style>
+	</UserControl.Styles>
 
-		<ListBox Name="LboSchedules" Grid.Row="1" ItemsSource="{Binding Schedules}" Background="Transparent">
+	<Grid RowDefinitions="auto,*" RowSpacing="8">
+		<Button Grid.Row="0" Command="{Binding AddScheduleEntryCommand}" HorizontalAlignment="Stretch" Padding="10,7">
+			<StackPanel Orientation="Horizontal" Spacing="7" HorizontalAlignment="Center">
+				<PathIcon Data="{StaticResource AddIcon}" Width="16" Height="16" />
+				<TextBlock Text="{x:Static lang:Resources.AddFile}" VerticalAlignment="Center" />
+			</StackPanel>
+		</Button>
+
+		<ListBox Name="LboSchedules" Grid.Row="1" ItemsSource="{Binding Schedules}" Background="Transparent" Classes="scheduleList">
 			<ListBox.ItemTemplate>
 				<DataTemplate>
-					<Grid ColumnDefinitions="auto,auto,auto,*,auto,auto">
-						<Svg Grid.Column="0" IsVisible="{Binding FileExists, Converter={StaticResource InverseBool}}" Path="/Assets/error.svg" ToolTip.Tip="{x:Static lang:Resources.FileNotFound}" />
-						<Svg Grid.Column="1" IsVisible="{Binding ApplicationExists, Converter={StaticResource InverseBool}}" Path="/Assets/error.svg" ToolTip.Tip="{x:Static lang:Resources.ProgramNotFound}" />
-						<Svg Grid.Column="2" IsVisible="{Binding HasIcon}" Path="{Binding Icon}" />
-						<Button Grid.Column="3" Command="{Binding ((local:ScheduleViewModel)DataContext).OpenScheduleEntryCommand, ElementName=Root}" CommandParameter="{Binding .}" HorizontalAlignment="Stretch">
-							<TextBlock Text="{Binding Title}" TextTrimming="CharacterEllipsis" />
-						</Button>
-						<Button Grid.Column="4" Command="{Binding ((local:ScheduleViewModel)DataContext).RemoveScheduleEntryCommand, ElementName=Root}" CommandParameter="{Binding .}" ToolTip.Tip="Entfernen" Content="X" />
-						<Svg Grid.Column="5" Path="/Assets/drag_indicator.svg" PointerPressed="Svg_PointerPressed" ToolTip.Tip="{x:Static lang:Resources.Move}" />
+					<Border Classes="scheduleEntry">
+						<Grid ColumnDefinitions="auto,auto,auto,*,auto,auto">
+							<Svg Grid.Column="0" Width="16" Height="16" Margin="3" IsVisible="{Binding FileExists, Converter={StaticResource InverseBool}}" Path="/Assets/error.svg" ToolTip.Tip="{x:Static lang:Resources.FileNotFound}" />
+							<Svg Grid.Column="1" Width="16" Height="16" Margin="3" IsVisible="{Binding ApplicationExists, Converter={StaticResource InverseBool}}" Path="/Assets/error.svg" ToolTip.Tip="{x:Static lang:Resources.ProgramNotFound}" />
+							<Svg Grid.Column="2" Width="22" Height="22" Margin="3" IsVisible="{Binding HasIcon}" Path="{Binding Icon}" />
+							<Button Grid.Column="3" Classes="scheduleOpen" Command="{Binding ((local:ScheduleViewModel)DataContext).OpenScheduleEntryCommand, ElementName=Root}" CommandParameter="{Binding .}" HorizontalAlignment="Stretch">
+								<TextBlock Text="{Binding Title}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" />
+							</Button>
+							<Button Grid.Column="4" Classes="scheduleRemove" Command="{Binding ((local:ScheduleViewModel)DataContext).RemoveScheduleEntryCommand, ElementName=Root}" CommandParameter="{Binding .}" ToolTip.Tip="Entfernen">
+								<PathIcon Data="{StaticResource RemoveIcon}" Width="14" Height="14" />
+							</Button>
+							<Svg Grid.Column="5" Width="20" Height="20" Margin="5" Opacity="0.65" Path="/Assets/drag_indicator.svg" PointerPressed="Svg_PointerPressed" ToolTip.Tip="{x:Static lang:Resources.Move}" />
 
-						<Grid.ContextMenu>
-							<ContextMenu>
-								<MenuItem Command="{Binding ((local:ScheduleViewModel)DataContext).CopyFilePathCommand, ElementName=Root}" CommandParameter="{Binding .}" Header="{x:Static lang:Resources.CopyFilePath}" />
-								<MenuItem Command="{Binding ((local:ScheduleViewModel)DataContext).OpenFilePathCommand, ElementName=Root}" CommandParameter="{Binding .}" Header="{x:Static lang:Resources.OpenFilePath}" />
-								<MenuItem Command="{Binding ((local:ScheduleViewModel)DataContext).DeleteFilePathCommand, ElementName=Root}" CommandParameter="{Binding .}" Header="{x:Static lang:Resources.DeleteFile}" />
-							</ContextMenu>
-						</Grid.ContextMenu>
-					</Grid>
+							<Grid.ContextMenu>
+								<ContextMenu>
+									<MenuItem Command="{Binding ((local:ScheduleViewModel)DataContext).CopyFilePathCommand, ElementName=Root}" CommandParameter="{Binding .}" Header="{x:Static lang:Resources.CopyFilePath}" />
+									<MenuItem Command="{Binding ((local:ScheduleViewModel)DataContext).OpenFilePathCommand, ElementName=Root}" CommandParameter="{Binding .}" Header="{x:Static lang:Resources.OpenFilePath}" />
+									<MenuItem Command="{Binding ((local:ScheduleViewModel)DataContext).DeleteFilePathCommand, ElementName=Root}" CommandParameter="{Binding .}" Header="{x:Static lang:Resources.DeleteFile}" />
+								</ContextMenu>
+							</Grid.ContextMenu>
+						</Grid>
+					</Border>
 				</DataTemplate>
 			</ListBox.ItemTemplate>
 		</ListBox>

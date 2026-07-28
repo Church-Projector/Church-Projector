@@ -28,6 +28,7 @@
         <StreamGeometry x:Key="FadeIcon">M12 5C7 5 2.73 8.11 1 12C2.73 15.89 7 19 12 19S21.27 15.89 23 12C21.27 8.11 17 5 12 5M12 7C15.31 7 18.17 8.89 20.18 12C18.17 15.11 15.31 17 12 17S5.83 15.11 3.82 12C5.83 8.89 8.69 7 12 7M12 9A3 3 0 1 0 12 15A3 3 0 0 0 12 9Z</StreamGeometry>
         <StreamGeometry x:Key="MessageIcon">M4 4H20C21.1 4 22 4.9 22 6V15C22 16.1 21.1 17 20 17H8L4 21V17H4C2.9 17 2 16.1 2 15V6C2 4.9 2.9 4 4 4M6 8V10H18V8H6M6 12V14H15V12H6Z</StreamGeometry>
         <StreamGeometry x:Key="TimerIcon">M15 1H9V3H15V1M11 14H13V8H11V14M12 5C16.42 5 20 8.58 20 13S16.42 21 12 21S4 17.42 4 13S7.58 5 12 5M12 7C8.69 7 6 9.69 6 13S8.69 19 12 19S18 16.31 18 13S15.31 7 12 7Z</StreamGeometry>
+        <StreamGeometry x:Key="SettingsIcon">M12 8A4 4 0 1 0 12 16A4 4 0 0 0 12 8M3.05 13H1V11H3.05C3.2 10.26 3.49 9.57 3.88 8.95L2.43 7.5L3.84 6.09L5.29 7.54C5.91 7.15 6.6 6.86 7.34 6.71V4.66H9.34V6.71C10.08 6.86 10.77 7.15 11.39 7.54L12.84 6.09L14.25 7.5L12.8 8.95C13.19 9.57 13.48 10.26 13.63 11H15.68V13H13.63C13.48 13.74 13.19 14.43 12.8 15.05L14.25 16.5L12.84 17.91L11.39 16.46C10.77 16.85 10.08 17.14 9.34 17.29V19.34H7.34V17.29C6.6 17.14 5.91 16.85 5.29 16.46L3.84 17.91L2.43 16.5L3.88 15.05C3.49 14.43 3.2 13.74 3.05 13Z</StreamGeometry>
     </Window.Resources>
 
     <Window.Styles>
@@ -52,6 +53,36 @@
             <Setter Property="Width" Value="17" />
             <Setter Property="Height" Value="17" />
         </Style>
+        <Style Selector="Border.surface">
+            <Setter Property="Background" Value="#09808080" />
+            <Setter Property="BorderBrush" Value="#28808080" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="8" />
+        </Style>
+        <Style Selector="GridSplitter.workspaceSplitter">
+            <Setter Property="Background" Value="#40808080" />
+        </Style>
+        <Style Selector="ListBox.slideList > ListBoxItem">
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="Margin" Value="6" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        </Style>
+        <Style Selector="ListBox.slideList > ListBoxItem Border.slideCard">
+            <Setter Property="Background" Value="#07808080" />
+            <Setter Property="BorderBrush" Value="#38808080" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="8" />
+        </Style>
+        <Style Selector="ListBox.slideList > ListBoxItem:pointerover Border.slideCard">
+            <Setter Property="Background" Value="#14808080" />
+            <Setter Property="BorderBrush" Value="#70808080" />
+        </Style>
+        <Style Selector="ListBox.slideList > ListBoxItem:selected Border.slideCard">
+            <Setter Property="Background" Value="#20135BF9" />
+            <Setter Property="BorderBrush" Value="#80135BF9" />
+            <Setter Property="BorderThickness" Value="2" />
+        </Style>
     </Window.Styles>
 
     <Panel>
@@ -70,16 +101,18 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <TabControl Grid.Row="0" Grid.Column="0" Grid.RowSpan="6">
-                <TabItem Header="{x:Static lang:Resources.History}" Margin="0 0 0 10">
-                    <history:HistoryView DataContext="{Binding HistoryViewModel}" />
-                </TabItem>
-                <TabItem Header="{x:Static lang:Resources.Schedule}" Margin="0 0 0 10">
-                    <schedule:ScheduleView DataContext="{Binding ScheduleViewModel}" />
-                </TabItem>
-            </TabControl>
+            <Border Grid.Row="0" Grid.Column="0" Grid.RowSpan="6" Margin="10,10,4,10" Padding="6" Classes="surface">
+                <TabControl>
+                    <TabItem Header="{x:Static lang:Resources.History}">
+                        <history:HistoryView DataContext="{Binding HistoryViewModel}" Margin="4,8,4,4" />
+                    </TabItem>
+                    <TabItem Header="{x:Static lang:Resources.Schedule}">
+                        <schedule:ScheduleView DataContext="{Binding ScheduleViewModel}" Margin="4,8,4,4" />
+                    </TabItem>
+                </TabControl>
+            </Border>
 
-            <GridSplitter Grid.Row="0" Grid.Column="1" Grid.RowSpan="6" Background="Gray" ResizeDirection="Columns" />
+            <GridSplitter Grid.Row="0" Grid.Column="1" Grid.RowSpan="6" Width="6" Margin="0,10" Classes="workspaceSplitter" ResizeDirection="Columns" />
 
             <Border Grid.Row="0" Grid.Column="2" Margin="10" Classes="toolbar">
                 <WrapPanel Orientation="Horizontal">
@@ -150,7 +183,15 @@
                 </WrapPanel>
             </Border>
 
-            <ListBox Name="LboImages" Grid.Row="1" Grid.Column="2" ItemsSource="{Binding Images.Images}" SelectedItem="{Binding SelectedImage}" Background="Transparent" Margin="10 20">
+            <ListBox Name="LboImages"
+                     Grid.Row="1"
+                     Grid.Column="2"
+                     ItemsSource="{Binding Images.Images}"
+                     SelectedItem="{Binding SelectedImage}"
+                     Background="Transparent"
+                     Margin="4,0,4,6"
+                     Padding="4"
+                     Classes="slideList">
                 <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
                         <WrapPanel />
@@ -158,37 +199,46 @@
                 </ListBox.ItemsPanel>
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <Border BorderBrush="Gray"
-                                BorderThickness="1"
-                                CornerRadius="4"
-                                Padding="4">
+                        <Border Classes="slideCard" Padding="8">
                             <Grid RowDefinitions="auto,*" ColumnDefinitions="*,auto">
-                                <TextBlock Grid.Row="0" Grid.Column="0" Text="{Binding Title}"/>
-                                <Svg Grid.Row="0" Grid.Column="1" IsVisible="{Binding IsOverflowing}" Path="/Assets/error.svg" ToolTip.Tip="Der Text überschreitet die Höhe." />
-                                <Image Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" MaxWidth="250" MaxHeight="250" Source="{Binding Image}" RenderOptions.BitmapInterpolationMode="HighQuality"  />
+                                <TextBlock Grid.Row="0" Grid.Column="0" Text="{Binding Title}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" Margin="2,0,8,7"/>
+                                <Svg Grid.Row="0" Grid.Column="1" Width="16" Height="16" IsVisible="{Binding IsOverflowing}" Path="/Assets/error.svg" ToolTip.Tip="Der Text überschreitet die Höhe." />
+                                <Border Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" CornerRadius="5" ClipToBounds="True" Background="Black">
+                                    <Image MaxWidth="250" MaxHeight="250" Source="{Binding Image}" RenderOptions.BitmapInterpolationMode="HighQuality" />
+                                </Border>
                             </Grid>
                         </Border>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
 
-            <GridSplitter Grid.Row="2" Grid.Column="2" Background="Gray" ResizeDirection="Rows" />
-            <bibleview:BibleView Name="BibleView" Grid.Row="3" Grid.Column="2" DataContext="{Binding BibleViewModel}" Margin="10" />
+            <GridSplitter Grid.Row="2" Grid.Column="2" Height="6" Margin="10,0" Classes="workspaceSplitter" ResizeDirection="Rows" />
+            <Border Grid.Row="3" Grid.Column="2" Margin="10,6,10,8" Padding="10" Classes="surface">
+                <bibleview:BibleView Name="BibleView" DataContext="{Binding BibleViewModel}" />
+            </Border>
 
-            <Separator Grid.Row="4" Grid.Column="2" />
-                <Grid Grid.Row="5" Grid.Column="2" ColumnDefinitions="*,auto">
-                    <TextBlock Grid.Row="0" Grid.Column="0"
+            <Border Grid.Row="4" Grid.Column="2" Grid.RowSpan="2" Margin="10,0,10,10" Padding="8" Classes="surface">
+                <Grid ColumnDefinitions="*,auto">
+                    <Border Grid.Column="0"
                                IsVisible="{Binding MayUpdate}"
-                               Foreground="Orange"
-                               Margin="10"
-                               Padding="10,5,10,5"
-                               Text="{Binding UpdateText}" />
+                               Background="#18D08700"
+                               BorderBrush="#60D08700"
+                               BorderThickness="1"
+                               CornerRadius="6"
+                               Margin="0,0,8,0"
+                               Padding="10,6">
+                        <TextBlock Foreground="#D08700" Text="{Binding UpdateText}" />
+                    </Border>
                     <Button Grid.Column="1"
-                            Margin="10"
-                            Padding="10,5,10,5"
-                            Content="{x:Static lang:Resources.Settings}"
-                            Click="OnBtnSettingsClick" />
+                            Padding="12,7"
+                            Click="OnBtnSettingsClick">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <PathIcon Data="{StaticResource SettingsIcon}" Width="17" Height="17" />
+                            <TextBlock Text="{x:Static lang:Resources.Settings}" VerticalAlignment="Center" />
+                        </StackPanel>
+                    </Button>
                 </Grid>
+            </Border>
         </Grid>
     
         <ItemsControl ItemsSource="{Binding Notifications.Notifications}"
@@ -207,7 +257,7 @@
                             PointerExited="OnNotificationExit">
                         <Grid RowDefinitions="*,Auto" ColumnDefinitions="*,Auto">
                             <TextBlock Grid.Row="0" Grid.Column="0" Text="{Binding Message}" TextWrapping="Wrap" VerticalAlignment="Center" />
-                            <Button Grid.Row="0" Grid.Column="1" Content="X" FontSize="14" Padding="4,2" Margin="8,0,0,0" Click="BtnNotificationClose_OnClick"/>
+                            <Button Grid.Row="0" Grid.Column="1" Content="×" FontSize="18" Padding="5,0" Margin="8,0,0,0" Click="BtnNotificationClose_OnClick"/>
                             
                             <ProgressBar Grid.Row="1"
                                          Grid.Column="0"

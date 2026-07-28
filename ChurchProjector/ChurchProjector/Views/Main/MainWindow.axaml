@@ -137,7 +137,11 @@
                             <TextBlock Text="{x:Static lang:Resources.BannerMessage}" VerticalAlignment="Center" />
                         </StackPanel>
                     </ToggleButton>
-                    <ToggleButton Classes="toolbar" Command="{Binding OpenTimerCommand}" IsChecked="{Binding TimerIsRunning, Mode=OneWay}">
+                    <ToggleButton Classes="toolbar"
+                                  Command="{Binding OpenTimerCommand}"
+                                  HotKey="Ctrl+T"
+                                  ToolTip.Tip="Shortcut: STRG + T"
+                                  IsChecked="{Binding TimerIsRunning, Mode=OneWay}">
                         <StackPanel Orientation="Horizontal" Spacing="6">
                             <PathIcon Data="{StaticResource TimerIcon}" />
                             <TextBlock Text="{x:Static lang:Resources.Timer}" VerticalAlignment="Center" />

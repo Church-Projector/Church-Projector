@@ -8,6 +8,7 @@ using ChurchProjector.Views.Bible;
 using ChurchProjector.Views.Notification;
 using ChurchProjector.Views.Settings;
 using ChurchProjector.Views.Song;
+using ChurchProjector.Views.Timer;
 using CommunityToolkit.Mvvm.Input;
 using Serilog;
 using System;
@@ -63,6 +64,22 @@ public partial class MainWindow : Window
                 _viewModel.ImageWindow.StopBanner();
             }
             _viewModel.BannerIsRunning = !string.IsNullOrWhiteSpace(_viewModel.ImageWindow.ViewModel.BannerText);
+        });
+        _viewModel.OpenTimerCommand = new RelayCommand(async () =>
+        {
+            if (_viewModel.ImageWindow.ViewModel.IsCountdownVisible)
+            {
+                _viewModel.ImageWindow.ViewModel.StopCountdown();
+            }
+            else
+            {
+                await new TimerWindow
+                {
+                    StartTimer = _viewModel.ImageWindow.ViewModel.StartCountdown,
+                }.ShowDialog(this);
+            }
+
+            _viewModel.TimerIsRunning = _viewModel.ImageWindow.ViewModel.IsCountdownVisible;
         });
         _viewModel.EditCommand = new RelayCommand(async () =>
         {

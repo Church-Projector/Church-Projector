@@ -395,4 +395,22 @@ The paths can be edited later in the settings.</value>
   <data name="ShowClock_Colon" xml:space="preserve">
     <value>Show clock:</value>
   </data>
+  <data name="Timer" xml:space="preserve">
+    <value>Timer</value>
+  </data>
+  <data name="TimerDuration" xml:space="preserve">
+    <value>Countdown duration:</value>
+  </data>
+  <data name="Minutes" xml:space="preserve">
+    <value>Minutes</value>
+  </data>
+  <data name="Seconds" xml:space="preserve">
+    <value>Seconds</value>
+  </data>
+  <data name="Start" xml:space="preserve">
+    <value>Start</value>
+  </data>
+  <data name="TimerDurationRequired" xml:space="preserve">
+    <value>Please enter a duration greater than zero.</value>
+  </data>
 </root>

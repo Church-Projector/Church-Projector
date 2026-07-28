@@ -596,5 +596,41 @@ namespace ChurchProjector.Lang {
                 return ResourceManager.GetString("ShowClock_Colon", resourceCulture);
             }
         }
+
+        public static string Timer {
+            get {
+                return ResourceManager.GetString("Timer", resourceCulture);
+            }
+        }
+
+        public static string TimerDuration {
+            get {
+                return ResourceManager.GetString("TimerDuration", resourceCulture);
+            }
+        }
+
+        public static string Minutes {
+            get {
+                return ResourceManager.GetString("Minutes", resourceCulture);
+            }
+        }
+
+        public static string Seconds {
+            get {
+                return ResourceManager.GetString("Seconds", resourceCulture);
+            }
+        }
+
+        public static string Start {
+            get {
+                return ResourceManager.GetString("Start", resourceCulture);
+            }
+        }
+
+        public static string TimerDurationRequired {
+            get {
+                return ResourceManager.GetString("TimerDurationRequired", resourceCulture);
+            }
+        }
     }
 }

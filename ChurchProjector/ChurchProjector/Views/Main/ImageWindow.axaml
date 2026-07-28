@@ -16,16 +16,18 @@
 		x:DataType="local:ImageViewModel"
 		ShowInTaskbar="False">
 
-	<Grid RowDefinitions="*,Auto">
+	<Grid RowDefinitions="*,Auto" ColumnDefinitions="*,Auto">
 		<Image
             Name="ImageView"
             Grid.Row="0"
+            Grid.ColumnSpan="2"
             IsVisible="{Binding ShowImage}"
             Source="{Binding ImageSource}"
 			Opacity="{Binding Opacity}" />
 
 		<StackPanel
             Grid.Row="1"
+            Grid.Column="0"
 			Orientation="Horizontal"
 			IsVisible="{Binding ShowBottomBar}">
 			<!-- The padding of the clock should be the same as in the banner -->
@@ -43,5 +45,19 @@
 				Orientation="Horizontal"
 				IsVisible="{Binding IsBannerVisible}" />
 		</StackPanel>
+
+		<TextBlock
+			Grid.Row="1"
+			Grid.Column="1"
+			Text="{Binding CountdownText}"
+			IsVisible="{Binding IsCountdownVisible}"
+			FontSize="{Binding TextSize}"
+			FontWeight="SemiBold"
+			Foreground="{Binding CountdownForeground}"
+			HorizontalAlignment="Right"
+			VerticalAlignment="Bottom"
+			Padding="10"
+			Background="Black"
+			ZIndex="2" />
 	</Grid>
 </Window>

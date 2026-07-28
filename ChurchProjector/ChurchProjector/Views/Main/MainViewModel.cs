@@ -527,6 +527,8 @@ public partial class MainViewModel : ObservableObject
 
     [ObservableProperty] private ICommand openShowNotificationCommand;
 
+    [ObservableProperty] private ICommand openTimerCommand;
+
     [ObservableProperty] private ICommand editCommand;
 
     [ObservableProperty] private ICommand addSongCommand;
@@ -535,9 +537,13 @@ public partial class MainViewModel : ObservableObject
                            Path.GetExtension(Images.Filename).ToLowerInvariant() is ".sng";
 
     [ObservableProperty] private bool _bannerIsRunning;
+
+    [ObservableProperty] private bool _timerIsRunning;
+
     public void StopAll()
     {
         ImageWindow.StopBanner();
+        ImageWindow.ViewModel.StopCountdown();
         ImageWindow.Hide();
         ImageWindow.ViewModel.ImageSource = null;
         _powerPointClient?.StopPowerPointViewerAsync();

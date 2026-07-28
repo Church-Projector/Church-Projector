@@ -248,6 +248,16 @@ public static class SongExtensions
                     }
                 }
 
+                string? songEnd = GlobalConfig.JsonFile.Settings.SongSettings.SongEnd?.Trim();
+                if (hasValidVerseOrder &&
+                    index == orderedVerses.Count - 1 &&
+                    !string.IsNullOrWhiteSpace(songEnd) &&
+                    !string.Join(Environment.NewLine, verse.Lines).TrimEnd()
+                        .EndsWith(songEnd, StringComparison.Ordinal))
+                {
+                    content.Add(new DrawingHelper.TextLine(songEnd));
+                }
+
                 var renderResult = new DrawingHelper.ImageCreation()
                 {
                     Configuration = GlobalConfig.JsonFile.Settings.DisplayConfiguration.SongConfiguration,

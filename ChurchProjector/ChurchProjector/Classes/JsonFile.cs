@@ -202,4 +202,5 @@ public class BibleSettings
 public class SongSettings
 {
     public bool ShowFirstLineOfNextSong { get; set; }
+    public string? SongEnd { get; set; }
 }

@@ -303,6 +303,9 @@
   <data name="SongShowFirstLineOfNextSong_Colon" xml:space="preserve">
     <value>Erste Zeile des nächsten Liedes anzeigen:</value>
   </data>
+  <data name="SongEnd_Colon" xml:space="preserve">
+    <value>Liedende:</value>
+  </data>
   <data name="ForTheSearch" xml:space="preserve">
     <value>(Für die Suche)</value>
   </data>

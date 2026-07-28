@@ -127,6 +127,16 @@ public partial class SettingsViewModel : ObservableObject
         get => GlobalConfig.JsonFile.Settings.SongSettings.ShowFirstLineOfNextSong;
         set => GlobalConfig.JsonFile.Settings.SongSettings.ShowFirstLineOfNextSong = value;
     }
+
+    public string? SongEnd
+    {
+        get => GlobalConfig.JsonFile.Settings.SongSettings.SongEnd;
+        set
+        {
+            GlobalConfig.JsonFile.Settings.SongSettings.SongEnd = value;
+            OnPropertyChanged();
+        }
+    }
     
     public bool ShowClock
     {

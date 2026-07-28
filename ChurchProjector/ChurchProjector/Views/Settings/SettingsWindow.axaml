@@ -319,11 +319,14 @@
 			</TabItem>
 
 			<TabItem Header="{x:Static lang:Resources.SongDisplay}">
-				<Grid RowDefinitions="auto,*" ColumnDefinitions="auto, *">
+				<Grid RowDefinitions="auto,auto,*" ColumnDefinitions="auto,*">
 					<TextBlock Grid.Column="0" Grid.Row="0" Text="{x:Static lang:Resources.SongShowFirstLineOfNextSong_Colon}" VerticalAlignment="Center" />
 					<ToggleSwitch Grid.Column="1" Grid.Row="0" Margin="5 0 0 0" IsChecked="{Binding ShowFirstLineOfNextSong}" OnContent="" OffContent="" />
 
-					<dc:DisplayConfigurationView Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Margin="0 10 0 0" DataContext="{Binding Settings.DisplayConfiguration.SongConfiguration}" />
+					<TextBlock Grid.Column="0" Grid.Row="1" Text="{x:Static lang:Resources.SongEnd_Colon}" VerticalAlignment="Center" />
+					<TextBox Grid.Column="1" Grid.Row="1" Margin="5" MinWidth="150" Text="{Binding SongEnd}" />
+
+					<dc:DisplayConfigurationView Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Margin="0 10 0 0" DataContext="{Binding Settings.DisplayConfiguration.SongConfiguration}" />
 				</Grid>
 			</TabItem>
 

@@ -66,7 +66,8 @@ jobs:
         if: startsWith(matrix.platform, 'linux')
         run: |
           sudo apt-get update
-          sudo apt-get install -y rpm zstd
+          sudo apt-get install --yes flatpak flatpak-builder rpm snapd zstd
+          flatpak remote-add --if-not-exists --user flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 
       - name: Create Linux packages
         if: startsWith(matrix.platform, 'linux')
@@ -77,6 +78,9 @@ jobs:
           ./build/scripts/package.deb.sh
           ./build/scripts/package.rpm.sh
           ./build/scripts/package.pacman.sh
+          ./build/scripts/package.snap.sh
+          ./build/scripts/package.flatpak.sh
+          ./build/scripts/package.appimage.sh
 
       - name: Zip ${{ matrix.platform }} artifact
         if: matrix.platform == 'win-x64'
@@ -90,15 +94,47 @@ jobs:
           chmod +x ./build/macos/build-app.sh
           ./build/macos/build-app.sh "${{ matrix.platform }}" "${{ github.ref_name }}"
 
-      - name: Upload Linux package artifacts
+      - name: Upload DEB artifact
         if: startsWith(matrix.platform, 'linux')
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.platform }}
-          path: |
-            churchprojector_*.deb
-            churchprojector-*.rpm
-            churchprojector-*.pkg.tar.zst
+          name: ${{ matrix.platform }}-deb
+          path: churchprojector_*.deb
+
+      - name: Upload RPM artifact
+        if: startsWith(matrix.platform, 'linux')
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.platform }}-rpm
+          path: churchprojector-*.rpm
+
+      - name: Upload Pacman artifact
+        if: startsWith(matrix.platform, 'linux')
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.platform }}-pacman
+          path: churchprojector-*.pkg.tar.zst
+
+      - name: Upload Snap artifact
+        if: startsWith(matrix.platform, 'linux')
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.platform }}-snap
+          path: churchprojector-*.snap
+
+      - name: Upload Flatpak artifact
+        if: startsWith(matrix.platform, 'linux')
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.platform }}-flatpak
+          path: churchprojector-*.flatpak
+
+      - name: Upload AppImage artifact
+        if: startsWith(matrix.platform, 'linux')
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.platform }}-appimage
+          path: churchprojector-*.AppImage
 
       # Upload the zip artifact for non-Linux platforms (Windows)
       - name: Upload Artifact
@@ -127,3 +163,6 @@ jobs:
             ./artifacts/**/*.deb
             ./artifacts/**/*.rpm
             ./artifacts/**/*.pkg.tar.zst
+            ./artifacts/**/*.snap
+            ./artifacts/**/*.flatpak
+            ./artifacts/**/*.AppImage

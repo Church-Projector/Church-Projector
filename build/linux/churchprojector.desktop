@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=ChurchProjector
+Comment=ChurchProjector - A presentation application
+Exec=ChurchProjector
+Icon=churchprojector
+Terminal=false
+Type=Application
+Categories=Utility;Presentation;

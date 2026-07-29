@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+set -e
+
+APPDIR="$(dirname "$(readlink -f "$0")")"
+exec "$APPDIR/usr/bin/ChurchProjector" "$@"

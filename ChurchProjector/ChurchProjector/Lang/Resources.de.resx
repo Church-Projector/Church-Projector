@@ -369,6 +369,90 @@
   <data name="RestartRequired" xml:space="preserve">
     <value>(Neustart erforderlich)</value>
   </data>
+  <data name="UpdatesAndSupport" xml:space="preserve">
+    <value>Updates &amp; Support</value>
+  </data>
+  <data name="VersionInformation" xml:space="preserve">
+    <value>Versionsinformationen</value>
+  </data>
+  <data name="CurrentVersion_Colon" xml:space="preserve">
+    <value>Aktuelle Version:</value>
+  </data>
+  <data name="NewestVersion_Colon" xml:space="preserve">
+    <value>Neueste Version:</value>
+  </data>
+  <data name="Refresh" xml:space="preserve">
+    <value>Aktualisieren</value>
+  </data>
+  <data name="OpenChangelogWebsite" xml:space="preserve">
+    <value>Changelog auf Website öffnen</value>
+  </data>
+  <data name="LoadingReleaseInfo" xml:space="preserve">
+    <value>Versionsinformationen werden geladen…</value>
+  </data>
+  <data name="ReleaseInfoFailed" xml:space="preserve">
+    <value>Die Versionsinformationen sind derzeit nicht verfügbar.</value>
+  </data>
+  <data name="VersionIsCurrent" xml:space="preserve">
+    <value>Die installierte Version ist aktuell.</value>
+  </data>
+  <data name="NoChangelog" xml:space="preserve">
+    <value>Für diese Version ist kein Changelog verfügbar.</value>
+  </data>
+  <data name="Changelog_Colon" xml:space="preserve">
+    <value>Änderungen der neuesten Version:</value>
+  </data>
+  <data name="UpdateDetails" xml:space="preserve">
+    <value>Details</value>
+  </data>
+  <data name="FeedbackAndSupport" xml:space="preserve">
+    <value>Feedback &amp; Support</value>
+  </data>
+  <data name="RequestType_Colon" xml:space="preserve">
+    <value>Art der Anfrage:</value>
+  </data>
+  <data name="ErrorReportOption" xml:space="preserve">
+    <value>Fehler melden</value>
+  </data>
+  <data name="FeatureRequestOption" xml:space="preserve">
+    <value>Funktion wünschen</value>
+  </data>
+  <data name="ReportErrorHint" xml:space="preserve">
+    <value>Die Anfrage wird über die Website direkt an den Church-Projector-Support gesendet. Installierte Version und Betriebssystem werden mitgesendet.</value>
+  </data>
+  <data name="ErrorSubject_Colon" xml:space="preserve">
+    <value>Kurze Zusammenfassung:</value>
+  </data>
+  <data name="ErrorSubjectHint" xml:space="preserve">
+    <value>Mindestens 5 Zeichen</value>
+  </data>
+  <data name="ErrorDescription_Colon" xml:space="preserve">
+    <value>Beschreibung:</value>
+  </data>
+  <data name="ErrorDescriptionHint" xml:space="preserve">
+    <value>Was ist passiert und was wurde erwartet? (Mindestens 20 Zeichen)</value>
+  </data>
+  <data name="ContactEmailOptional_Colon" xml:space="preserve">
+    <value>Kontakt-E-Mail (optional):</value>
+  </data>
+  <data name="PrivacyConsent" xml:space="preserve">
+    <value>Ich bin einverstanden, dass meine Angaben gemäß der Datenschutzerklärung der Website zur Bearbeitung übermittelt werden.</value>
+  </data>
+  <data name="SubmitSupportRequest" xml:space="preserve">
+    <value>Anfrage senden</value>
+  </data>
+  <data name="ErrorReportSending" xml:space="preserve">
+    <value>Anfrage wird gesendet…</value>
+  </data>
+  <data name="ErrorReportSent" xml:space="preserve">
+    <value>Die Anfrage wurde erfolgreich gesendet.</value>
+  </data>
+  <data name="ErrorReportFailed" xml:space="preserve">
+    <value>Die Anfrage konnte nicht gesendet werden.</value>
+  </data>
+  <data name="FurtherInformation" xml:space="preserve">
+    <value>Weitere Informationen</value>
+  </data>
   <data name="HistoryClear" xml:space="preserve">
     <value>Verlauf leeren</value>
   </data>

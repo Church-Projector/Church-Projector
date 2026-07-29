@@ -7,25 +7,20 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 
 namespace ChurchProjector.Views.Settings;
 
 public partial class SettingsViewModel : ObservableObject
 {
+    public UpdateSupportViewModel UpdateSupport { get; } = new();
+
     public void SetMonitors(IDictionary<string, Screen> monitors)
     {
         Monitors = monitors;
     }
 
     public Classes.Settings Settings => GlobalConfig.JsonFile.Settings;
-
-    public string LogFolder
-    {
-        get => field;
-        set => SetProperty(ref field, value);
-    } = Path.Combine(AppContext.BaseDirectory, "logs");
 
     #region Events
 

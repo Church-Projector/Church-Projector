@@ -422,7 +422,7 @@ namespace ChurchProjector.Lang {
                 return ResourceManager.GetString("SongShowFirstLineOfNextSong_Colon", resourceCulture);
             }
         }
-
+        
         public static string SongEnd_Colon {
             get {
                 return ResourceManager.GetString("SongEnd_Colon", resourceCulture);
@@ -555,6 +555,174 @@ namespace ChurchProjector.Lang {
             }
         }
         
+        public static string UpdatesAndSupport {
+            get {
+                return ResourceManager.GetString("UpdatesAndSupport", resourceCulture);
+            }
+        }
+        
+        public static string VersionInformation {
+            get {
+                return ResourceManager.GetString("VersionInformation", resourceCulture);
+            }
+        }
+        
+        public static string CurrentVersion_Colon {
+            get {
+                return ResourceManager.GetString("CurrentVersion_Colon", resourceCulture);
+            }
+        }
+        
+        public static string NewestVersion_Colon {
+            get {
+                return ResourceManager.GetString("NewestVersion_Colon", resourceCulture);
+            }
+        }
+        
+        public static string Refresh {
+            get {
+                return ResourceManager.GetString("Refresh", resourceCulture);
+            }
+        }
+        
+        public static string OpenChangelogWebsite {
+            get {
+                return ResourceManager.GetString("OpenChangelogWebsite", resourceCulture);
+            }
+        }
+        
+        public static string LoadingReleaseInfo {
+            get {
+                return ResourceManager.GetString("LoadingReleaseInfo", resourceCulture);
+            }
+        }
+        
+        public static string ReleaseInfoFailed {
+            get {
+                return ResourceManager.GetString("ReleaseInfoFailed", resourceCulture);
+            }
+        }
+        
+        public static string VersionIsCurrent {
+            get {
+                return ResourceManager.GetString("VersionIsCurrent", resourceCulture);
+            }
+        }
+        
+        public static string NoChangelog {
+            get {
+                return ResourceManager.GetString("NoChangelog", resourceCulture);
+            }
+        }
+        
+        public static string Changelog_Colon {
+            get {
+                return ResourceManager.GetString("Changelog_Colon", resourceCulture);
+            }
+        }
+        
+        public static string UpdateDetails {
+            get {
+                return ResourceManager.GetString("UpdateDetails", resourceCulture);
+            }
+        }
+        
+        public static string FeedbackAndSupport {
+            get {
+                return ResourceManager.GetString("FeedbackAndSupport", resourceCulture);
+            }
+        }
+        
+        public static string RequestType_Colon {
+            get {
+                return ResourceManager.GetString("RequestType_Colon", resourceCulture);
+            }
+        }
+        
+        public static string ErrorReportOption {
+            get {
+                return ResourceManager.GetString("ErrorReportOption", resourceCulture);
+            }
+        }
+        
+        public static string FeatureRequestOption {
+            get {
+                return ResourceManager.GetString("FeatureRequestOption", resourceCulture);
+            }
+        }
+        
+        public static string ReportErrorHint {
+            get {
+                return ResourceManager.GetString("ReportErrorHint", resourceCulture);
+            }
+        }
+        
+        public static string ErrorSubject_Colon {
+            get {
+                return ResourceManager.GetString("ErrorSubject_Colon", resourceCulture);
+            }
+        }
+        
+        public static string ErrorSubjectHint {
+            get {
+                return ResourceManager.GetString("ErrorSubjectHint", resourceCulture);
+            }
+        }
+        
+        public static string ErrorDescription_Colon {
+            get {
+                return ResourceManager.GetString("ErrorDescription_Colon", resourceCulture);
+            }
+        }
+        
+        public static string ErrorDescriptionHint {
+            get {
+                return ResourceManager.GetString("ErrorDescriptionHint", resourceCulture);
+            }
+        }
+        
+        public static string ContactEmailOptional_Colon {
+            get {
+                return ResourceManager.GetString("ContactEmailOptional_Colon", resourceCulture);
+            }
+        }
+        
+        public static string PrivacyConsent {
+            get {
+                return ResourceManager.GetString("PrivacyConsent", resourceCulture);
+            }
+        }
+        
+        public static string SubmitSupportRequest {
+            get {
+                return ResourceManager.GetString("SubmitSupportRequest", resourceCulture);
+            }
+        }
+        
+        public static string ErrorReportSending {
+            get {
+                return ResourceManager.GetString("ErrorReportSending", resourceCulture);
+            }
+        }
+        
+        public static string ErrorReportSent {
+            get {
+                return ResourceManager.GetString("ErrorReportSent", resourceCulture);
+            }
+        }
+        
+        public static string ErrorReportFailed {
+            get {
+                return ResourceManager.GetString("ErrorReportFailed", resourceCulture);
+            }
+        }
+        
+        public static string FurtherInformation {
+            get {
+                return ResourceManager.GetString("FurtherInformation", resourceCulture);
+            }
+        }
+        
         public static string HistoryClear {
             get {
                 return ResourceManager.GetString("HistoryClear", resourceCulture);
@@ -602,37 +770,37 @@ namespace ChurchProjector.Lang {
                 return ResourceManager.GetString("ShowClock_Colon", resourceCulture);
             }
         }
-
+        
         public static string Timer {
             get {
                 return ResourceManager.GetString("Timer", resourceCulture);
             }
         }
-
+        
         public static string TimerDuration {
             get {
                 return ResourceManager.GetString("TimerDuration", resourceCulture);
             }
         }
-
+        
         public static string Minutes {
             get {
                 return ResourceManager.GetString("Minutes", resourceCulture);
             }
         }
-
+        
         public static string Seconds {
             get {
                 return ResourceManager.GetString("Seconds", resourceCulture);
             }
         }
-
+        
         public static string Start {
             get {
                 return ResourceManager.GetString("Start", resourceCulture);
             }
         }
-
+        
         public static string TimerDurationRequired {
             get {
                 return ResourceManager.GetString("TimerDurationRequired", resourceCulture);

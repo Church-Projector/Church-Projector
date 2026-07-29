@@ -22,11 +22,16 @@ public partial class SettingsWindow : Window
         InitializeComponent();
     }
 
-    public SettingsWindow(SettingsViewModel viewModel)
+    public SettingsWindow(SettingsViewModel viewModel, bool showUpdatesAndSupport = false)
     {
         InitializeComponent();
         _viewModel = viewModel;
         DataContext = _viewModel;
+        if (showUpdatesAndSupport)
+        {
+            SettingsTabs.SelectedItem = UpdatesAndSupportTab;
+        }
+        _ = _viewModel.UpdateSupport.LoadReleaseInfoAsync();
     }
 
     private void OnBtnCloseClick(object sender, RoutedEventArgs e)
@@ -56,7 +61,13 @@ public partial class SettingsWindow : Window
 
     private void BtnOpenLink_Click(object? sender, RoutedEventArgs e)
     {
-        string? url = ((Button)sender).Tag?.ToString();
+        if (sender is not Button button
+            || string.IsNullOrWhiteSpace(button.Tag?.ToString()))
+        {
+            return;
+        }
+
+        string url = button.Tag.ToString()!;
         if (url.StartsWith("http"))
         {
             Link.OpenLink(url);

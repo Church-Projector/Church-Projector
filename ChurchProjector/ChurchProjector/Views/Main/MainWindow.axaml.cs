@@ -198,6 +198,12 @@ public partial class MainWindow : Window
         settingsWindow.Show(this);
     }
 
+    private void OnBtnUpdateDetailsClick(object sender, RoutedEventArgs e)
+    {
+        SettingsWindow settingsWindow = new(_viewModel.Settings, showUpdatesAndSupport: true);
+        settingsWindow.Show(this);
+    }
+
     private void ListBox_KeyDown(object? sender, KeyEventArgs e)
     {
         try

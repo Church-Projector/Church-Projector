@@ -373,6 +373,90 @@
   <data name="RestartRequired" xml:space="preserve">
     <value>(Restart required)</value>
   </data>
+  <data name="UpdatesAndSupport" xml:space="preserve">
+    <value>Updates &amp; Support</value>
+  </data>
+  <data name="VersionInformation" xml:space="preserve">
+    <value>Version information</value>
+  </data>
+  <data name="CurrentVersion_Colon" xml:space="preserve">
+    <value>Current version:</value>
+  </data>
+  <data name="NewestVersion_Colon" xml:space="preserve">
+    <value>Newest version:</value>
+  </data>
+  <data name="Refresh" xml:space="preserve">
+    <value>Refresh</value>
+  </data>
+  <data name="OpenChangelogWebsite" xml:space="preserve">
+    <value>Open changelog on website</value>
+  </data>
+  <data name="LoadingReleaseInfo" xml:space="preserve">
+    <value>Loading version information…</value>
+  </data>
+  <data name="ReleaseInfoFailed" xml:space="preserve">
+    <value>Version information is currently unavailable.</value>
+  </data>
+  <data name="VersionIsCurrent" xml:space="preserve">
+    <value>The installed version is up to date.</value>
+  </data>
+  <data name="NoChangelog" xml:space="preserve">
+    <value>No changelog is available for this version.</value>
+  </data>
+  <data name="Changelog_Colon" xml:space="preserve">
+    <value>Changes in the newest version:</value>
+  </data>
+  <data name="UpdateDetails" xml:space="preserve">
+    <value>Details</value>
+  </data>
+  <data name="FeedbackAndSupport" xml:space="preserve">
+    <value>Feedback &amp; support</value>
+  </data>
+  <data name="RequestType_Colon" xml:space="preserve">
+    <value>Type of request:</value>
+  </data>
+  <data name="ErrorReportOption" xml:space="preserve">
+    <value>Report an error</value>
+  </data>
+  <data name="FeatureRequestOption" xml:space="preserve">
+    <value>Request a feature</value>
+  </data>
+  <data name="ReportErrorHint" xml:space="preserve">
+    <value>The request is sent directly to Church-Projector support through the website. The installed version and operating system are included.</value>
+  </data>
+  <data name="ErrorSubject_Colon" xml:space="preserve">
+    <value>Short summary:</value>
+  </data>
+  <data name="ErrorSubjectHint" xml:space="preserve">
+    <value>At least 5 characters</value>
+  </data>
+  <data name="ErrorDescription_Colon" xml:space="preserve">
+    <value>Description:</value>
+  </data>
+  <data name="ErrorDescriptionHint" xml:space="preserve">
+    <value>What happened, and what did you expect? (At least 20 characters)</value>
+  </data>
+  <data name="ContactEmailOptional_Colon" xml:space="preserve">
+    <value>Contact e-mail (optional):</value>
+  </data>
+  <data name="PrivacyConsent" xml:space="preserve">
+    <value>I agree that my information is transmitted for processing according to the website privacy policy.</value>
+  </data>
+  <data name="SubmitSupportRequest" xml:space="preserve">
+    <value>Send request</value>
+  </data>
+  <data name="ErrorReportSending" xml:space="preserve">
+    <value>Sending request…</value>
+  </data>
+  <data name="ErrorReportSent" xml:space="preserve">
+    <value>The request was sent successfully.</value>
+  </data>
+  <data name="ErrorReportFailed" xml:space="preserve">
+    <value>The request could not be sent.</value>
+  </data>
+  <data name="FurtherInformation" xml:space="preserve">
+    <value>Further information</value>
+  </data>
   <data name="HistoryClear" xml:space="preserve">
     <value>Clear History</value>
   </data>

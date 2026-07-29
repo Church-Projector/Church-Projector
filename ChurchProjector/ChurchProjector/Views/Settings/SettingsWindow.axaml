@@ -31,6 +31,7 @@
 			<ColumnDefinition Width="auto" />
 		</Grid.ColumnDefinitions>
 		<TabControl
+			x:Name="SettingsTabs"
 			Grid.Row="0"
 			Grid.Column="0"
 			Grid.ColumnSpan="3">
@@ -330,29 +331,152 @@
 				</Grid>
 			</TabItem>
 
-			<TabItem Header="{x:Static lang:Resources.Info}">
-				<Grid RowDefinitions="auto,auto,auto,auto,auto" ColumnDefinitions="auto,*">
-					<TextBlock Grid.Row="0" Grid.Column="0" Text="{x:Static lang:Resources.HomePage_Colon}" VerticalAlignment="Center" />
-					<HyperlinkButton Grid.Row="0" Grid.Column="1" Click="BtnOpenLink_Click" Tag="https://church-projector.de">
-						https://church-projector.de
-					</HyperlinkButton>
-					
-					<TextBlock Grid.Row="1" Grid.Column="0" Text="{x:Static lang:Resources.GitHub_Colon}" VerticalAlignment="Center" />
-					<HyperlinkButton Grid.Row="1" Grid.Column="1" Click="BtnOpenLink_Click" Tag="https://github.com/Church-Projector/Church-Projector">
-						https://github.com/Church-Projector/Church-Projector
-					</HyperlinkButton>
+			<TabItem
+				x:Name="UpdatesAndSupportTab"
+				Header="{x:Static lang:Resources.UpdatesAndSupport}">
+				<ScrollViewer MaxHeight="560">
+					<StackPanel Width="620" Spacing="12" Margin="5">
+						<TextBlock
+							FontSize="18"
+							FontWeight="SemiBold"
+							Text="{x:Static lang:Resources.VersionInformation}" />
 
-					<TextBlock Grid.Row="2" Grid.Column="0" Text="{x:Static lang:Resources.DownloadNewestVersion_Colon}" VerticalAlignment="Center" />
-					<HyperlinkButton Grid.Row="2" Grid.Column="1" Click="BtnOpenLink_Click" Tag="https://github.com/Church-Projector/Church-Projector/releases" Content="{x:Static lang:Resources.Versionen}" />
+						<Grid ColumnDefinitions="auto,*" RowDefinitions="auto,auto,auto">
+							<TextBlock
+								Grid.Row="0"
+								Grid.Column="0"
+								Margin="0,0,15,5"
+								Text="{x:Static lang:Resources.CurrentVersion_Colon}" />
+							<TextBlock
+								Grid.Row="0"
+								Grid.Column="1"
+								FontWeight="SemiBold"
+								Text="{Binding UpdateSupport.CurrentVersion}" />
 
-					<TextBlock Grid.Row="3" Grid.Column="0" Text="{x:Static lang:Resources.Email_Colon}" VerticalAlignment="Center" />
-					<HyperlinkButton Grid.Row="3" Grid.Column="1" Click="BtnOpenLink_Click" Tag="mailto:support@church-projector.de">
-						support@church-projector.de
-					</HyperlinkButton>
+							<TextBlock
+								Grid.Row="1"
+								Grid.Column="0"
+								Margin="0,0,15,5"
+								Text="{x:Static lang:Resources.NewestVersion_Colon}" />
+							<TextBlock
+								Grid.Row="1"
+								Grid.Column="1"
+								FontWeight="SemiBold"
+								Text="{Binding UpdateSupport.NewestVersion}" />
 
-					<TextBlock Grid.Row="4" Grid.Column="0" Text="{x:Static lang:Resources.LogFolder_Colon}" VerticalAlignment="Center" />
-					<HyperlinkButton Grid.Row="4" Grid.Column="1" Click="BtnOpenLink_Click" Tag="{Binding LogFolder}" Content="{Binding LogFolder}" />
-				</Grid>
+							<StackPanel
+								Grid.Row="2"
+								Grid.Column="0"
+								Grid.ColumnSpan="2"
+								Orientation="Horizontal"
+								Spacing="8">
+								<Button
+									Command="{Binding UpdateSupport.LoadReleaseInfoCommand}"
+									Content="{x:Static lang:Resources.Refresh}" />
+								<HyperlinkButton
+									Click="BtnOpenLink_Click"
+									Tag="https://church-projector.de/Changelog/"
+									Content="{x:Static lang:Resources.OpenChangelogWebsite}" />
+								<TextBlock
+									VerticalAlignment="Center"
+									Text="{Binding UpdateSupport.ReleaseStatus}"
+									TextWrapping="Wrap" />
+							</StackPanel>
+						</Grid>
+
+						<TextBlock
+							FontWeight="SemiBold"
+							Text="{x:Static lang:Resources.Changelog_Colon}" />
+						<Border
+							MinHeight="100"
+							MaxHeight="190"
+							Padding="10"
+							BorderBrush="{DynamicResource TextControlBorderBrush}"
+							BorderThickness="1"
+							CornerRadius="4">
+							<ScrollViewer VerticalScrollBarVisibility="Auto">
+								<local:SimpleMarkdownView Markdown="{Binding UpdateSupport.Changelog}" />
+							</ScrollViewer>
+						</Border>
+
+						<Separator Margin="0,4" />
+
+						<TextBlock
+							FontSize="18"
+							FontWeight="SemiBold"
+							Text="{x:Static lang:Resources.FeedbackAndSupport}" />
+						<TextBlock
+							Text="{x:Static lang:Resources.ReportErrorHint}"
+							TextWrapping="Wrap" />
+
+						<TextBlock Text="{x:Static lang:Resources.RequestType_Colon}" />
+						<ComboBox
+							ItemsSource="{Binding UpdateSupport.SupportRequestTypes}"
+							SelectedItem="{Binding UpdateSupport.SelectedSupportRequestType}">
+							<ComboBox.ItemTemplate>
+								<DataTemplate>
+									<TextBlock Text="{Binding DisplayName}" />
+								</DataTemplate>
+							</ComboBox.ItemTemplate>
+						</ComboBox>
+
+						<TextBlock Text="{x:Static lang:Resources.ErrorSubject_Colon}" />
+						<TextBox
+							MaxLength="120"
+							Text="{Binding UpdateSupport.ErrorSubject}"
+							PlaceholderText="{x:Static lang:Resources.ErrorSubjectHint}" />
+
+						<TextBlock Text="{x:Static lang:Resources.ErrorDescription_Colon}" />
+						<TextBox
+							MinHeight="100"
+							MaxHeight="160"
+							AcceptsReturn="True"
+							MaxLength="5000"
+							Text="{Binding UpdateSupport.ErrorDescription}"
+							TextWrapping="Wrap"
+							PlaceholderText="{x:Static lang:Resources.ErrorDescriptionHint}"
+							ScrollViewer.VerticalScrollBarVisibility="Auto" />
+
+						<TextBlock Text="{x:Static lang:Resources.ContactEmailOptional_Colon}" />
+						<TextBox
+							MaxLength="254"
+							Text="{Binding UpdateSupport.ContactEmail}" />
+
+						<CheckBox
+							IsChecked="{Binding UpdateSupport.PrivacyAccepted}"
+							Content="{x:Static lang:Resources.PrivacyConsent}" />
+
+						<StackPanel Orientation="Horizontal" Spacing="10">
+							<Button
+								Command="{Binding UpdateSupport.SubmitSupportRequestCommand}"
+								Content="{x:Static lang:Resources.SubmitSupportRequest}" />
+							<TextBlock
+								VerticalAlignment="Center"
+								Text="{Binding UpdateSupport.ErrorReportStatus}"
+								TextWrapping="Wrap" />
+						</StackPanel>
+
+						<Separator Margin="0,4" />
+
+						<TextBlock
+							FontWeight="SemiBold"
+							Text="{x:Static lang:Resources.FurtherInformation}" />
+						<WrapPanel>
+							<HyperlinkButton
+								Click="BtnOpenLink_Click"
+								Tag="https://church-projector.de"
+								Content="church-projector.de" />
+							<HyperlinkButton
+								Click="BtnOpenLink_Click"
+								Tag="https://github.com/Church-Projector/Church-Projector"
+								Content="GitHub" />
+							<HyperlinkButton
+								Click="BtnOpenLink_Click"
+								Tag="{Binding UpdateSupport.LogFolder}"
+								Content="{x:Static lang:Resources.OpenLogs}" />
+						</WrapPanel>
+					</StackPanel>
+				</ScrollViewer>
 			</TabItem>
 		</TabControl>
 		<Button

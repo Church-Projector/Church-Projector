@@ -23,6 +23,9 @@ esac
 SNAP_ROOT="$(mktemp -d)"
 trap 'rm -rf "$SNAP_ROOT"' EXIT
 
+# snap pack requires the package root to be traversable by others.
+chmod 755 "$SNAP_ROOT"
+
 mkdir -p "$SNAP_ROOT/bin" "$SNAP_ROOT/meta/gui"
 cp -r "./publish/$RUNTIME/." "$SNAP_ROOT/bin/"
 cp "./ChurchProjector/ChurchProjector/Assets/icon.png" "$SNAP_ROOT/meta/gui/icon.png"

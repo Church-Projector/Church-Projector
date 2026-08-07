@@ -75,6 +75,7 @@ jobs:
           VERSION: ${{ github.ref_type == 'tag' && github.ref_name || '0.0.1' }}
           RUNTIME: ${{ matrix.platform }}
         run: |
+          chmod +x ./build/scripts/*.sh
           ./build/scripts/package.deb.sh
           ./build/scripts/package.rpm.sh
           ./build/scripts/package.pacman.sh

@@ -42,7 +42,7 @@
 			<TextBlock Grid.Column="0" Text="{x:Static lang:Resources.Verse_Colon}" VerticalAlignment="Center" />
 			
 			<Button Grid.Column="1" Command="{Binding ((local:SongEditViewModel)DataContext).AddVerseCommand, RelativeSource={RelativeSource AncestorType=Window}}">
-				<Svg Path="/Assets/add.svg" />
+				<PathIcon Data="{StaticResource AddIcon}" Width="18" Height="18" />
 			</Button>
 		</Grid>			
 
@@ -54,7 +54,7 @@
 							<TextBlock Grid.Column="0" Text="{x:Static lang:Resources.Title_Colon}" VerticalAlignment="Center" />
 							<TextBox Grid.Column="1" Text="{Binding Title}" FontWeight="Bold" Margin="10 0 10 0" VerticalAlignment="Center" />
 							<Button Grid.Column="2" Margin="0 0 0 5" Command="{Binding ((local:SongEditViewModel)DataContext).RemoveVerseCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding .}">
-								<Svg Path="/Assets/delete.svg" />
+								<PathIcon Data="{StaticResource DeleteIcon}" Width="18" Height="18" />
 							</Button>
 						</Grid>
 

@@ -43,7 +43,9 @@
                    IsVisible="False" />
 
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10">
-            <Button IsCancel="True" Content="{x:Static lang:Resources.Close}" />
+            <Button IsCancel="True"
+                    Content="{x:Static lang:Resources.Close}"
+                    Click="CloseButton_OnClick" />
             <Button IsDefault="True"
                     Content="{x:Static lang:Resources.Start}"
                     Click="StartButton_OnClick" />

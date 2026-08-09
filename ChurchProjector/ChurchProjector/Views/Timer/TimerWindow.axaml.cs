@@ -13,6 +13,11 @@ public partial class TimerWindow : Window
 
     public required Action<TimeSpan> StartTimer { get; init; }
 
+    private void CloseButton_OnClick(object? sender, RoutedEventArgs e)
+    {
+        Close();
+    }
+
     private void StartButton_OnClick(object? sender, RoutedEventArgs e)
     {
         int minutes = Convert.ToInt32(MinutesInput.Value ?? 0);

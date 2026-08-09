@@ -31,24 +31,4 @@ public static class FileExtensions
 
         return null;
     }
-
-    public static string? GetFileIcon(string extension)
-    {
-        FileType? fileType = GetFileType(extension);
-        switch (fileType)
-        {
-            case FileType.Image:
-                return "/Assets/file_img.svg";
-            case FileType.Pdf:
-                return "/Assets/file_pdf.svg";
-            case FileType.Movie:
-                return "/Assets/file_mov.svg";
-            case FileType.Powerpoint:
-                return "/Assets/file_ppt.svg";
-            case FileType.Song:
-                return "/Assets/file_sng.svg";
-            default:
-                return null;
-        }
-    }
 }

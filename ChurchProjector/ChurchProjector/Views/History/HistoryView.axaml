@@ -8,11 +8,6 @@
 			 x:Class="ChurchProjector.Views.History.HistoryView"
 			 x:DataType="local:HistoryViewModel">
 
-	<UserControl.Resources>
-		<StreamGeometry x:Key="ClearIcon">M6 7H18L17 21H7L6 7M9 3H15L16 5H20V7H4V5H8L9 3Z</StreamGeometry>
-		<StreamGeometry x:Key="RemoveIcon">M18.3 5.71L12 12L5.7 5.71L4.29 7.12L10.59 13.41L4.29 19.71L5.7 21.12L12 14.83L18.3 21.12L19.71 19.71L13.41 13.41L19.71 7.12L18.3 5.71Z</StreamGeometry>
-	</UserControl.Resources>
-
 	<UserControl.Styles>
 		<Style Selector="ListBox.historyList > ListBoxItem">
 			<Setter Property="Padding" Value="0" />

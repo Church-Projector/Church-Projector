@@ -6,21 +6,27 @@
              x:DataType="settings:SettingsViewModel">
 
     <Application.Resources>
-        <!-- Info -->
-        <SolidColorBrush x:Key="InfoBackground" Color="#135bf9" />
-        <SolidColorBrush x:Key="InfoForeground" Color="#bddafe" />
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceInclude Source="avares://ChurchProjector/Styles/Icons.axaml" />
+            </ResourceDictionary.MergedDictionaries>
 
-        <!-- Warning -->
-        <SolidColorBrush x:Key="WarningBackground" Color="#d08700" />
-        <SolidColorBrush x:Key="WarningForeground" Color="#fdee84" />
+            <!-- Info -->
+            <SolidColorBrush x:Key="InfoBackground" Color="#135bf9" />
+            <SolidColorBrush x:Key="InfoForeground" Color="#bddafe" />
 
-        <!-- Error -->
-        <SolidColorBrush x:Key="ErrorBackground" Color="#e9003e" />
-        <SolidColorBrush x:Key="ErrorForeground" Color="#feccd2" />
+            <!-- Warning -->
+            <SolidColorBrush x:Key="WarningBackground" Color="#d08700" />
+            <SolidColorBrush x:Key="WarningForeground" Color="#fdee84" />
 
-        <!-- Success -->
-        <SolidColorBrush x:Key="SuccessBackground" Color="#00a43b" />
-        <SolidColorBrush x:Key="SuccessForeground" Color="#b7f6cd" />
+            <!-- Error -->
+            <SolidColorBrush x:Key="ErrorBackground" Color="#e9003e" />
+            <SolidColorBrush x:Key="ErrorForeground" Color="#feccd2" />
+
+            <!-- Success -->
+            <SolidColorBrush x:Key="SuccessBackground" Color="#00a43b" />
+            <SolidColorBrush x:Key="SuccessForeground" Color="#b7f6cd" />
+        </ResourceDictionary>
     </Application.Resources>
 
     <Application.Styles>

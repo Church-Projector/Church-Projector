@@ -8,8 +8,8 @@ public class ScheduleEntry(string title, string filePath, string fileType)
     public string FileType { get; set; } = fileType;
     public bool FileExists => File.Exists(FilePath);
     public bool ApplicationExists { get; set; }
-    public string? Icon => FileExtensions.GetFileIcon(FileType);
-    public bool HasIcon => !string.IsNullOrEmpty(Icon);
+    public FileType? IconType => FileExtensions.GetFileType(FileType);
+    public bool HasIcon => IconType is not null;
 
     public static ScheduleEntry FromFile(string filePath)
     {

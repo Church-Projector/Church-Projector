@@ -12,8 +12,7 @@
 
 	<UserControl.Resources>
 		<converters:InverseBooleanConverter x:Key="InverseBool" />
-		<StreamGeometry x:Key="AddIcon">M11 4H13V11H20V13H13V20H11V13H4V11H11V4Z</StreamGeometry>
-		<StreamGeometry x:Key="RemoveIcon">M18.3 5.71L12 12L5.7 5.71L4.29 7.12L10.59 13.41L4.29 19.71L5.7 21.12L12 14.83L18.3 21.12L19.71 19.71L13.41 13.41L19.71 7.12L18.3 5.71Z</StreamGeometry>
+		<converters:FileTypeIconConverter x:Key="FileTypeIconConverter" />
 	</UserControl.Resources>
 
 	<UserControl.Styles>
@@ -60,16 +59,16 @@
 				<DataTemplate>
 					<Border Classes="scheduleEntry">
 						<Grid ColumnDefinitions="auto,auto,auto,*,auto,auto">
-							<Svg Grid.Column="0" Width="16" Height="16" Margin="3" IsVisible="{Binding FileExists, Converter={StaticResource InverseBool}}" Path="/Assets/error.svg" ToolTip.Tip="{x:Static lang:Resources.FileNotFound}" />
-							<Svg Grid.Column="1" Width="16" Height="16" Margin="3" IsVisible="{Binding ApplicationExists, Converter={StaticResource InverseBool}}" Path="/Assets/error.svg" ToolTip.Tip="{x:Static lang:Resources.ProgramNotFound}" />
-							<Svg Grid.Column="2" Width="22" Height="22" Margin="3" IsVisible="{Binding HasIcon}" Path="{Binding Icon}" />
+							<PathIcon Grid.Column="0" Width="16" Height="16" Margin="3" Foreground="{DynamicResource ErrorBackground}" IsVisible="{Binding FileExists, Converter={StaticResource InverseBool}}" Data="{StaticResource ErrorIcon}" ToolTip.Tip="{x:Static lang:Resources.FileNotFound}" />
+							<PathIcon Grid.Column="1" Width="16" Height="16" Margin="3" Foreground="{DynamicResource ErrorBackground}" IsVisible="{Binding ApplicationExists, Converter={StaticResource InverseBool}}" Data="{StaticResource ErrorIcon}" ToolTip.Tip="{x:Static lang:Resources.ProgramNotFound}" />
+							<PathIcon Grid.Column="2" Width="22" Height="22" Margin="3" IsVisible="{Binding HasIcon}" Data="{Binding IconType, Converter={StaticResource FileTypeIconConverter}}" />
 							<Button Grid.Column="3" Classes="scheduleOpen" Command="{Binding ((local:ScheduleViewModel)DataContext).OpenScheduleEntryCommand, ElementName=Root}" CommandParameter="{Binding .}" HorizontalAlignment="Stretch">
 								<TextBlock Text="{Binding Title}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" />
 							</Button>
 							<Button Grid.Column="4" Classes="scheduleRemove" Command="{Binding ((local:ScheduleViewModel)DataContext).RemoveScheduleEntryCommand, ElementName=Root}" CommandParameter="{Binding .}" ToolTip.Tip="Entfernen">
 								<PathIcon Data="{StaticResource RemoveIcon}" Width="14" Height="14" />
 							</Button>
-							<Svg Grid.Column="5" Width="20" Height="20" Margin="5" Opacity="0.65" Path="/Assets/drag_indicator.svg" PointerPressed="Svg_PointerPressed" ToolTip.Tip="{x:Static lang:Resources.Move}" />
+							<PathIcon Grid.Column="5" Width="20" Height="20" Margin="5" Opacity="0.65" Data="{StaticResource DragIndicatorIcon}" PointerPressed="DragHandle_PointerPressed" ToolTip.Tip="{x:Static lang:Resources.Move}" />
 
 							<Grid.ContextMenu>
 								<ContextMenu>

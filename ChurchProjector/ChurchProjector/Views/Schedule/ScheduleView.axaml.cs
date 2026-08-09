@@ -49,7 +49,7 @@ public partial class ScheduleView : UserControl
         }
     }
 
-    private async void Svg_PointerPressed(object? sender, PointerPressedEventArgs e)
+    private async void DragHandle_PointerPressed(object? sender, PointerPressedEventArgs e)
     {
         if (DataContext is not ScheduleViewModel || sender is not Visual { DataContext: ScheduleEntry scheduleEntry })
         {

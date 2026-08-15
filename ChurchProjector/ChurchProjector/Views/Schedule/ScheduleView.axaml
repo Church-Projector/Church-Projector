@@ -22,6 +22,9 @@
 			<Setter Property="HorizontalContentAlignment" Value="Stretch" />
 			<Setter Property="Background" Value="Transparent" />
 		</Style>
+		<Style Selector="ListBox.scheduleList > ListBoxItem:selected">
+			<Setter Property="Background" Value="Transparent" />
+		</Style>
 		<Style Selector="Border.scheduleEntry">
 			<Setter Property="Background" Value="#07808080" />
 			<Setter Property="BorderBrush" Value="#28808080" />
@@ -54,7 +57,7 @@
 			</StackPanel>
 		</Button>
 
-		<ListBox Name="LboSchedules" Grid.Row="1" ItemsSource="{Binding Schedules}" Background="Transparent" Classes="scheduleList">
+		<ListBox Name="LboSchedules" Grid.Row="1" ItemsSource="{Binding Schedules}" Background="Transparent" Classes="scheduleList" SelectionChanged="LboSchedules_SelectionChanged">
 			<ListBox.ItemTemplate>
 				<DataTemplate>
 					<Border Classes="scheduleEntry">

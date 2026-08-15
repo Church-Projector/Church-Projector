@@ -19,6 +19,14 @@ public partial class ScheduleView : UserControl
         AddHandler(DragDrop.DragOverEvent, DragOver);
     }
 
+    private void LboSchedules_SelectionChanged(object? sender, SelectionChangedEventArgs e)
+    {
+        if (sender is ListBox { SelectedItem: not null } listBox)
+        {
+            listBox.SelectedItem = null;
+        }
+    }
+
 
     private void Drop(object? sender, DragEventArgs e)
     {

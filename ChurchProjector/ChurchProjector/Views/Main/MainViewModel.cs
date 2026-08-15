@@ -541,7 +541,17 @@ public partial class MainViewModel : ObservableObject
 
     private void ViewModel_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
-        if (e.PropertyName is nameof(ImageViewModel.ImageSource) or nameof(ImageViewModel.CurrentMediaPath))
+        if (e.PropertyName == nameof(ImageViewModel.IsMediaPresented) &&
+            ImageWindow.ViewModel.IsMediaPresented)
+        {
+            SelectedImage = null;
+            _displayedImage = null;
+            ImageWindow.ViewModel.ImageSource = null;
+        }
+
+        if (e.PropertyName is nameof(ImageViewModel.ImageSource) or
+            nameof(ImageViewModel.CurrentMediaPath) or
+            nameof(ImageViewModel.IsMediaPresented))
         {
             this.OnPropertyChanged(nameof(ImageSelected));
             this.OnPropertyChanged(nameof(SlideSelected));

@@ -223,13 +223,12 @@ public partial class ImageViewModel : ObservableObject
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(CurrentMediaName))]
-    [NotifyPropertyChangedFor(nameof(CurrentMediaIsAudio))]
     [NotifyPropertyChangedFor(nameof(ShowMediaControls))]
     private string? _currentMediaPath;
 
     public string? CurrentMediaName => Path.GetFileName(CurrentMediaPath);
 
-    public bool CurrentMediaIsAudio => FileExtensions.GetFileType(CurrentMediaPath ?? string.Empty) == FileType.Audio;
+    public bool CurrentMediaIsAudio => CurrentFileType == FileType.Audio;
 
     [ObservableProperty]
     private bool _isMediaPaused;
@@ -327,8 +326,8 @@ public partial class ImageViewModel : ObservableObject
         }
 
         StopMedia();
-        CurrentMediaPath = filePath;
         CurrentFileType = FileExtensions.GetFileType(Path.GetExtension(filePath)) ?? FileType.Movie;
+        CurrentMediaPath = filePath;
         MediaTime = 0;
         MediaSeekPosition = 0;
         MediaDuration = 0;
@@ -598,6 +597,7 @@ public partial class ImageViewModel : ObservableObject
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(ShowVideo))]
+    [NotifyPropertyChangedFor(nameof(CurrentMediaIsAudio))]
     [NotifyPropertyChangedFor(nameof(ShowMediaControls))]
     [NotifyPropertyChangedFor(nameof(ShowImage))]
     [NotifyPropertyChangedFor(nameof(ShowOutputMedia))]

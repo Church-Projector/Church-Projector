@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="using:ChurchProjector.Views.Main"
+        xmlns:vlc="clr-namespace:LibVLCSharp.Avalonia;assembly=LibVLCSharp.Avalonia"
         mc:Ignorable="d"
         Background="Black"
         Topmost="{Binding Settings.Settings.OutputDisplaySettings.TopMost}"
@@ -24,6 +25,13 @@
             IsVisible="{Binding ShowImage}"
             Source="{Binding ImageSource}"
 			Opacity="{Binding Opacity}" />
+
+		<vlc:VideoView
+			Name="VideoMediaElement"
+			Grid.Row="0"
+			Grid.ColumnSpan="2"
+			MediaPlayer="{Binding MediaPlayer}"
+			IsVisible="{Binding ShowOutputMedia}" />
 
 		<StackPanel
             Grid.Row="1"

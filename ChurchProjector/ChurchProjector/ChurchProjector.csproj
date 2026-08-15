@@ -40,6 +40,8 @@
     <PackageReference Include="SkiaSharp" Version="3.119.3-preview.1.1" />
     <PackageReference Condition="$(RuntimeIdentifier.StartsWith('linux'))" Include="SkiaSharp.NativeAssets.Linux" Version="3.119.3-preview.1.1" />
     <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.3.14" />
+  	<!-- The next version contains an native overlay https://code.videolan.org/videolan/LibVLCSharp/-/commit/85e24c048b7fa2b2723b850280d29c624705e544#12fb2b2c4c28c5b9f47755378aed63f8648d2897_95_188-->
+    <PackageReference Include="LibVLCSharp.Avalonia" Version="3.8.2" />
   </ItemGroup>
 
   <ItemGroup>

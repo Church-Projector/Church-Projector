@@ -28,6 +28,8 @@ namespace ChurchProjector.Views.Main;
 
 public partial class MainViewModel : ObservableObject
 {
+    private ImageWithName? _displayedImage;
+
     public PresentationFile? Images
     {
         get;
@@ -39,7 +41,8 @@ public partial class MainViewModel : ObservableObject
                 {
                     foreach (ImageWithName image in field.Images)
                     {
-                        if (!HistoryViewModel.Histories.Any(hi => hi.Images.Contains(image)))
+                        if (image != _displayedImage &&
+                            !HistoryViewModel.Histories.Any(hi => hi.Images.Contains(image)))
                         {
                             image.Dispose();
                         }
@@ -56,6 +59,12 @@ public partial class MainViewModel : ObservableObject
                 _powerPointClient?.ClosePresentationAsync();
 
                 SelectedImage = null;
+                if (value is not null)
+                {
+                    ImageWindow.ViewModel.StopMedia();
+                    ImageWindow.ViewModel.CurrentMediaPath = null;
+                    ImageWindow.ViewModel.CurrentFileType = FileType.Image;
+                }
                 field = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(MayEdit));
@@ -93,7 +102,9 @@ public partial class MainViewModel : ObservableObject
                 {
                     if (value != null)
                     {
-                        ImageWindow.ViewModel.ImageSource = value.Image;
+                        ImageWindow.ViewModel.StopMedia();
+                        ImageWindow.ViewModel.CurrentMediaPath = null;
+                        SetDisplayedImage(value);
                         ImageWindow.ViewModel.CurrentFileType = FileType.Image;
                     }
                 }
@@ -102,7 +113,7 @@ public partial class MainViewModel : ObservableObject
                     int index = field == null ? -1 : Images.Images.IndexOf(value);
                     if (value is not null)
                     {
-                        ImageWindow.ViewModel.ImageSource = value.Image;
+                        SetDisplayedImage(value);
                     }
 
                     if (index >= 0)
@@ -133,7 +144,34 @@ public partial class MainViewModel : ObservableObject
     }
 
     public bool ImageSelected => ImageWindow.ViewModel.ImageSource is not null;
-    public bool SlideSelected => ImageWindow.ViewModel.ImageSource is not null;
+    public bool SlideSelected => ImageWindow.ViewModel.ImageSource is not null ||
+                                 ImageWindow.ViewModel.CurrentMediaPath is not null;
+
+    private void SetDisplayedImage(ImageWithName image)
+    {
+        ImageWithName? previouslyDisplayedImage = _displayedImage;
+        _displayedImage = image;
+        ImageWindow.ViewModel.ImageSource = image.Image;
+
+        if (previouslyDisplayedImage is null || previouslyDisplayedImage == image)
+        {
+            return;
+        }
+
+        Dispatcher.UIThread.Post(() => DisposeImageIfUnused(previouslyDisplayedImage), DispatcherPriority.Background);
+    }
+
+    private void DisposeImageIfUnused(ImageWithName image)
+    {
+        if (image == _displayedImage ||
+            (Images?.Images.Contains(image) ?? false) ||
+            HistoryViewModel.Histories.Any(history => history.Images.Contains(image)))
+        {
+            return;
+        }
+
+        image.Dispose();
+    }
 
     public HistoryViewModel HistoryViewModel { get; }
     public ScheduleViewModel ScheduleViewModel { get; }
@@ -180,6 +218,11 @@ public partial class MainViewModel : ObservableObject
     public MainViewModel(Window window, SettingsViewModel settings, IStorageProvider storageProvider,
         IClipboard clipboard, string? version)
     {
+        Settings = settings;
+        ImageWindow = new ImageWindow(Settings);
+        Settings.RecreateBanner += ImageWindow.CreateBanner;
+        ImageWindow.ViewModel.PropertyChanged += ViewModel_PropertyChanged;
+
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
         {
             _powerPointClient = new PowerPointClient();
@@ -246,7 +289,8 @@ public partial class MainViewModel : ObservableObject
         };
 
         ScheduleViewModel = new ScheduleViewModel(storageProvider, clipboard,
-            powerPointAvailable: _powerPointClient is not null, libVlcAvailable: false)
+            powerPointAvailable: _powerPointClient is not null,
+            libVlcAvailable: ImageWindow.ViewModel.IsMediaAvailable)
         {
             OpenScheduleEntryCommand = new RelayCommand<ScheduleEntry>((ScheduleEntry? scheduleEntry) =>
             {
@@ -261,6 +305,13 @@ public partial class MainViewModel : ObservableObject
                     [
                         new ImageWithName(scheduleEntry.Title, new Bitmap(scheduleEntry.FilePath), false)
                     ], scheduleEntry.FilePath);
+                }
+                else if (FileExtensions.GetFileType(scheduleEntry.FileType) == FileType.Movie)
+                {
+                    if (!ImageWindow.ViewModel.PlayMedia(scheduleEntry.FilePath))
+                    {
+                        Notifications.Show(Lang.Resources.ProgramNotFound, NotificationType.Error);
+                    }
                 }
                 else if (FileExtensions.GetFileType(scheduleEntry.FileType) == FileType.Pdf)
                 {
@@ -486,17 +537,11 @@ public partial class MainViewModel : ObservableObject
             }
         });
 
-        Settings = settings;
-
-        ImageWindow = new ImageWindow(Settings);
-        Settings.RecreateBanner += ImageWindow.CreateBanner;
-
-        ImageWindow.ViewModel.PropertyChanged += ViewModel_PropertyChanged;
     }
 
     private void ViewModel_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
-        if (e.PropertyName == nameof(ImageViewModel.ImageSource))
+        if (e.PropertyName is nameof(ImageViewModel.ImageSource) or nameof(ImageViewModel.CurrentMediaPath))
         {
             this.OnPropertyChanged(nameof(ImageSelected));
             this.OnPropertyChanged(nameof(SlideSelected));
@@ -545,6 +590,7 @@ public partial class MainViewModel : ObservableObject
         ImageWindow.StopBanner();
         ImageWindow.ViewModel.StopCountdown();
         ImageWindow.Hide();
+        ImageWindow.ViewModel.StopMedia();
         ImageWindow.ViewModel.ImageSource = null;
         _powerPointClient?.StopPowerPointViewerAsync();
     }

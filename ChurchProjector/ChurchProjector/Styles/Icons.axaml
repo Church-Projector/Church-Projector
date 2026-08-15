@@ -25,4 +25,7 @@
     <StreamGeometry x:Key="NextIcon">M647-440H160v-80h487L423-744l57-56 320 320-320 320-57-56 224-224Z</StreamGeometry>
     <StreamGeometry x:Key="ClearIcon">M600-240v-80h160v80H600Zm0-320v-80h280v80H600Zm0 160v-80h240v80H600ZM120-640H80v-80h160v-60h160v60h160v80h-40v360q0 33-23.5 56.5T440-200H200q-33 0-56.5-23.5T120-280v-360Zm80 0v360h240v-360H200Zm0 0v360-360Z</StreamGeometry>
     <StreamGeometry x:Key="RemoveIcon">m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z</StreamGeometry>
+    <StreamGeometry x:Key="MediaStartIcon">M240-200v-560h80v560h-80Zm480 0L360-480l360-280v560Z</StreamGeometry>
+    <StreamGeometry x:Key="MediaPlayIcon">M320-200v-560l440 280-440 280Z</StreamGeometry>
+    <StreamGeometry x:Key="MediaPauseIcon">M520-200v-560h200v560H520Zm-280 0v-560h200v560H240Z</StreamGeometry>
 </ResourceDictionary>

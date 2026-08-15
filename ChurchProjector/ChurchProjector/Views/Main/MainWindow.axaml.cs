@@ -34,6 +34,10 @@ public partial class MainWindow : Window
         _viewModel = null!;
         InitializeComponent();
         LboImages.AddHandler(KeyDownEvent, ListBox_KeyDown, RoutingStrategies.Tunnel);
+        MediaProgress.AddHandler(PointerPressedEvent, MediaProgress_OnPointerPressed,
+            RoutingStrategies.Tunnel, handledEventsToo: true);
+        MediaProgress.AddHandler(PointerReleasedEvent, MediaProgress_OnPointerReleased,
+            RoutingStrategies.Tunnel, handledEventsToo: true);
     }
 
     public MainWindow(SettingsViewModel settings) : this()
@@ -270,6 +274,19 @@ public partial class MainWindow : Window
         if (sender is Border { DataContext: Notifications.NotificationViewModel vm })
         {
             vm.IsPaused = false;
+        }
+    }
+
+    private void MediaProgress_OnPointerPressed(object? sender, PointerPressedEventArgs e)
+    {
+        _viewModel.ImageWindow.ViewModel.BeginMediaSeek();
+    }
+
+    private void MediaProgress_OnPointerReleased(object? sender, PointerReleasedEventArgs e)
+    {
+        if (sender is Slider slider)
+        {
+            _viewModel.ImageWindow.ViewModel.CompleteMediaSeek(slider.Value);
         }
     }
 }

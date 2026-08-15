@@ -1,6 +1,7 @@
 ﻿namespace ChurchProjector.Classes;
 public enum FileType
 {
+    Audio,
     Movie,
     Powerpoint,
     Pdf,

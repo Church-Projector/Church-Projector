@@ -299,21 +299,22 @@ public partial class MainViewModel : ObservableObject
                     return;
                 }
 
-                if (FileExtensions.GetFileType(scheduleEntry.FileType) == FileType.Image)
+                FileType? fileType = FileExtensions.GetFileType(scheduleEntry.FileType);
+                if (fileType == FileType.Image)
                 {
                     Images = new(
                     [
                         new ImageWithName(scheduleEntry.Title, new Bitmap(scheduleEntry.FilePath), false)
                     ], scheduleEntry.FilePath);
                 }
-                else if (FileExtensions.GetFileType(scheduleEntry.FileType) == FileType.Movie)
+                else if (fileType is FileType.Movie or FileType.Audio)
                 {
                     if (!ImageWindow.ViewModel.PlayMedia(scheduleEntry.FilePath))
                     {
                         Notifications.Show(Lang.Resources.ProgramNotFound, NotificationType.Error);
                     }
                 }
-                else if (FileExtensions.GetFileType(scheduleEntry.FileType) == FileType.Pdf)
+                else if (fileType == FileType.Pdf)
                 {
                     using MuPDFContext muPDFContext = new();
                     using MuPDFDocument muPDFDocument = new(muPDFContext, scheduleEntry.FilePath);
@@ -338,7 +339,7 @@ public partial class MainViewModel : ObservableObject
                         .Select(x => x.Image)
                         .ToList(), scheduleEntry.FilePath);
                 }
-                else if (FileExtensions.GetFileType(scheduleEntry.FileType) == FileType.Powerpoint)
+                else if (fileType == FileType.Powerpoint)
                 {
                     if (_powerPointClient is null)
                     {
@@ -347,7 +348,7 @@ public partial class MainViewModel : ObservableObject
 
                     _powerPointClient.StartPowerPointViewerAsync(scheduleEntry.FilePath);
                 }
-                else if (FileExtensions.GetFileType(scheduleEntry.FileType) == FileType.Song)
+                else if (fileType == FileType.Song)
                 {
                     Classes.Song song = Classes.Song.LoadFromFile(scheduleEntry.FilePath);
                     RenderImages(song.Title,

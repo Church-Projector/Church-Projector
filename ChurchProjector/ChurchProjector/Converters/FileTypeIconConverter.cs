@@ -14,6 +14,7 @@ public class FileTypeIconConverter : IValueConverter
     {
         string? resourceKey = value switch
         {
+            FileType.Audio => "AudioFileIcon",
             FileType.Image => "ImageFileIcon",
             FileType.Movie => "MovieFileIcon",
             FileType.Pdf => "PdfFileIcon",

@@ -192,7 +192,7 @@
                      Background="Transparent"
                      Margin="4,0,4,6"
                      Padding="4"
-                     IsVisible="{Binding ImageWindow.ViewModel.ShowVideo, Converter={StaticResource InverseBooleanConverter}}"
+                     IsVisible="{Binding ImageWindow.ViewModel.ShowMediaControls, Converter={StaticResource InverseBooleanConverter}}"
                      Classes="slideList">
                 <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
@@ -220,7 +220,7 @@
                     Background="Black"
                     CornerRadius="8"
                     ClipToBounds="True"
-                    IsVisible="{Binding ImageWindow.ViewModel.ShowVideo}">
+                    IsVisible="{Binding ImageWindow.ViewModel.ShowMediaControls}">
                 <Grid RowDefinitions="*,Auto,Auto">
                     <vlc:VideoView Grid.Row="0"
                                    MediaPlayer="{Binding ImageWindow.ViewModel.PreviewMediaPlayer}"

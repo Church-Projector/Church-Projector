@@ -224,11 +224,12 @@ public partial class ImageViewModel : ObservableObject
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(CurrentMediaName))]
     [NotifyPropertyChangedFor(nameof(CurrentMediaIsAudio))]
+    [NotifyPropertyChangedFor(nameof(ShowMediaControls))]
     private string? _currentMediaPath;
 
     public string? CurrentMediaName => Path.GetFileName(CurrentMediaPath);
 
-    public bool CurrentMediaIsAudio => FileExtensions.IsAudio(CurrentMediaPath ?? string.Empty);
+    public bool CurrentMediaIsAudio => FileExtensions.GetFileType(CurrentMediaPath ?? string.Empty) == FileType.Audio;
 
     [ObservableProperty]
     private bool _isMediaPaused;
@@ -327,7 +328,7 @@ public partial class ImageViewModel : ObservableObject
 
         StopMedia();
         CurrentMediaPath = filePath;
-        CurrentFileType = FileType.Movie;
+        CurrentFileType = FileExtensions.GetFileType(Path.GetExtension(filePath)) ?? FileType.Movie;
         MediaTime = 0;
         MediaSeekPosition = 0;
         MediaDuration = 0;
@@ -525,7 +526,7 @@ public partial class ImageViewModel : ObservableObject
     {
         MediaPlayer?.Stop();
         PreviewMediaPlayer?.Stop();
-        IsMediaPaused = false;
+        IsMediaPaused = true;
         IsMediaEnded = false;
         IsMediaSeekable = false;
         IsMediaPresented = false;
@@ -559,7 +560,7 @@ public partial class ImageViewModel : ObservableObject
     public void HideImage(bool fadeOut)
     {
         _cancellationTokenSource?.Cancel();
-        if (ShowVideo)
+        if (CurrentMediaPath is not null)
         {
             StopMedia();
             ImageSource = null;
@@ -597,10 +598,12 @@ public partial class ImageViewModel : ObservableObject
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(ShowVideo))]
+    [NotifyPropertyChangedFor(nameof(ShowMediaControls))]
     [NotifyPropertyChangedFor(nameof(ShowImage))]
     [NotifyPropertyChangedFor(nameof(ShowOutputMedia))]
     private FileType? _currentFileType;
     public bool ShowVideo => CurrentFileType == FileType.Movie;
+    public bool ShowMediaControls => CurrentMediaPath is not null && CurrentFileType is FileType.Movie or FileType.Audio;
     public bool ShowImage => ImageSource is not null && !IsMediaPresented;
 
     private bool _isBannerVisible;

@@ -115,11 +115,12 @@ public partial class ScheduleViewModel : ObservableObject
     {
         foreach (ScheduleEntry scheduleEntry in Schedules)
         {
-            if (FileExtensions.GetFileType(scheduleEntry.FileType) == FileType.Movie)
+            FileType? fileType = FileExtensions.GetFileType(scheduleEntry.FileType);
+            if (fileType is FileType.Movie or FileType.Audio)
             {
                 scheduleEntry.ApplicationExists = _libVlcAvailable;
             }
-            else if (FileExtensions.GetFileType(scheduleEntry.FileType) == FileType.Powerpoint)
+            else if (fileType == FileType.Powerpoint)
             {
                 scheduleEntry.ApplicationExists = _powerPointAvailable;
             }
